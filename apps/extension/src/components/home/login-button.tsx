@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import Google from "@/assets/google.svg?react";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
+import { useUserStore } from "@/lib/zustand/user";
 import { errorToast } from "@/utils/toast";
 
 import { Loader2 } from "lucide-react";
@@ -15,6 +16,7 @@ export default function LoginButton() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigate = useReplaceNavigate();
+  const setIsLoggedIn = useUserStore((state) => state.setIsLoggedIn);
 
   const onLogin = async () => {
     setIsLoading(true);
@@ -56,6 +58,7 @@ export default function LoginButton() {
           path: "/",
           secure: false,
         });
+        setIsLoggedIn(true);
         return navigate("/search-content");
       }
     );

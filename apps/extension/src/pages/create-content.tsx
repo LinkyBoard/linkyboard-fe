@@ -8,7 +8,7 @@ import { infoToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 
-import { ArrowLeft, ChevronDown, Plus, Save, X } from "lucide-react";
+import { ArrowLeft, ChevronDown, Link, Plus, Save, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 const categories = ["기본", "기술", "디자인", "비즈니스", "교육", "엔터테인먼트", "기타"];
@@ -87,6 +87,7 @@ export default function CreateContent() {
   };
 
   const watchedCategory = watch("category");
+  const watchedThumbnail = watch("thumbnail");
 
   return (
     <div className="bg-background min-h-screen p-6">
@@ -114,17 +115,19 @@ export default function CreateContent() {
         {/* 썸네일 */}
         <div>
           <h2 className="text-muted-foreground mb-3 text-sm font-medium">썸네일</h2>
-          <div className="h-32 w-32 overflow-hidden rounded-lg border">
-            {watch("thumbnail") ? (
+          {watchedThumbnail ? (
+            <div className="size-32 overflow-hidden rounded-2xl border">
               <img
-                src={watch("thumbnail")}
+                src={watchedThumbnail}
                 alt="페이지 썸네일"
                 className="h-full w-full object-cover"
               />
-            ) : (
-              <div className="bg-muted h-full w-full" />
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="from-primary to-chart-2 flex aspect-square size-32 items-center justify-center rounded-2xl bg-gradient-to-r">
+              <Link className="size-16 text-white" />
+            </div>
+          )}
         </div>
 
         {/* URL */}

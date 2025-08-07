@@ -1,6 +1,11 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
+import { useTabStore } from "@/lib/zustand/tab";
+import { useUserStore } from "@/lib/zustand/user";
+import { extractMetaContent, getHtmlText } from "@/utils/chrome";
+import { errorToast } from "@/utils/toast";
 import {
   Dialog,
   DialogClose,
@@ -10,14 +15,25 @@ import {
 } from "@repo/ui/components/dialog";
 
 import { LogOut, Save, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function LogoutDialogContent() {
   const { close } = useDialog();
+  const setIsLoggedIn = useUserStore((state) => state.setIsLoggedIn);
+  const navigate = useReplaceNavigate();
 
-  const onLogout = async () => {
-    // 로그아웃 성공 시 모달 닫기
-    console.log("로그아웃");
+  const onLogout = () => {
+    chrome.cookies.remove({
+      url: baseUrl,
+      name: "accessToken",
+    });
+    chrome.cookies.remove({
+      url: baseUrl,
+      name: "refreshToken",
+    });
+    setIsLoggedIn(false);
+    navigate("/");
     close();
   };
 
@@ -41,14 +57,16 @@ function LogoutDialogContent() {
 
 export default function SearchContent() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const navigate = useNavigate();
+  const { currentTab, isFindingExistPath } = useTabStore();
+  const navigate = useReplaceNavigate();
 
   // 실제 구현에서는 Chrome API를 통해 현재 탭 정보를 가져올 예정
   const currentTabInfo = {
     url: "https://example.com/article/interesting-content",
     title: "흥미로운 기술 아티클 - 최신 개발 트렌드 분석",
   };
+
+  const saveDisabledd = isFindingExistPath || isLoading;
 
   const onSaveOnly = async () => {
     setIsLoading(true);
@@ -61,8 +79,35 @@ export default function SearchContent() {
     }
   };
 
-  const onSaveWithSummary = () => {
-    navigate("/create-content");
+  const onSaveWithSummary = async () => {
+    try {
+      const html = await getHtmlText();
+      const htmlContent = html.split("------MultipartBoundary--")[1];
+
+      if (!htmlContent) {
+        return errorToast("잘못된 페이지에요. 다시 시도해주세요.");
+      }
+
+      // Meta 태그에서 image 추출
+      const ogImage = extractMetaContent(htmlContent, "og:image");
+
+      const htmlBlob = new Blob([htmlContent], { type: "text/html" });
+      const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
+
+      const formData = new FormData();
+      formData.append("htmlFile", htmlFile);
+
+      // await mutateAsync({
+      //   title: currentTab.title,
+      //   siteUrl: currentTab.url,
+      //   htmlFile: formData,
+      // });
+      navigate("/create-content");
+    } catch (error) {
+      console.error("저장 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -91,18 +136,18 @@ export default function SearchContent() {
         <h2 className="text-foreground mb-4 text-lg font-semibold">현재 페이지</h2>
 
         {/* URL */}
-        <div className="mb-3">
+        <div className="mb-3 overflow-hidden">
           <p className="text-muted-foreground mb-1 text-xs font-medium">URL</p>
-          <p className="text-foreground bg-muted/50 line-clamp-1 rounded p-2 text-sm">
-            {currentTabInfo.url}
+          <p className="text-foreground bg-muted/50 truncate rounded p-2 text-sm">
+            {currentTab.url}
           </p>
         </div>
 
         {/* 제목 */}
-        <div>
+        <div className="overflow-hidden">
           <p className="text-muted-foreground mb-1 text-xs font-medium">제목</p>
-          <p className="text-foreground bg-muted/50 line-clamp-1 rounded p-2 text-sm">
-            {currentTabInfo.title}
+          <p className="text-foreground bg-muted/50 truncate rounded p-2 text-sm">
+            {currentTab.title}
           </p>
         </div>
       </div>
@@ -114,7 +159,7 @@ export default function SearchContent() {
         {/* 저장만 하기 */}
         <Button
           onClick={onSaveOnly}
-          disabled={isLoading}
+          disabled={saveDisabledd}
           variant="outline"
           size="lg"
           className="w-full justify-start"
@@ -132,7 +177,7 @@ export default function SearchContent() {
         {/* 요약과 함께 저장하기 */}
         <Button
           onClick={onSaveWithSummary}
-          disabled={isLoading}
+          disabled={saveDisabledd}
           size="lg"
           className="w-full justify-start"
           aria-label="요약과 함께 저장하기"

@@ -32,3 +32,19 @@ export const updateCurrentTab = (
     setState({ url: tabs[0]?.url ?? "", title: tabs[0]?.title ?? "" });
   });
 };
+
+export const extractMetaContent = (html: string, property: string): string | null => {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    const metaTag =
+      doc.querySelector(`meta[property="${property}"]`) ||
+      doc.querySelector(`meta[name="${property}"]`);
+
+    return metaTag?.getAttribute("content") || null;
+  } catch (error) {
+    console.error("Meta content 추출 실패:", error);
+    return null;
+  }
+};

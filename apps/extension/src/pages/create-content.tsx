@@ -31,9 +31,11 @@ export default function CreateContent() {
   const tagInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useReplaceNavigate();
+
   const [dropdownRef] = useOutsideClick<HTMLDivElement>(() => {
     setIsCategoryOpen(false);
   });
+
   const { mutateAsync, isPending } = useFinishDetailSaveContent();
 
   const {
@@ -100,7 +102,7 @@ export default function CreateContent() {
   };
 
   const onCategorySelect = (category: string) => {
-    setValue("category", category);
+    setValue("category", category.trim());
     setIsCategoryOpen(false);
   };
 
@@ -170,21 +172,29 @@ export default function CreateContent() {
           <div>
             <h2 className="text-muted-foreground mb-2 text-sm font-medium">카테고리</h2>
             <div ref={dropdownRef} className="relative">
-              <button
-                type="button"
-                onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex w-full items-center justify-between rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <span className={watchedCategory ? "text-foreground" : "text-muted-foreground"}>
-                  {watchedCategory || "카테고리를 선택하세요"}
-                </span>
+              <div className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-within:ring-ring flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-none disabled:cursor-not-allowed disabled:opacity-50">
+                <input
+                  type="text"
+                  placeholder="카테고리를 입력하세요"
+                  className="w-full outline-none"
+                  onFocus={() => setIsCategoryOpen(true)}
+                  {...register("category")}
+                />
                 <ChevronDown
                   className={`h-4 w-4 transition-transform ${isCategoryOpen ? "rotate-180" : ""}`}
                 />
-              </button>
+              </div>
 
               {isCategoryOpen && (
                 <div className="bg-background absolute z-10 mt-5 w-full rounded-md border shadow-lg">
+                  <button
+                    type="button"
+                    onClick={() => onCategorySelect(watchedCategory)}
+                    disabled={!watchedCategory.trim()}
+                    className="hover:bg-accent text-foreground block w-full px-3 py-2 text-left text-sm"
+                  >
+                    {watchedCategory ? `"${watchedCategory}" 사용하기` : "최소 1글자 입력해주세요."}
+                  </button>
                   {categories.map((category) => (
                     <button
                       key={category}

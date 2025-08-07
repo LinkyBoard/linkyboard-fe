@@ -11,18 +11,18 @@ interface KnowledgeItem {
   date: string;
 }
 
-interface KeywordData {
+interface TagData {
   name: string;
   knowledge: KnowledgeItem[];
 }
 
-interface KeywordListProps {
+interface TagListProps {
   category: string | null;
-  keywords: KeywordData[];
+  tags: TagData[];
 }
 
-function KeywordItem({ href, keyword }: { href: string; keyword: KeywordData }) {
-  const knowledgeCount = keyword.knowledge.length;
+function TagItem({ href, tag }: { href: string; tag: TagData }) {
+  const knowledgeCount = tag.knowledge.length;
 
   return (
     <Link
@@ -34,7 +34,7 @@ function KeywordItem({ href, keyword }: { href: string; keyword: KeywordData }) 
           <Tag size={24} />
         </div>
         <div className="flex-1">
-          <div className="text-lg font-semibold">{keyword.name}</div>
+          <div className="text-lg font-semibold">{tag.name}</div>
           <div className="text-muted-foreground text-sm">{knowledgeCount}개의 콘텐츠</div>
         </div>
       </div>
@@ -48,8 +48,8 @@ function KeywordItem({ href, keyword }: { href: string; keyword: KeywordData }) 
   );
 }
 
-export default function KeywordList({ category, keywords }: KeywordListProps) {
-  if (!category || !keywords.length) {
+export default function TagList({ category, tags }: TagListProps) {
+  if (!category || !tags.length) {
     return (
       <div className="py-12 text-center">
         <div className="text-muted-foreground mb-4 text-4xl">📁</div>
@@ -61,12 +61,8 @@ export default function KeywordList({ category, keywords }: KeywordListProps) {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {keywords.map((keyword) => (
-        <KeywordItem
-          key={keyword.name}
-          href={`/library?category=${category}&keyword=${keyword.name}`}
-          keyword={keyword}
-        />
+      {tags.map((tag) => (
+        <TagItem key={tag.name} href={`/library?category=${category}&tag=${tag.name}`} tag={tag} />
       ))}
     </div>
   );

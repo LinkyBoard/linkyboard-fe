@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 interface KnowledgeListProps {
-  keyword: string;
+  tag: string;
   knowledges: KnowledgeItemProps[];
 }
 
@@ -88,11 +88,11 @@ function KnowledgeItem({ item }: { item: KnowledgeItemProps }) {
   );
 }
 
-export default function KnowledgeList({ keyword, knowledges }: KnowledgeListProps) {
+export default function KnowledgeList({ tag, knowledges }: KnowledgeListProps) {
   return (
     <div className="bg-card border-border overflow-hidden rounded-lg border">
       <div className="border-border flex items-center justify-between border-b p-6">
-        <h2 className="text-xl font-semibold">{keyword} - 콘텐츠 목록</h2>
+        <h2 className="text-xl font-semibold">{tag} - 콘텐츠 목록</h2>
       </div>
 
       {knowledges.length === 0 ? (

@@ -10,10 +10,10 @@ import {
 
 import { Tag } from "lucide-react";
 
-function AddKeywordForm() {
+function AddTagForm() {
   const { close } = useDialog();
 
-  const onCreateKeyword = async (e: React.FormEvent) => {
+  const onCreateTag = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const name = formData.get("name") as string;
@@ -31,7 +31,7 @@ function AddKeywordForm() {
         <h2 className="mb-2 text-xl font-semibold">새 키워드 생성</h2>
         <p className="text-muted-foreground">새로운 키워드를 생성하고 관리하세요</p>
       </div>
-      <form onSubmit={onCreateKeyword}>
+      <form onSubmit={onCreateTag}>
         <div className="mb-4">
           <label className="mb-2 block font-medium">키워드 이름</label>
           <Input type="text" name="name" placeholder="키워드 이름을 입력하세요" required />
@@ -47,7 +47,7 @@ function AddKeywordForm() {
   );
 }
 
-export default function AddKeywordDialog() {
+export default function AddTagDialog() {
   return (
     <Dialog>
       <Button variant="default" className="flex items-center gap-2" asChild>
@@ -56,7 +56,7 @@ export default function AddKeywordDialog() {
         </DialogTrigger>
       </Button>
       <DialogContent>
-        <AddKeywordForm />
+        <AddTagForm />
       </DialogContent>
     </Dialog>
   );

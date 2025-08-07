@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { LibraryProps } from "@/types/library";
 
-import { FileText, type LucideIcon, Tag } from "lucide-react";
+import { FileText, Tag } from "lucide-react";
 
 interface CategoryListProps {
   categories: LibraryProps[];
@@ -23,7 +23,7 @@ function CategoryItem({ category }: { category: LibraryProps }) {
       <div className="border-border flex gap-4 border-t pt-4">
         <div className="text-muted-foreground flex items-center gap-2 text-sm text-nowrap">
           <Tag size={16} />
-          <span className="text-foreground font-semibold">{category.keywordCount}</span> 키워드
+          <span className="text-foreground font-semibold">{category.tagCount}</span> 태그
         </div>
         <div className="text-muted-foreground flex items-center gap-2 text-sm text-nowrap">
           <FileText size={16} />

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import AddCategoryDialog from "@/components/(with-side-bar)/library/layout/add-category-dialog";
-import AddKeywordDialog from "@/components/(with-side-bar)/library/layout/add-keyword-dialog";
+import AddTagDialog from "@/components/(with-side-bar)/library/layout/add-tag-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -47,7 +47,7 @@ export default function LibraryLayout({ children }: LibraryLayoutProps) {
         </div>
         <div className="flex items-center gap-4">
           <AddCategoryDialog />
-          <AddKeywordDialog />
+          <AddTagDialog />
         </div>
       </header>
       {children}

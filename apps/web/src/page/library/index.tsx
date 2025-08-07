@@ -1,20 +1,20 @@
 import Breadcrumb from "@/components/(with-side-bar)/library/breadcrumb";
 import CategoryList from "@/components/(with-side-bar)/library/category-list";
-import KeywordList from "@/components/(with-side-bar)/library/keyword-list";
 import KnowledgeList from "@/components/(with-side-bar)/library/knowledge-list";
+import TagList from "@/components/(with-side-bar)/library/tag-list";
 import type { LibraryProps } from "@/types/library";
 
 interface LibraryPageProps {
   category: string;
-  keyword: string;
+  tag: string;
 }
 
 const libraryData: LibraryProps[] = [
   {
     name: "기술",
-    keywordCount: 2,
+    tagCount: 2,
     knowledgeCount: 2,
-    keywords: [
+    tags: [
       {
         name: "AI",
         knowledge: [
@@ -44,28 +44,26 @@ const libraryData: LibraryProps[] = [
   },
   {
     name: "디자인",
-    keywordCount: 0,
+    tagCount: 0,
     knowledgeCount: 0,
-    keywords: [],
+    tags: [],
   },
 ];
 
-export default function LibraryPage({ category, keyword }: LibraryPageProps) {
-  const currentLevel = keyword ? "knowledge" : category ? "keyword" : "category";
+export default function LibraryPage({ category, tag }: LibraryPageProps) {
+  const currentLevel = tag ? "knowledge" : category ? "tag" : "category";
 
-  const keywords = category
-    ? libraryData.find((item) => item.name === category)?.keywords || []
-    : [];
-  const knowledges = keyword ? keywords.find((item) => item.name === keyword)?.knowledge || [] : [];
+  const tags = category ? libraryData.find((item) => item.name === category)?.tags || [] : [];
+  const knowledges = tag ? tags.find((item) => item.name === tag)?.knowledge || [] : [];
 
   const renderContent = () => {
     switch (currentLevel) {
       case "category":
         return <CategoryList categories={libraryData} />;
-      case "keyword":
-        return <KeywordList category={category} keywords={keywords} />;
+      case "tag":
+        return <TagList category={category} tags={tags} />;
       case "knowledge":
-        return <KnowledgeList keyword={keyword} knowledges={knowledges} />;
+        return <KnowledgeList tag={tag} knowledges={knowledges} />;
       default:
         return <CategoryList categories={libraryData} />;
     }
@@ -73,7 +71,7 @@ export default function LibraryPage({ category, keyword }: LibraryPageProps) {
 
   return (
     <div>
-      <Breadcrumb currentLevel={currentLevel} currentCategory={category} currentKeyword={keyword} />
+      <Breadcrumb currentLevel={currentLevel} currentCategory={category} currentTag={tag} />
       {renderContent()}
     </div>
   );

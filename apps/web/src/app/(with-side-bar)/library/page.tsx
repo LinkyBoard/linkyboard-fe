@@ -4,16 +4,16 @@ import { errorToast } from "@/utils/toast";
 interface LibraryPageProps {
   searchParams: Promise<{
     category: string;
-    keyword: string;
+    tag: string;
   }>;
 }
 
 export default async function Library({ searchParams }: LibraryPageProps) {
-  const { category, keyword } = await searchParams;
+  const { category, tag } = await searchParams;
 
-  if (keyword && !category) {
+  if (tag && !category) {
     return errorToast("잘못된 접근입니다.");
   }
 
-  return <LibraryPage category={category} keyword={keyword} />;
+  return <LibraryPage category={category} tag={tag} />;
 }

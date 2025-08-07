@@ -7,19 +7,19 @@ export interface KnowledgeItemProps {
   date: string;
 }
 
-export interface KeywordProps {
+export interface TagProps {
   name: string;
   knowledge: KnowledgeItemProps[];
 }
 
 export interface CategoryProps {
   name: string;
-  keywords: KeywordProps[];
+  tags: TagProps[];
 }
 
 export interface LibraryProps {
   name: string;
-  keywords: KeywordProps[];
+  tags: TagProps[];
   knowledgeCount: number;
-  keywordCount: number;
+  tagCount: number;
 }

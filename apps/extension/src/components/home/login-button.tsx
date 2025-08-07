@@ -7,7 +7,7 @@ import { errorToast } from "@/utils/toast";
 
 import { Loader2 } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "@repo/ui/components/button";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const googleLoginPage = baseUrl + "/auth/google?redirectType=extension";

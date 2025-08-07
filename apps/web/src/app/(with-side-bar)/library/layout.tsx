@@ -2,8 +2,8 @@
 
 import AddCategoryDialog from "@/components/(with-side-bar)/library/layout/add-category-dialog";
 import AddTagDialog from "@/components/(with-side-bar)/library/layout/add-tag-dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 
 import { Menu, Search } from "lucide-react";

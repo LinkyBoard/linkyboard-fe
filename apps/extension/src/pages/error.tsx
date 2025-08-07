@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/button";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 
 import { Home } from "lucide-react";

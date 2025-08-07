@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/button";
 import type { KnowledgeItemProps } from "@/types/library";
 
 import { Filter } from "lucide-react";

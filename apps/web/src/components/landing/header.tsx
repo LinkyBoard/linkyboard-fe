@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/button";
 import { scrollToSection, useScrollSpy } from "@/hooks/use-intersection-observer";
 import { cn } from "@repo/ui/utils/cn";
 

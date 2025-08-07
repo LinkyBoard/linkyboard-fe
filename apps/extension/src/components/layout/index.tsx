@@ -5,7 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 
 import { Outlet } from "react-router-dom";
 
-import { Toaster } from "../ui/sonner";
+import { Toaster } from "@repo/ui/components/sonner";
 
 function Layout() {
   useDetectPath();

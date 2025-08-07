@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/button";
 
 import { Download } from "lucide-react";
 

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useFinishDetailSaveContent } from "@/lib/tanstack/mutation/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";

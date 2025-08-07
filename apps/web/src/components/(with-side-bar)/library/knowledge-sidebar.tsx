@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { KnowledgeItemProps } from "@/types/library";
 import { zodResolver } from "@hookform/resolvers/zod";

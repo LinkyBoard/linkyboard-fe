@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import KnowledgeItem from "@/components/(with-side-bar)/library/knowledge-item";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
 import { recentActivitiesData } from "@/constants/sample-data";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import type { KnowledgeItemProps } from "@/types/library";

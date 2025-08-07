@@ -6,7 +6,7 @@ import { cn } from "@repo/ui/utils/cn";
 
 import { FolderArchive, Link, NotebookPen } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "@repo/ui/components/button";
 
 const extensionVideo = "/example/extension-demo.mp4";
 const dashboardVideo = "/example/dashboard.mp4";

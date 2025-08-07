@@ -63,7 +63,7 @@ export default function Sidebar() {
         className={cn(
           "bg-sidebar border-sidebar-border fixed z-50 h-screen w-70 overflow-y-auto border-r p-6 transition-transform duration-300",
           isOpen ? "translate-x-0" : "-translate-x-full",
-          "lg:relative lg:translate-x-0"
+          "lg:sticky lg:top-0 lg:translate-x-0"
         )}
       >
         {/* Logo */}

@@ -38,7 +38,7 @@ export default function BenefitsSection() {
     <section id="benefits" className="py-20">
       <div className="mx-auto max-w-6xl px-4">
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-4xl font-bold">NEBULA의 혜택</h2>
+          <h2 className="mb-4 text-4xl font-bold">LinkyBoard의 혜택</h2>
           <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
             지식 관리의 새로운 패러다임을 경험하세요
           </p>

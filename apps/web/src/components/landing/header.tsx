@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { scrollToSection, useScrollSpy } from "@/hooks/use-intersection-observer";
@@ -61,7 +61,7 @@ export default function Header() {
           onClick={onLogoClick}
           aria-label="홈으로 이동"
         >
-          NEBULA
+          LinkyBoard
         </a>
 
         {/* Desktop Navigation */}

@@ -49,7 +49,7 @@ export default function ProblemSolutionSection() {
 
         <Card className="from-primary to-chart-2 border-0 bg-gradient-to-r text-white">
           <CardContent className="p-8 text-center">
-            <h3 className="mb-4 text-2xl font-bold">NEBULA로 모든 문제를 해결하세요!</h3>
+            <h3 className="mb-4 text-2xl font-bold">LinkyBoard로 모든 문제를 해결하세요!</h3>
             <p className="text-lg opacity-90">
               AI 기반 스마트 요약과 시각적 지식 연결로 효율적인 학습과 창의적 사고를 경험하세요
             </p>

@@ -55,7 +55,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <h3 className="mb-4 text-xl font-semibold">NEBULA</h3>
+            <h3 className="mb-4 text-xl font-semibold">LinkyBoard</h3>
             <p className="text-background/80 mb-6 max-w-md">
               지식을 연결하는 스마트 지식 관리 서비스
             </p>
@@ -100,7 +100,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-background/10 mt-12 border-t pt-8 text-center">
-          <p className="text-background/80 text-sm">© 2025 NEBULA. 모든 권리 보유.</p>
+          <p className="text-background/80 text-sm">© 2025 LinkyBoard. 모든 권리 보유.</p>
         </div>
       </div>
     </footer>

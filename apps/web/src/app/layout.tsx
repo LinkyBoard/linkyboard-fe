@@ -25,20 +25,20 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NEBULA - 지식을 연결하는 스마트 지식 관리 서비스",
+  title: "LinkyBoard - 지식을 연결하는 스마트 지식 관리 서비스",
   description:
     "브라우저 통합 지식 관리 서비스로 흩어진 정보를 연결된 인사이트로 변환하세요. AI 요약, 시각화, 개인 지식 보드를 통해 효율적인 학습과 창의적 사고를 경험하세요.",
   keywords:
     "지식 관리, 지식 조직화, 인사이트 생성, 북마크 관리, 노트 관리, PDF 관리, AI 요약, Chrome 확장프로그램, 시각적 지식 관리, 생산성 도구",
   openGraph: {
-    title: "NEBULA - 지식을 연결하는 스마트 지식 관리 서비스",
+    title: "LinkyBoard - 지식을 연결하는 스마트 지식 관리 서비스",
     description: "브라우저 통합 지식 관리 서비스로 흩어진 정보를 연결된 인사이트로 변환하세요.",
     type: "website",
-    url: "https://nebula.com",
+    url: "https://linkyboard.com",
   },
   twitter: {
     card: "summary_large_image",
-    title: "NEBULA - 지식을 연결하는 스마트 지식 관리 서비스",
+    title: "LinkyBoard - 지식을 연결하는 스마트 지식 관리 서비스",
     description: "브라우저 통합 지식 관리 서비스로 흩어진 정보를 연결된 인사이트로 변환하세요.",
   },
 };

@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Link, Bot, Lightbulb, Loader2, FolderArchive } from "lucide-react";
 import Google from "@/assets/google.svg?react";
+import { Button } from "@/components/ui/button";
+
+import { Bot, FolderArchive, Lightbulb, Link, Loader2 } from "lucide-react";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);

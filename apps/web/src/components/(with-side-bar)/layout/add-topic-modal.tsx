@@ -3,12 +3,11 @@
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { Topic, useTopicStore } from "@/lib/zustand/topic-store";
+import { infoToast } from "@/utils/toast";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 
-import { infoToast } from "@/utils/toast";
-
 import { Input } from "../../ui/input";
-import { Topic, useTopicStore } from "@/lib/zustand/topic-store";
 
 export default function AddTopicModal() {
   const router = useRouter();

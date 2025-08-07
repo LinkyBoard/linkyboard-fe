@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { cn } from "@repo/ui/utils/cn";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { type Topic, useTopicStore } from "@/lib/zustand/topic-store";
+import { cn } from "@repo/ui/utils/cn";
 
 import { Book, Grid3X3, Home, LucideIcon } from "lucide-react";
 

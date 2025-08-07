@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-
-import { LogOut, Save, Sparkles } from "lucide-react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogTrigger,
-  DialogClose,
   useDialog,
 } from "@repo/ui/components/dialog";
+
+import { LogOut, Save, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function LogoutDialogContent() {
   const { close } = useDialog();

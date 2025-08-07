@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 
+import { cn } from "@repo/ui/utils/cn";
+
 import { FolderArchive, Link, NotebookPen } from "lucide-react";
 
 import { Button } from "../ui/button";
-import { cn } from "@repo/ui/utils/cn";
 
 const extensionVideo = "/example/extension-demo.mp4";
 const dashboardVideo = "/example/dashboard.mp4";

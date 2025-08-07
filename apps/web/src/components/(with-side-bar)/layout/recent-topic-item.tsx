@@ -1,5 +1,5 @@
-import { cn } from "@repo/ui/utils/cn";
 import { type Topic } from "@/lib/zustand/topic-store";
+import { cn } from "@repo/ui/utils/cn";
 
 interface RecentTopicItemProps {
   isSelected: boolean;

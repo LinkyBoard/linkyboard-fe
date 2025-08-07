@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@repo/ui/utils/cn";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
+import { cn } from "@repo/ui/utils/cn";
 
 import {
   Bell,

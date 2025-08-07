@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@repo/ui/utils/cn";
 import { KnowledgeItemProps } from "@/types/library";
+import { cn } from "@repo/ui/utils/cn";
 
 import {
   Edit,

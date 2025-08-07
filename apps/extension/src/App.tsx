@@ -1,11 +1,12 @@
+import Layout from "@/components/layout";
+
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
-import Layout from "@/components/layout";
 import Agreement from "./pages/agreement";
+import CreateContent from "./pages/create-content";
 import ErrorPage from "./pages/error";
 import Home from "./pages/home";
 import SearchContent from "./pages/search-content";
-import CreateContent from "./pages/create-content";
 
 function App() {
   return (

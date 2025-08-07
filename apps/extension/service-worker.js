@@ -1,5 +1,3 @@
-// const manifest = chrome.runtime.getManifest();
-
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
 

@@ -1,10 +1,11 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 import { cn } from "@repo/ui/utils/cn";
 
+import type { ButtonHTMLAttributes, HTMLAttributes, MouseEvent, ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 interface DialogContextType {
@@ -55,10 +56,10 @@ function DialogTrigger({
   children,
   className,
   ...restProps
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
   const { open } = useDialog();
 
-  const onOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onOpen = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     open();
   };
@@ -74,7 +75,7 @@ function DialogClose({
   children,
   className,
   ...restProps
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
   const { close } = useDialog();
 
   return (
@@ -84,7 +85,7 @@ function DialogClose({
   );
 }
 
-function DialogContent(props: React.HTMLAttributes<HTMLDivElement>) {
+function DialogContent(props: HTMLAttributes<HTMLDivElement>) {
   const { children, className, ...restProps } = props;
 
   const { isOpen, close } = useDialog();
@@ -133,4 +134,4 @@ function DialogContent(props: React.HTMLAttributes<HTMLDivElement>) {
   );
 }
 
-export { Dialog, DialogTrigger, DialogContent, DialogClose, useDialog };
+export { Dialog, DialogClose, DialogContent, DialogTrigger, useDialog };

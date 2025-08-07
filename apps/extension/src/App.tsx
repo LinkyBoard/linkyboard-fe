@@ -1,6 +1,6 @@
 import Layout from "@/components/layout";
 
-import { Route, HashRouter as Router, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
 import CreateContent from "./pages/create-content";
 import ErrorPage from "./pages/error";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { Button } from "@/components/ui";
-import { Link, Bot, Network, Lightbulb, Loader2, FolderArchive } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link, Bot, Lightbulb, Loader2, FolderArchive } from "lucide-react";
 import Google from "@/assets/google.svg?react";
 
 export default function Home() {

@@ -58,8 +58,13 @@ function DialogTrigger({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { open } = useDialog();
 
+  const onOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    open();
+  };
+
   return (
-    <button className={className} onClick={open} {...restProps}>
+    <button className={className} onClick={onOpen} {...restProps}>
       {children}
     </button>
   );
@@ -100,11 +105,24 @@ function DialogContent(props: React.HTMLAttributes<HTMLDivElement>) {
         role="dialog"
         className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50"
         aria-modal="true"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 99999,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        }}
       >
         <div
           ref={dialogRef}
-          className={cn("m-5 w-full max-w-lg rounded-2xl bg-white p-5", className)}
+          className={cn("m-5 w-full rounded-2xl bg-white", className)}
           tabIndex={-1}
+          style={{
+            maxWidth: "32rem",
+            padding: "1.25rem",
+          }}
           {...restProps}
         >
           {children}

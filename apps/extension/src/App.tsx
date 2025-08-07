@@ -2,10 +2,10 @@ import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
 import Layout from "@/components/layout";
 import Agreement from "./pages/agreement";
-import Bookmark from "./pages/bookmark";
-import CreateBookmark from "./pages/create-bookmark";
 import ErrorPage from "./pages/error";
 import Home from "./pages/home";
+import SearchContent from "./pages/search-content";
+import CreateContent from "./pages/create-content";
 
 function App() {
   return (
@@ -14,8 +14,8 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/agreement" element={<Agreement />} />
-          <Route path="/bookmark" element={<Bookmark />} />
-          <Route path="/create-bookmark" element={<CreateBookmark />} />
+          <Route path="/search-content" element={<SearchContent />} />
+          <Route path="/create-content" element={<CreateContent />} />
           <Route
             path="/no-summary"
             element={

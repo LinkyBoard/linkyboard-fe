@@ -5,7 +5,7 @@
     "build": "tsc"
   },
   "exports": {
-    "./*": "./src/*.ts"
+    "types": "./dist/index.d.ts"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*"

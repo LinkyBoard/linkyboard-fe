@@ -24,7 +24,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "types": ["@repo/types", "@repo/ui", "chrome-types"],
+    "types": ["@repo/types", "chrome-types"],
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"]

@@ -1,0 +1,12 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "declaration": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "target": "ES6",
+    "strict": true
+  },
+  "include": ["src"]
+}

@@ -7,7 +7,7 @@ import { useReplaceNavigate } from "./use-replace-navigate";
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export function useCheckToken() {
-  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
+  const { isLoggedIn, setIsLoggedIn } = useUserStore();
 
   const navigate = useReplaceNavigate();
 
@@ -21,6 +21,9 @@ export function useCheckToken() {
 
         if (!token) {
           return navigate("/");
+        } else {
+          setIsLoggedIn(true);
+          return navigate("/search-content");
         }
       };
 

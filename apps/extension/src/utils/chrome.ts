@@ -36,7 +36,7 @@ export const extractMetaContent = (html: string, property: string): string | nul
       doc.querySelector(`meta[property="${property}"]`) ||
       doc.querySelector(`meta[name="${property}"]`);
 
-    return metaTag?.getAttribute("content") || null;
+    return metaTag?.getAttribute("content") || "";
   } catch (error) {
     console.error("Meta content 추출 실패:", error);
     return null;

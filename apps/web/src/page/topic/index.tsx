@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,21 +44,18 @@ const contentItems: ContentItem[] = [
     title: "콘텐츠 기반 필터링",
     description: "콘텐츠 기반 필터링은 사용자 행동·피드백으로 얻은 정보를 바탕으로...",
     type: "web",
-    date: "2024-03-15",
   },
   {
     id: 2,
     title: "유튜브 필터링 알고리즘",
     description: "공식 오피셜 자료 다 가져가세요",
     type: "youtube",
-    date: "2024-03-10",
   },
   {
     id: 3,
     title: "Collaborative Filtering in Recommender System",
     description: "협업 필터링은 다수 사용자 선호도를 기반으로 유사한 사용자나 아이템을 찾아...",
     type: "web",
-    date: "2024-03-05",
   },
 ];
 
@@ -177,7 +174,6 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
         title: data.title,
         description: data.description,
         type: data.type,
-        date: new Date().toISOString().split("T")[0],
         x: dropX,
         y: dropY,
       };
@@ -687,7 +683,6 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
                     <div className="text-sm font-semibold">{item.title}</div>
                   </div>
                   <div className="text-muted-foreground mb-2 text-xs">{item.description}</div>
-                  <div className="text-muted-foreground text-xs">마지막 편집: {item.date}</div>
                 </div>
               );
             })}
@@ -866,7 +861,6 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
                           >
                             {getContentTypeName(content.type)}
                           </span>
-                          <span className="text-muted-foreground text-xs">{content.date}</span>
                         </div>
                       </div>
                     </div>

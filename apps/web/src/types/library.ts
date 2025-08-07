@@ -1,10 +1,11 @@
 export interface KnowledgeItemProps {
   id: number;
+  thumbnail: string;
   title: string;
-  type: string;
-  description: string;
+  url: string;
+  summary: string;
+  memo: string;
   tags: string[];
-  date: string;
 }
 
 export interface TagProps {

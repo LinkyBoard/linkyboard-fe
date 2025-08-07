@@ -5,7 +5,6 @@ export interface ContentItem {
   title: string;
   description: string;
   type: "web" | "youtube" | "pdf" | "note";
-  date: string;
   x?: number;
   y?: number;
 }
@@ -52,7 +51,6 @@ const predefinedTopics: Topic[] = [
         title: "사용자 행동 분석",
         description: "사용자의 클릭, 스크롤, 체류 시간 등을 분석하여 패턴을 파악합니다.",
         type: "web",
-        date: "2024-03-15",
         x: 200,
         y: 200,
       },
@@ -61,7 +59,6 @@ const predefinedTopics: Topic[] = [
         title: "협업 필터링 알고리즘",
         description: "유사한 사용자 그룹을 찾아 추천하는 방법론",
         type: "pdf",
-        date: "2024-03-10",
         x: 400,
         y: 200,
       },
@@ -80,7 +77,6 @@ const predefinedTopics: Topic[] = [
         title: "디자인 토큰 시스템",
         description: "색상, 타이포그래피, 간격 등을 체계적으로 관리하는 시스템",
         type: "web",
-        date: "2024-03-12",
         x: 200,
         y: 200,
       },
@@ -89,7 +85,6 @@ const predefinedTopics: Topic[] = [
         title: "AI 컴포넌트 생성",
         description: "설계 명세를 바탕으로 자동으로 컴포넌트를 생성하는 AI",
         type: "youtube",
-        date: "2024-03-08",
         x: 400,
         y: 200,
       },
@@ -108,7 +103,6 @@ const predefinedTopics: Topic[] = [
         title: "애자일 방법론",
         description: "빠른 반복과 지속적인 개선을 통한 프로젝트 관리",
         type: "web",
-        date: "2024-03-14",
         x: 200,
         y: 200,
       },
@@ -117,7 +111,6 @@ const predefinedTopics: Topic[] = [
         title: "스크럼 프레임워크",
         description: "팀 기반의 애자일 개발 방법론",
         type: "pdf",
-        date: "2024-03-09",
         x: 400,
         y: 200,
       },

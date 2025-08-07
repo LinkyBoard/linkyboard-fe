@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { type Topic, useTopicStore } from "@/lib/zustand/topic-store";

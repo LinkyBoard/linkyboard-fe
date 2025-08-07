@@ -1,69 +1,53 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { KnowledgeItemProps } from "@/types/library";
-import { cn } from "@repo/ui/utils/cn";
 
-import { File, FileText, Filter, type LucideIcon, StickyNote, Video } from "lucide-react";
+import { Filter, Link } from "lucide-react";
+
+import KnowledgeSidebar from "./knowledge-sidebar";
 
 interface KnowledgeListProps {
   knowledges: KnowledgeItemProps[];
-  category: string;
+  category?: string;
+  tag?: string;
+  title?: string;
+  onUpdateKnowledge?: (updatedKnowledge: KnowledgeItemProps) => void;
+  onDeleteKnowledge?: (id: number) => void;
 }
 
-const getIconClass = (type: string): LucideIcon => {
-  const iconMap: Record<string, LucideIcon> = {
-    article: FileText,
-    pdf: File,
-    note: StickyNote,
-    video: Video,
-  };
-  return iconMap[type] || FileText;
-};
-
-const getIconName = (type: string) => {
-  const nameMap: Record<string, string> = {
-    article: "아티클",
-    pdf: "PDF",
-    note: "노트",
-    video: "비디오",
-  };
-  return nameMap[type] || "파일";
-};
-
-const getIconColor = (type: string) => {
-  const colorMap: Record<string, string> = {
-    article: "bg-blue-100 text-blue-600",
-    pdf: "bg-red-100 text-red-600",
-    note: "bg-green-100 text-green-600",
-    video: "bg-orange-100 text-orange-600",
-  };
-  return colorMap[type] || "bg-muted text-muted-foreground";
-};
-
-function KnowledgeItem({ item }: { item: KnowledgeItemProps }) {
-  const IconComponent = getIconClass(item.type);
-
+function KnowledgeItem({ item, onClick }: { item: KnowledgeItemProps; onClick: () => void }) {
   return (
-    <div className="bg-card border-border hover:border-primary group cursor-pointer rounded-lg border p-6 transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg">
+    <div
+      className="bg-card border-border hover:border-primary group cursor-pointer rounded-lg border p-6 transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      aria-label={`${item.title} 콘텐츠 상세보기`}
+    >
       <div className="mb-4 flex items-center gap-4">
-        <div
-          className={cn(
-            "flex h-12 w-12 items-center justify-center rounded-md",
-            getIconColor(item.type)
-          )}
-        >
-          <IconComponent size={24} />
-        </div>
-        <div className="flex-1">
-          <div className="line-clamp-1 text-lg font-semibold">{item.title}</div>
-          <div className="text-muted-foreground mt-1 text-sm">{getIconName(item.type)}</div>
-        </div>
+        {item?.thumbnail ? (
+          <div className="relative size-12 overflow-hidden rounded-lg border">
+            <Image src={item.thumbnail} alt="페이지 썸네일" fill className="object-cover" />
+          </div>
+        ) : (
+          <div className="from-primary to-chart-2 flex aspect-square size-12 items-center justify-center rounded-lg bg-gradient-to-r">
+            <Link className="size-6 text-white" />
+          </div>
+        )}
+        <div className="line-clamp-1 flex-1 text-lg font-semibold">{item.title}</div>
       </div>
 
-      <p className="text-muted-foreground mb-4 line-clamp-3 text-sm">{item.description}</p>
+      <p className="text-muted-foreground mb-4 line-clamp-3 text-sm">{item.summary}</p>
 
       <div className="flex flex-wrap gap-1">
         {item.tags.slice(0, 3).map((tag: string) => (
@@ -81,12 +65,23 @@ function KnowledgeItem({ item }: { item: KnowledgeItemProps }) {
   );
 }
 
-export default function KnowledgeList({ knowledges, category }: KnowledgeListProps) {
+export default function KnowledgeList({
+  knowledges,
+  category,
+  tag,
+  title,
+  onUpdateKnowledge,
+  onDeleteKnowledge,
+}: KnowledgeListProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilter, setShowFilter] = useState(false);
+  const [selectedKnowledge, setSelectedKnowledge] = useState<KnowledgeItemProps | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // 모든 지식에서 태그 추출
   const allTags = (() => [...new Set(knowledges.flatMap((knowledge) => knowledge.tags))])();
 
+  // 태그 필터링된 지식들
   const filteredKnowledges = (() => {
     if (selectedTags.length === 0) return knowledges;
 
@@ -101,10 +96,34 @@ export default function KnowledgeList({ knowledges, category }: KnowledgeListPro
     );
   };
 
+  const onKnowledgeClick = (knowledge: KnowledgeItemProps) => {
+    setSelectedKnowledge(knowledge);
+    setIsSidebarOpen(true);
+  };
+
+  const onCloseSidebar = () => {
+    setIsSidebarOpen(false);
+    setSelectedKnowledge(null);
+  };
+
+  const onUpdateKnowledgeHandler = (updatedKnowledge: KnowledgeItemProps) => {
+    if (onUpdateKnowledge) {
+      onUpdateKnowledge(updatedKnowledge);
+    }
+  };
+
+  const onDeleteKnowledgeHandler = (id: number) => {
+    if (onDeleteKnowledge) {
+      onDeleteKnowledge(id);
+    }
+  };
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">{`${category} - 모든 지식 (${filteredKnowledges.length}개)`}</h2>
+        <h2 className="text-xl font-semibold">
+          {title || `${category || tag} - 모든 지식 (${filteredKnowledges.length}개)`}
+        </h2>
         <Button
           variant="outline"
           size="sm"
@@ -157,10 +176,19 @@ export default function KnowledgeList({ knowledges, category }: KnowledgeListPro
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredKnowledges.map((item: KnowledgeItemProps) => (
-            <KnowledgeItem key={item.id} item={item} />
+            <KnowledgeItem key={item.id} item={item} onClick={() => onKnowledgeClick(item)} />
           ))}
         </div>
       )}
+
+      {/* 사이드바 */}
+      <KnowledgeSidebar
+        isOpen={isSidebarOpen}
+        onClose={onCloseSidebar}
+        knowledge={selectedKnowledge}
+        onUpdate={onUpdateKnowledgeHandler}
+        onDelete={onDeleteKnowledgeHandler}
+      />
     </div>
   );
 }

@@ -1,8 +1,7 @@
 import Layout from "@/components/layout";
 
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, HashRouter as Router, Routes } from "react-router-dom";
 
-import Agreement from "./pages/agreement";
 import CreateContent from "./pages/create-content";
 import ErrorPage from "./pages/error";
 import Home from "./pages/home";
@@ -14,7 +13,6 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/agreement" element={<Agreement />} />
           <Route path="/search-content" element={<SearchContent />} />
           <Route path="/create-content" element={<CreateContent />} />
           <Route

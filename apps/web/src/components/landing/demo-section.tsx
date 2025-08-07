@@ -63,7 +63,7 @@ export default function DemoSection() {
             key={demo.title}
             className={cn(
               "animate-fade-in-up flex flex-col items-center gap-6 rounded-2xl lg:flex-row lg:gap-10",
-              idx % 2 && "flex-col-reverse lg:flex-row-reverse"
+              idx % 2 && "lg:flex-row-reverse"
             )}
           >
             <div className="flex w-full flex-1 flex-col gap-4 lg:w-auto">

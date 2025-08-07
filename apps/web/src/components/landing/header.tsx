@@ -136,10 +136,7 @@ export default function Header() {
                 variant="default"
                 size="lg"
                 className="w-full"
-                onClick={(event) => {
-                  event.preventDefault();
-                  onNavLinkClick("#cta");
-                }}
+                onClick={() => router.push("/dashboard")}
                 aria-label="무료 시작하기"
               >
                 무료 시작

@@ -8,7 +8,5 @@ interface RootProviderProps {
 }
 
 export default function RootProvider({ children }: RootProviderProps) {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

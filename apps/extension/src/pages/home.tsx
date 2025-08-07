@@ -1,26 +1,8 @@
-import { useState } from "react";
+import LoginButton from "@/components/home/login-button";
 
-import Google from "@/assets/google.svg?react";
-import { Button } from "@/components/ui/button";
-
-import { Bot, FolderArchive, Lightbulb, Link, Loader2 } from "lucide-react";
+import { Bot, FolderArchive, Lightbulb, Link } from "lucide-react";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const onLogin = async (): Promise<void> => {
-    setIsLoading(true);
-    try {
-      // 로그인 로직 구현 예정
-      console.log("로그인 시도");
-      // 실제 로그인 API 호출 로직이 여기에 들어갈 예정
-    } catch (error) {
-      console.error("로그인 실패:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="from-background to-accent flex min-h-screen items-center justify-center bg-gradient-to-br p-6">
       <div className="animate-fade-in-up bg-card w-full max-w-md rounded-2xl p-8 shadow-xl">
@@ -87,28 +69,7 @@ export default function Home() {
         </div>
 
         {/* 로그인 버튼 */}
-        <Button
-          onClick={onLogin}
-          disabled={isLoading}
-          size="lg"
-          className="shadow-google hover:text-foreground w-full bg-white hover:bg-gray-100"
-          aria-label="구글로 시작하기"
-          variant="outline"
-        >
-          <div className="flex items-center justify-center space-x-2">
-            {isLoading ? (
-              <>
-                <Loader2 className="animate-spin" />
-                <span>로그인 중...</span>
-              </>
-            ) : (
-              <>
-                <Google />
-                <span>Google로 시작하기</span>
-              </>
-            )}
-          </div>
-        </Button>
+        <LoginButton />
 
         {/* 추가 정보 */}
         <div className="mt-6 text-center">

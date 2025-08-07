@@ -93,7 +93,7 @@ export default function SearchContent() {
         {/* URL */}
         <div className="mb-3">
           <p className="text-muted-foreground mb-1 text-xs font-medium">URL</p>
-          <p className="text-foreground bg-muted/50 line-clamp-1 rounded p-2 text-sm break-all">
+          <p className="text-foreground bg-muted/50 line-clamp-1 rounded p-2 text-sm">
             {currentTabInfo.url}
           </p>
         </div>
@@ -101,7 +101,7 @@ export default function SearchContent() {
         {/* 제목 */}
         <div>
           <p className="text-muted-foreground mb-1 text-xs font-medium">제목</p>
-          <p className="text-foreground bg-muted/50 line-clamp-1 rounded p-2 text-sm break-all">
+          <p className="text-foreground bg-muted/50 line-clamp-1 rounded p-2 text-sm">
             {currentTabInfo.title}
           </p>
         </div>

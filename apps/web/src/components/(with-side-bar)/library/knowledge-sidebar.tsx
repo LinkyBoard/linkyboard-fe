@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,13 @@ import { Input } from "@/components/ui/input";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { KnowledgeItemProps } from "@/types/library";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTrigger,
+  useDialog,
+} from "@repo/ui/components/dialog";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 import { cn } from "@repo/ui/utils/cn";
 
@@ -18,21 +25,56 @@ interface KnowledgeSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   knowledge: KnowledgeItemProps | null;
-  onUpdate: (updatedKnowledge: KnowledgeItemProps) => void;
-  onDelete: (id: number) => void;
 }
 
-export default function KnowledgeSidebar({
-  isOpen,
-  onClose,
-  knowledge,
-  onUpdate,
-  onDelete,
-}: KnowledgeSidebarProps) {
+function DeleteDialogContent({
+  id,
+  setIsDeleteModalOpen,
+}: {
+  id: number;
+  setIsDeleteModalOpen: (isOpen: boolean) => void;
+}) {
+  const { isOpen, close } = useDialog();
+
+  const onDelete = () => {
+    // id로 삭제 요청
+    console.log(id);
+    close();
+  };
+
+  useEffect(() => {
+    setIsDeleteModalOpen(isOpen);
+  }, [isOpen]);
+
+  return (
+    <DialogContent>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-foreground text-lg font-semibold">삭제</h2>
+          <p className="text-muted-foreground text-sm">정말 삭제 하시겠습니까?</p>
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" asChild>
+            <DialogClose>취소</DialogClose>
+          </Button>
+          <Button onClick={onDelete}>삭제</Button>
+        </div>
+      </div>
+    </DialogContent>
+  );
+}
+
+export default function KnowledgeSidebar({ isOpen, onClose, knowledge }: KnowledgeSidebarProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const tagInputRef = useRef<HTMLInputElement>(null);
 
-  const [sidebarRef] = useOutsideClick<HTMLDivElement>(onClose);
+  const [sidebarRef] = useOutsideClick<HTMLDivElement>(() => {
+    if (!isDeleteModalOpen) {
+      onClose();
+    }
+  });
 
   const {
     register,
@@ -67,11 +109,6 @@ export default function KnowledgeSidebar({
 
   const onSave = handleSubmit((data) => {
     if (knowledge) {
-      const updatedKnowledge: KnowledgeItemProps = {
-        ...knowledge,
-        ...data,
-      };
-      onUpdate(updatedKnowledge);
       setIsEditing(false);
     }
   });
@@ -79,13 +116,6 @@ export default function KnowledgeSidebar({
   const onCancel = () => {
     setIsEditing(false);
     reset();
-  };
-
-  const onDeleteKnowledge = () => {
-    if (knowledge && confirm("정말로 이 지식을 삭제하시겠습니까?")) {
-      onDelete(knowledge.id);
-      onClose();
-    }
   };
 
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
@@ -295,10 +325,18 @@ export default function KnowledgeSidebar({
                   <Edit size={16} className="mr-2" />
                   편집
                 </Button>
-                <Button variant="destructive" onClick={onDeleteKnowledge}>
-                  <Trash2 size={16} className="mr-2" />
-                  삭제
-                </Button>
+                <Dialog>
+                  <Button className="bg-red-400 hover:bg-red-500" asChild>
+                    <DialogTrigger>
+                      <Trash2 size={16} className="mr-2" />
+                      삭제
+                    </DialogTrigger>
+                  </Button>
+                  <DeleteDialogContent
+                    id={knowledge?.id ?? -1}
+                    setIsDeleteModalOpen={setIsDeleteModalOpen}
+                  />
+                </Dialog>
               </div>
             )}
           </div>

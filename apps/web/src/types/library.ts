@@ -1,5 +1,6 @@
 export interface KnowledgeItemProps {
   id: number;
+  category: string;
   thumbnail: string;
   title: string;
   url: string;

@@ -3,14 +3,14 @@ import LibraryPage from "@/page/library";
 interface LibraryPageProps {
   searchParams: Promise<{
     category: string;
-    tag: string;
+    id: string;
   }>;
 }
 
 export const runtime = "edge";
 
 export default async function Library({ searchParams }: LibraryPageProps) {
-  const { category } = await searchParams;
+  const { category, id } = await searchParams;
 
-  return <LibraryPage category={category} />;
+  return <LibraryPage category={category} id={id} />;
 }

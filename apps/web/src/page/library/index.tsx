@@ -1,12 +1,10 @@
 import Breadcrumb from "@/components/(with-side-bar)/library/breadcrumb";
 import CategoryList from "@/components/(with-side-bar)/library/category-list";
 import KnowledgeList from "@/components/(with-side-bar)/library/knowledge-list";
-import TagList from "@/components/(with-side-bar)/library/tag-list";
 import type { LibraryProps } from "@/types/library";
 
 interface LibraryPageProps {
   category: string;
-  tag: string;
 }
 
 const libraryData: LibraryProps[] = [
@@ -38,7 +36,24 @@ const libraryData: LibraryProps[] = [
       },
       {
         name: "개발",
-        knowledge: [],
+        knowledge: [
+          {
+            id: 3,
+            title: "React Hooks 완벽 가이드",
+            type: "article",
+            description: "React Hooks의 모든 기능과 사용법에 대한 상세한 가이드",
+            tags: ["React", "Hooks", "개발"],
+            date: "2024-01-20",
+          },
+          {
+            id: 4,
+            title: "TypeScript 베스트 프랙티스",
+            type: "pdf",
+            description: "TypeScript를 효과적으로 사용하는 방법과 팁들",
+            tags: ["TypeScript", "개발", "타입"],
+            date: "2024-01-18",
+          },
+        ],
       },
     ],
   },
@@ -50,20 +65,23 @@ const libraryData: LibraryProps[] = [
   },
 ];
 
-export default function LibraryPage({ category, tag }: LibraryPageProps) {
-  const currentLevel = tag ? "knowledge" : category ? "tag" : "category";
+export default function LibraryPage({ category }: LibraryPageProps) {
+  const currentLevel = category ? "tag" : "category";
 
-  const tags = category ? libraryData.find((item) => item.name === category)?.tags || [] : [];
-  const knowledges = tag ? tags.find((item) => item.name === tag)?.knowledge || [] : [];
+  const allKnowledges = (() => {
+    if (!category) return [];
+    const categoryData = libraryData.find((item) => item.name === category);
+    if (!categoryData) return [];
+
+    return categoryData.tags.flatMap((tag) => tag.knowledge);
+  })();
 
   const renderContent = () => {
     switch (currentLevel) {
       case "category":
         return <CategoryList categories={libraryData} />;
       case "tag":
-        return <TagList category={category} tags={tags} />;
-      case "knowledge":
-        return <KnowledgeList tag={tag} knowledges={knowledges} />;
+        return <KnowledgeList knowledges={allKnowledges} category={category} />;
       default:
         return <CategoryList categories={libraryData} />;
     }
@@ -71,7 +89,7 @@ export default function LibraryPage({ category, tag }: LibraryPageProps) {
 
   return (
     <div>
-      <Breadcrumb currentLevel={currentLevel} currentCategory={category} currentTag={tag} />
+      <Breadcrumb currentLevel={currentLevel} currentCategory={category} />
       {renderContent()}
     </div>
   );

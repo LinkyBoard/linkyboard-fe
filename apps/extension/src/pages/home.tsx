@@ -38,7 +38,7 @@ export default function Home() {
             <div>
               <h3 className="text-foreground text-sm font-semibold">AI 요약 & 정리</h3>
               <p className="text-muted-foreground text-xs">
-                AI가 자동으로 내용을 요약하고 키워드를 추출해 정리해드립니다
+                AI가 자동으로 내용을 요약하고 태그를 추출해 정리해드립니다
               </p>
             </div>
           </div>

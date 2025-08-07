@@ -6,7 +6,7 @@ const features = [
   {
     icon: Chrome,
     title: "Chrome 확장프로그램",
-    description: "웹페이지 정보 수집, AI/사용자 요약, 노트 작성, 키워드 저장을 한 번에 처리하세요",
+    description: "웹페이지 정보 수집, AI/사용자 요약, 노트 작성, 태그 저장을 한 번에 처리하세요",
   },
   {
     icon: Bot,
@@ -16,7 +16,7 @@ const features = [
   {
     icon: Network,
     title: "폴더 뷰 시각화",
-    description: "키워드 중심의 시각적 클러스터링과 필터링으로 지식의 연결을 한눈에 파악하세요",
+    description: "태그 중심의 시각적 클러스터링과 필터링으로 지식의 연결을 한눈에 파악하세요",
   },
   {
     icon: Lightbulb,

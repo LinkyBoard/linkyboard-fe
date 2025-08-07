@@ -13,7 +13,7 @@ const steps = [
   {
     number: "2",
     title: "AI 요약 & 정리",
-    description: "AI가 자동으로 내용을 요약하고 키워드를 추출해 정리해드립니다",
+    description: "AI가 자동으로 내용을 요약하고 태그를 추출해 정리해드립니다",
   },
   {
     number: "3",

@@ -28,13 +28,13 @@ function AddTagForm() {
   return (
     <>
       <div className="mb-6">
-        <h2 className="mb-2 text-xl font-semibold">새 키워드 생성</h2>
-        <p className="text-muted-foreground">새로운 키워드를 생성하고 관리하세요</p>
+        <h2 className="mb-2 text-xl font-semibold">새 태그 생성</h2>
+        <p className="text-muted-foreground">새로운 태그를 생성하고 관리하세요</p>
       </div>
       <form onSubmit={onCreateTag}>
         <div className="mb-4">
-          <label className="mb-2 block font-medium">키워드 이름</label>
-          <Input type="text" name="name" placeholder="키워드 이름을 입력하세요" required />
+          <label className="mb-2 block font-medium">태그 이름</label>
+          <Input type="text" name="name" placeholder="태그 이름을 입력하세요" required />
         </div>
         <div className="flex justify-end gap-3">
           <Button type="button" variant="outline" asChild>
@@ -52,7 +52,7 @@ export default function AddTagDialog() {
     <Dialog>
       <Button variant="default" className="flex items-center gap-2" asChild>
         <DialogTrigger>
-          <Tag size={16} />새 키워드
+          <Tag size={16} />새 태그
         </DialogTrigger>
       </Button>
       <DialogContent>

@@ -1,11 +1,5 @@
 import { decodeQuotedPrintable } from "lettercoder";
 
-export const searchHistory = (text: string) => {
-  chrome.history.search({ text, startTime: Date.now() - 7 * 24 * 60 * 60 * 1000 }, (results) => {
-    console.log(results);
-  });
-};
-
 export const getHtmlText = async () => {
   return new Promise<string>((resolve, reject) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

@@ -5,12 +5,11 @@ import { cn } from "@repo/ui/utils/cn";
 import { ChevronRight } from "lucide-react";
 
 interface BreadcrumbProps {
-  currentLevel: "category" | "tag" | "knowledge";
+  currentLevel: "category" | "tag";
   currentCategory: string | null;
-  currentTag: string | null;
 }
 
-export default function Breadcrumb({ currentLevel, currentCategory, currentTag }: BreadcrumbProps) {
+export default function Breadcrumb({ currentLevel, currentCategory }: BreadcrumbProps) {
   return (
     <nav className="mb-8 flex items-center gap-2 text-sm">
       <Link
@@ -35,13 +34,6 @@ export default function Breadcrumb({ currentLevel, currentCategory, currentTag }
           >
             {currentCategory}
           </Link>
-        </>
-      )}
-
-      {currentTag && currentCategory && (
-        <>
-          <ChevronRight size={16} className="text-muted-foreground" />
-          <span className="text-foreground font-semibold">{currentTag}</span>
         </>
       )}
     </nav>

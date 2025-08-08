@@ -18,6 +18,7 @@ import {
   Connection,
   Edge,
   Node,
+  NodeTypes,
   ReactFlow,
   useEdgesState,
   useNodesState,
@@ -34,25 +35,7 @@ const initialNodes: Node[] = [
     id: "1",
     type: "custom",
     position: { x: 0, y: 0 },
-    data: { label: "1" },
-  },
-  {
-    id: "2",
-    type: "custom",
-    position: { x: 250, y: 320 },
-    data: { label: "2" },
-  },
-  {
-    id: "3",
-    type: "custom",
-    position: { x: 40, y: 300 },
-    data: { label: "3" },
-  },
-  {
-    id: "4",
-    type: "custom",
-    position: { x: 300, y: 0 },
-    data: { label: "4" },
+    data: { nodeContent: "topic", item: { title: "test", summary: "test" } },
   },
 ];
 
@@ -60,7 +43,7 @@ const connectionLineStyle = {
   stroke: "#b1b1b7",
 };
 
-const nodeTypes = {
+const nodeTypes: NodeTypes = {
   custom: CustomNode,
 };
 
@@ -140,7 +123,7 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
       id: `content-${content.id}`,
       type: "custom",
       position: { x: 0, y: 0 },
-      data: { label: content.title },
+      data: { nodeContent: "content", item: content },
     };
     setNodes((prevNodes) => [...prevNodes, newNode]);
   };
@@ -249,7 +232,6 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
-            fitView
             nodeTypes={nodeTypes}
             connectionLineStyle={connectionLineStyle}
           >

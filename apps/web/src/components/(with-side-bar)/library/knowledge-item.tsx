@@ -1,21 +1,19 @@
 import Image from "next/image";
 
-import type { KnowledgeItemProps } from "@/types/library";
+import type { KnowledgeItemProps as KnowledgeItemPropsType } from "@/types/library";
 
 import { Link } from "lucide-react";
 
-export default function KnowledgeItem({
-  item,
-  onClick,
-}: {
-  item: KnowledgeItemProps;
-  onClick: () => void;
-}) {
+interface KnowledgeItemProps extends React.HTMLAttributes<HTMLButtonElement> {
+  item: KnowledgeItemPropsType;
+}
+
+export default function KnowledgeItem({ item, ...restProps }: KnowledgeItemProps) {
   return (
     <button
       className="bg-card border-border hover:border-primary group cursor-pointer rounded-lg border p-6 text-start transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg"
-      onClick={onClick}
       aria-label={`${item.title} 콘텐츠 상세보기`}
+      {...restProps}
     >
       <div className="mb-4 flex items-center gap-4">
         {item?.thumbnail ? (

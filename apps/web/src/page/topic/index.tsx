@@ -24,7 +24,7 @@ import {
   useNodesState,
 } from "@xyflow/react";
 
-import { Menu, Plus, Search } from "lucide-react";
+import { Lightbulb, Menu, Plus, Search } from "lucide-react";
 
 interface TopicBoardPageProps {
   id: string;
@@ -226,17 +226,32 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
 
         {/* Canvas */}
         <div className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            connectionLineStyle={connectionLineStyle}
-          >
-            <Background />
-          </ReactFlow>
+          {id ? (
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+              connectionLineStyle={connectionLineStyle}
+            >
+              <Background />
+            </ReactFlow>
+          ) : (
+            <div className="bg-background absolute inset-0 z-10 flex items-center justify-center">
+              <div className="text-center">
+                <Lightbulb size={64} className="text-muted-foreground mx-auto mb-6 opacity-50" />
+                <h3 className="mb-4 text-xl font-semibold">선택된 토픽이 없습니다</h3>
+                <p className="text-muted-foreground mb-6">
+                  토픽을 선택하거나 새 토픽을 생성해보세요
+                </p>
+                <Button onClick={onNewTopicClick} className="mx-auto flex items-center gap-2">
+                  <Plus size={16} />새 토픽 생성
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

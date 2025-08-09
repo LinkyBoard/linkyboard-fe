@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 
 import { useUserStore } from "@/lib/zustand/user";
+import { getCookie } from "@/utils/cookie";
 
 import { useReplaceNavigate } from "./use-replace-navigate";
-
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export function useCheckToken() {
   const { isLoggedIn, setIsLoggedIn } = useUserStore();
@@ -14,10 +13,7 @@ export function useCheckToken() {
   useEffect(() => {
     if (!isLoggedIn) {
       const checkToken = async () => {
-        const token = await chrome.cookies.get({
-          url: baseUrl,
-          name: "accessToken",
-        });
+        const token = await getCookie("accessToken");
 
         if (!token) {
           return navigate("/");

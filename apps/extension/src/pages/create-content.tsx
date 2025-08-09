@@ -21,12 +21,14 @@ interface CreateContentState {
   memo: string;
   tags: string[];
   category: string;
+  htmlFile: File;
 }
 
 export default function CreateContent() {
   const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
 
   const { state } = useLocation() as { state: CreateContentState };
+  const { htmlFile, ...restState } = state;
 
   const tagInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,7 +48,7 @@ export default function CreateContent() {
     formState: { errors },
   } = useForm<ContentSchemaType>({
     resolver: zodResolver(contentSchema),
-    defaultValues: { ...state, memo: "" },
+    defaultValues: { ...restState, memo: "" },
   });
 
   if (!state) {
@@ -63,9 +65,18 @@ export default function CreateContent() {
   };
 
   const onSave = handleSubmit(async (data) => {
-    await mutateAsync(data, {
-      onSuccess: (data) => {
-        console.log("저장 성공", data);
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("url", data.url);
+    formData.append("thumbnail", data.thumbnail || "");
+    formData.append("memo", data.memo || "");
+    formData.append("summary", data.summary || "");
+    formData.append("category", data.category);
+    formData.append("tags", JSON.stringify(data.tags));
+    formData.append("htmlFile", htmlFile);
+
+    await mutateAsync(formData, {
+      onSuccess: () => {
         successToast("저장에 성공했어요.");
         navigate("/search-content");
       },

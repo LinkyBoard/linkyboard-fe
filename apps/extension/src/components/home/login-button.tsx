@@ -3,6 +3,7 @@ import { useState } from "react";
 import Google from "@/assets/google.svg?react";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useUserStore } from "@/lib/zustand/user";
+import { setCookie } from "@/utils/cookie";
 import { errorToast } from "@/utils/toast";
 
 import { Loader2 } from "lucide-react";
@@ -43,21 +44,9 @@ export default function LoginButton() {
           return errorToast("로그인에 실패했어요. 다시 시도해주세요.");
         }
 
-        chrome.cookies.set({
-          url: baseUrl,
-          name: "accessToken",
-          value: accessToken,
-          path: "/",
-          httpOnly: true,
-          secure: false,
-        });
-        chrome.cookies.set({
-          url: baseUrl,
-          name: "refreshToken",
-          value: refreshToken,
-          path: "/",
-          secure: false,
-        });
+        await setCookie("accessToken", accessToken);
+        await setCookie("refreshToken", refreshToken);
+
         setIsLoggedIn(true);
         return navigate("/search-content");
       }

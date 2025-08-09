@@ -1,6 +1,6 @@
 import { BaseResponseDTO } from "@repo/types";
 
-import { DetailSaveContentDTO, FinishDetailSaveContentRequest } from "../models/content";
+import { DetailSaveContentDTO } from "../models/content";
 
 import { api } from ".";
 
@@ -20,7 +20,7 @@ export const detailSaveContent = async ({
 };
 
 export const finishDetailSaveContent = async (
-  body: FinishDetailSaveContentRequest
+  formData: FormData
 ): Promise<BaseResponseDTO<string>> => {
-  return api.post("contents/summarize/save", { json: body }).json();
+  return api.post("contents/summarize/save", { body: formData }).json();
 };

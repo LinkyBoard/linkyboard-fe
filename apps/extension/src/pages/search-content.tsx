@@ -3,6 +3,7 @@ import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
 import { extractMetaContent, getHtmlText } from "@/utils/chrome";
+import { removeCookie } from "@/utils/cookie";
 import { errorToast } from "@/utils/toast";
 import {
   Dialog,
@@ -36,22 +37,15 @@ const getHtmlContent = async () => {
   return { htmlContent, thumbnail };
 };
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
-
 function LogoutDialogContent() {
   const { close } = useDialog();
   const setIsLoggedIn = useUserStore((state) => state.setIsLoggedIn);
   const navigate = useReplaceNavigate();
 
   const onLogout = () => {
-    chrome.cookies.remove({
-      url: baseUrl,
-      name: "accessToken",
-    });
-    chrome.cookies.remove({
-      url: baseUrl,
-      name: "refreshToken",
-    });
+    removeCookie("accessToken");
+    removeCookie("refreshToken");
+
     setIsLoggedIn(false);
     navigate("/");
     close();
@@ -123,7 +117,7 @@ export default function SearchContent() {
       {
         onSuccess: (data) => {
           navigate("/create-content", {
-            state: { ...data.result, ...currentTab, thumbnail },
+            state: { ...data.result, ...currentTab, thumbnail, htmlFile },
           });
         },
       }

@@ -33,9 +33,6 @@ export const useDetailSaveContent = () => {
 export const useFinishDetailSaveContent = () => {
   return useMutation({
     mutationFn: finishDetailSaveContent,
-    onSuccess: (data) => {
-      console.log(data);
-    },
     onError: (error) => {
       console.error(error);
     },

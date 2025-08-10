@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useFinishDetailSaveContent } from "@/lib/tanstack/mutation/content";
+import { useGetCategories } from "@/lib/tanstack/query/category";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +41,8 @@ export default function CreateContent() {
 
   const { mutateAsync, isPending } = useFinishDetailSaveContent();
 
+  const { data: userCategories } = useGetCategories();
+
   const {
     register,
     handleSubmit,
@@ -55,8 +58,7 @@ export default function CreateContent() {
     return <Navigate to="/bad-request" replace />;
   }
 
-  // TODO: 사용자 카테고리 조회한 결과 값 넣기
-  const categories = [state?.category || ""];
+  const categories = [state?.category || "", ...(userCategories || [])];
 
   const watchedTags = watch("tags");
 
@@ -79,9 +81,6 @@ export default function CreateContent() {
       onSuccess: () => {
         successToast("저장에 성공했어요.");
         navigate("/search-content");
-      },
-      onError: (error) => {
-        console.error(error);
       },
     });
   });
@@ -166,7 +165,7 @@ export default function CreateContent() {
           <div>
             <h2 className="text-muted-foreground mb-2 text-sm font-medium">URL</h2>
             <div className="bg-muted/50 rounded-md p-3">
-              <p className="text-foreground text-sm break-all">{watch("url")}</p>
+              <p className="text-foreground line-clamp-1 text-sm">{watch("url")}</p>
             </div>
           </div>
 
@@ -197,7 +196,7 @@ export default function CreateContent() {
               </div>
 
               {isCategoryOpen && (
-                <div className="bg-background absolute z-10 mt-5 w-full rounded-md border shadow-lg">
+                <div className="bg-background absolute z-10 mt-5 max-h-52 w-full overflow-y-auto rounded-md border shadow-lg">
                   <button
                     type="button"
                     onClick={() => onCategorySelect(watchedCategory)}

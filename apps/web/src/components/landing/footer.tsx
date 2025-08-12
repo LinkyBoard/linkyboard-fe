@@ -100,7 +100,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-background/10 mt-12 border-t pt-8 text-center">
-          <p className="text-background/80 text-sm">© 2025 LinkyBoard. 모든 권리 보유.</p>
+          <p className="text-background/80 text-sm">© 2025 LinkyBoard. All rights reserved.</p>
         </div>
       </div>
     </footer>

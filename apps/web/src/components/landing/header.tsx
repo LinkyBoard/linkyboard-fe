@@ -90,7 +90,7 @@ export default function Header() {
           variant="default"
           size="lg"
           className="hidden md:block"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push("/login")}
           aria-label="무료 시작하기"
         >
           무료 시작
@@ -136,7 +136,7 @@ export default function Header() {
                 variant="default"
                 size="lg"
                 className="w-full"
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push("/login")}
                 aria-label="무료 시작하기"
               >
                 무료 시작

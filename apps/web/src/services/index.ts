@@ -11,11 +11,7 @@ const createFetchOptions = (
   options?: RequestInit
 ): RequestInit => ({
   method,
-  credentials: "include" as const,
-  headers: {
-    "Content-Type": "application/json",
-    ...options?.headers,
-  },
+  credentials: "include",
   body: data ? JSON.stringify(data) : undefined,
   ...options,
 });
@@ -72,7 +68,7 @@ const clientKy = ky.create({
     afterResponse: [
       async (request, options, response) => {
         if (response.status === 401) {
-          window.location.href = "/home";
+          window.location.href = "/login";
         }
         return response;
       },

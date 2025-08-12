@@ -1,7 +1,6 @@
 "use client";
 
 import AddCategoryDialog from "@/components/(with-side-bar)/library/layout/add-category-dialog";
-import AddTagDialog from "@/components/(with-side-bar)/library/layout/add-tag-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
@@ -44,7 +43,6 @@ export default function LibraryLayout({ children }: LibraryLayoutProps) {
         </div>
         <div className="flex items-center gap-4">
           <AddCategoryDialog />
-          <AddTagDialog />
         </div>
       </header>
       {children}

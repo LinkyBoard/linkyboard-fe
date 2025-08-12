@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import KnowledgeItem from "@/components/(with-side-bar)/library/knowledge-item";
+import ContentItem from "@/components/(with-side-bar)/library/content-item";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { recentActivitiesData } from "@/constants/sample-data";
@@ -234,7 +234,7 @@ export default function Dashboard() {
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {recentActivitiesData.map((activity) => (
-            <KnowledgeItem
+            <ContentItem
               key={activity.id}
               item={activity}
               onClick={() => onActivityClick(activity)}

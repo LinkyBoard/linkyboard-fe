@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Topic, useTopicStore } from "@/lib/zustand/topic-store";
+import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
+import { useTopicStore } from "@/lib/zustand/topic-store";
 import { infoToast } from "@/utils/toast";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 
@@ -14,6 +15,8 @@ export default function AddTopicModal() {
 
   const topicStore = useTopicStore();
 
+  const { mutateAsync } = useCreateTopic();
+
   const onCloseModal = () => {
     topicStore.setShowNewTopicModal(false);
     topicStore.setEditingTopic(null);
@@ -21,11 +24,11 @@ export default function AddTopicModal() {
 
   const [dialogRef] = useOutsideClick<HTMLDivElement>(onCloseModal);
 
-  const onCreateTopic = (e: React.FormEvent) => {
+  const onCreateTopic = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
+    const content = formData.get("description") as string;
 
     const existingTopic = topicStore.topics.find(
       (topic) => topic.title.toLowerCase() === title.toLowerCase()
@@ -35,23 +38,18 @@ export default function AddTopicModal() {
       return infoToast("이미 존재하는 토픽입니다.");
     }
 
-    // 새 토픽 생성 (초기 위치 설정)
-    const newTopic: Topic = {
-      id: Date.now(),
-      title,
-      description,
-      contents: [],
-      x: 50,
-      y: 50,
-      createdAt: new Date().toISOString(),
-    };
-
-    // TODO: API 요청으로 바꾸기
-    topicStore.addTopic(newTopic);
-
-    // URL 업데이트하여 새로 생성된 토픽으로 이동
-    router.push(`/topic?id=${newTopic.id}`);
-    onCloseModal();
+    await mutateAsync(
+      {
+        title,
+        content,
+      },
+      {
+        onSuccess: (data) => {
+          router.push(`/topic?id=${data.result}`);
+          onCloseModal();
+        },
+      }
+    );
   };
 
   return (

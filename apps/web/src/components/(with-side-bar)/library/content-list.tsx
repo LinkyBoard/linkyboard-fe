@@ -3,35 +3,38 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import type { KnowledgeItemProps } from "@/types/library";
+import { useGetCategoryContentById } from "@/lib/tanstack/query/content";
+import { CategoryContentDTO } from "@/models/content";
 
-import { Filter } from "lucide-react";
+import { Filter, Loader2 } from "lucide-react";
 
-import KnowledgeItem from "./knowledge-item";
-import KnowledgeSidebar from "./knowledge-sidebar";
+import ContentItem from "./content-item";
+import ContentSidebar from "./content-sidebar";
 
-interface KnowledgeListProps {
-  knowledges: KnowledgeItemProps[];
+interface ContentListProps {
   category?: string;
-  id: string;
+  id?: string;
 }
 
-export default function KnowledgeList({ knowledges, category, id }: KnowledgeListProps) {
+export default function ContentList({ category, id }: ContentListProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilter, setShowFilter] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedKnowledge, setSelectedKnowledge] = useState<KnowledgeItemProps | null>(null);
+  const [selectedContentId, setSelectedContentId] = useState<number | null>(null);
+
+  const [categoryId, categoryName] = category?.split(",") || [];
+
+  const { data, isLoading } = useGetCategoryContentById(categoryId);
+  const contents = data || [];
 
   // 모든 지식에서 태그 추출
-  const allTags = (() => [...new Set(knowledges.flatMap((knowledge) => knowledge.tags))])();
+  const allTags = (() => [...new Set(contents.flatMap((content) => content.tags))])();
 
   // 태그 필터링된 지식들
-  const filteredKnowledges = (() => {
-    if (selectedTags.length === 0) return knowledges;
+  const filteredContents = (() => {
+    if (selectedTags.length === 0) return contents;
 
-    return knowledges.filter((knowledge) =>
-      selectedTags.some((tag) => knowledge.tags.includes(tag))
-    );
+    return contents.filter((content) => selectedTags.some((tag) => content.tags.includes(tag)));
   })();
 
   const onToggleTag = (tagName: string) => {
@@ -40,21 +43,21 @@ export default function KnowledgeList({ knowledges, category, id }: KnowledgeLis
     );
   };
 
-  const onKnowledgeClick = (knowledge: KnowledgeItemProps) => {
-    setSelectedKnowledge(knowledge);
+  const onContentClick = (contentId: number) => {
+    setSelectedContentId(contentId);
     setIsSidebarOpen(true);
   };
 
   const onCloseSidebar = () => {
     setIsSidebarOpen(false);
-    setSelectedKnowledge(null);
+    setSelectedContentId(null);
   };
 
   useEffect(() => {
     if (id) {
-      const knowledge = knowledges.find((knowledge) => knowledge.id === Number(id));
-      if (knowledge) {
-        setSelectedKnowledge(knowledge);
+      const content = contents.find((content) => content.id === +id);
+      if (content) {
+        setSelectedContentId(content.id);
         setIsSidebarOpen(true);
       }
     }
@@ -64,7 +67,7 @@ export default function KnowledgeList({ knowledges, category, id }: KnowledgeLis
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-semibold">
-          {`${category} - 모든 지식 (${filteredKnowledges.length}개)`}
+          {`${categoryName} - 모든 지식 (${filteredContents.length}개)`}
         </h2>
         <Button
           variant="outline"
@@ -107,7 +110,12 @@ export default function KnowledgeList({ knowledges, category, id }: KnowledgeLis
         </div>
       )}
 
-      {filteredKnowledges.length === 0 ? (
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center gap-2">
+          <Loader2 className="animate-spin" />
+          <p>콘텐츠를 가져오고 있어요</p>
+        </div>
+      ) : filteredContents.length === 0 ? (
         <div className="py-12 text-center">
           <div className="text-muted-foreground mb-4 text-4xl">📄</div>
           <h3 className="mb-2 text-xl font-semibold">콘텐츠가 없습니다</h3>
@@ -117,17 +125,17 @@ export default function KnowledgeList({ knowledges, category, id }: KnowledgeLis
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredKnowledges.map((item: KnowledgeItemProps) => (
-            <KnowledgeItem key={item.id} item={item} onClick={() => onKnowledgeClick(item)} />
+          {filteredContents.map((item: CategoryContentDTO) => (
+            <ContentItem key={item.id} item={item} onClick={() => onContentClick(item.id)} />
           ))}
         </div>
       )}
 
       {/* 사이드바 */}
-      <KnowledgeSidebar
+      <ContentSidebar
         isOpen={isSidebarOpen}
         onClose={onCloseSidebar}
-        knowledge={selectedKnowledge}
+        selectedContentId={selectedContentId}
       />
     </div>
   );

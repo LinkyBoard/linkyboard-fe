@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import KnowledgeItem from "@/components/(with-side-bar)/library/knowledge-item";
+import ContentItem from "@/components/(with-side-bar)/library/content-item";
 import CustomNode from "@/components/topic/custom-node";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -204,7 +204,7 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
           </div>
           <div className="h-[calc(100%-120px)] space-y-3 overflow-y-auto p-4">
             {recentActivitiesData.map((item) => (
-              <KnowledgeItem
+              <ContentItem
                 key={`${item.title}-knowledge-item`}
                 item={item}
                 onClick={() => onAddContent(item)}

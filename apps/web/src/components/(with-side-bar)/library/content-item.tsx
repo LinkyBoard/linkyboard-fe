@@ -1,14 +1,14 @@
 import Image from "next/image";
 
-import type { KnowledgeItemProps as KnowledgeItemPropsType } from "@/types/library";
+import { CategoryContentDTO } from "@/models/content";
 
 import { Link } from "lucide-react";
 
-interface KnowledgeItemProps extends React.HTMLAttributes<HTMLButtonElement> {
-  item: KnowledgeItemPropsType;
+interface ContentItemProps extends React.HTMLAttributes<HTMLButtonElement> {
+  item: CategoryContentDTO;
 }
 
-export default function KnowledgeItem({ item, ...restProps }: KnowledgeItemProps) {
+export default function ContentItem({ item, ...restProps }: ContentItemProps) {
   return (
     <button
       className="bg-card border-border hover:border-primary group cursor-pointer rounded-lg border p-6 text-start transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg"

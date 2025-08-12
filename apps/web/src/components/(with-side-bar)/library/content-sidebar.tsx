@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
-import { KnowledgeItemProps } from "@/types/library";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
@@ -24,7 +23,7 @@ import { useForm } from "react-hook-form";
 interface KnowledgeSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  knowledge: KnowledgeItemProps | null;
+  selectedContentId: number | null;
 }
 
 function DeleteDialogContent({
@@ -64,7 +63,11 @@ function DeleteDialogContent({
   );
 }
 
-export default function KnowledgeSidebar({ isOpen, onClose, knowledge }: KnowledgeSidebarProps) {
+export default function ContentSidebar({
+  isOpen,
+  onClose,
+  selectedContentId,
+}: KnowledgeSidebarProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 

@@ -28,6 +28,6 @@ export const getAllTopics = async (page: number): Promise<BaseResponseDTO<unknow
 export const createTopic = async (props: {
   title: string;
   content: string;
-}): Promise<BaseResponseDTO<unknown>> => {
+}): Promise<BaseResponseDTO<number>> => {
   return clientApi.post("topics", props);
 };

@@ -1,4 +1,4 @@
-import { CategoryContentDTO } from "@/models/content";
+import { CategoryContentDTO, ContentDetailDTO } from "@/models/content";
 import { BaseResponseDTO } from "@repo/types";
 
 import { clientApi } from ".";
@@ -7,4 +7,14 @@ export const getCategoryContentById = async (
   categoryId: string
 ): Promise<BaseResponseDTO<CategoryContentDTO[]>> => {
   return clientApi.get(`contents/categories/${categoryId}`);
+};
+
+export const getContentById = async (
+  contentId: number
+): Promise<BaseResponseDTO<ContentDetailDTO>> => {
+  return clientApi.get(`contents/${contentId}`);
+};
+
+export const removeContentById = async (contentId: number): Promise<BaseResponseDTO<unknown>> => {
+  return clientApi.delete(`contents/${contentId}`);
 };

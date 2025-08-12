@@ -1,7 +1,7 @@
-import type { KnowledgeItemProps } from "@/types/library";
+import type { ContentItemProps } from "@/types/library";
 
 // 최근 활동용 샘플 데이터
-export const recentActivitiesData: KnowledgeItemProps[] = [
+export const recentActivitiesData: ContentItemProps[] = [
   {
     id: 5,
     category: "디자인",

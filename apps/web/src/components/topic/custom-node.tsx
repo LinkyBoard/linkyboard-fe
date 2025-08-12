@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { KnowledgeItemProps } from "@/types/library";
+import { ContentItemProps } from "@/types/library";
 import { cn } from "@repo/ui/utils/cn";
 import { Handle, NodeProps, Position, useConnection } from "@xyflow/react";
 
@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 
 interface NodeData {
   nodeContent: "topic" | "content";
-  item: KnowledgeItemProps;
+  item: ContentItemProps;
 }
 
 const stickerStyle = {
@@ -18,7 +18,7 @@ const stickerStyle = {
   content: "bg-card hover:border-primary border-border border",
 };
 
-function TopicSticker({ item }: { item: KnowledgeItemProps }) {
+function TopicSticker({ item }: { item: ContentItemProps }) {
   const onEditTopic = () => {
     console.log("edit");
   };
@@ -59,7 +59,7 @@ function TopicSticker({ item }: { item: KnowledgeItemProps }) {
   );
 }
 
-function ContentSticker({ item }: { item: KnowledgeItemProps }) {
+function ContentSticker({ item }: { item: ContentItemProps }) {
   return (
     <>
       <div className="mb-4 flex items-center justify-between gap-2">

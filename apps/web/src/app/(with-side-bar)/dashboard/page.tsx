@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { recentActivitiesData } from "@/constants/sample-data";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import type { KnowledgeItemProps } from "@/types/library";
+import type { ContentItemProps } from "@/types/library";
 import { cn } from "@repo/ui/utils/cn";
 
 import {
@@ -88,7 +88,7 @@ export default function Dashboard() {
     console.log("Activity clicked:", title);
   };
 
-  const onActivityClick = (item: KnowledgeItemProps) => {
+  const onActivityClick = (item: ContentItemProps) => {
     router.push(`/library?category=${item.category}&id=${item.id}`);
   };
 

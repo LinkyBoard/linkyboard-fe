@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { recentActivitiesData } from "@/constants/sample-data";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { useTopicStore } from "@/lib/zustand/topic-store";
-import { KnowledgeItemProps } from "@/types/library";
+import { ContentItemProps } from "@/types/library";
 import { infoToast } from "@/utils/toast";
 import { cn } from "@repo/ui/utils/cn";
 import {
@@ -118,7 +118,7 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
     document.body.style.userSelect = "";
   };
 
-  const onAddContent = (content: KnowledgeItemProps) => {
+  const onAddContent = (content: ContentItemProps) => {
     const newNode: Node = {
       id: `content-${content.id}`,
       type: "custom",

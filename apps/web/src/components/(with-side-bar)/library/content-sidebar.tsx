@@ -5,7 +5,13 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CATEGORY } from "@/constants/category";
+import { CONTENT } from "@/constants/content";
+import { invalidateQueries } from "@/lib/tanstack";
+import { useRemoveContentById } from "@/lib/tanstack/mutation/content";
+import { useGetContentById } from "@/lib/tanstack/query/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
+import { errorToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
@@ -17,28 +23,39 @@ import {
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 import { cn } from "@repo/ui/utils/cn";
 
-import { Edit, Link, Plus, Save, Trash2, X } from "lucide-react";
+import { AlertCircle, Edit, Link, Loader2, Plus, Save, Trash2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 interface KnowledgeSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   selectedContentId: number | null;
+  categoryId: string;
 }
+
+const DEFAULT_CONTENT = {
+  title: "",
+  summary: "",
+  memo: "",
+  tags: [],
+};
 
 function DeleteDialogContent({
   id,
   setIsDeleteModalOpen,
+  onDelete,
 }: {
-  id: number;
+  id: number | null;
   setIsDeleteModalOpen: (isOpen: boolean) => void;
+  onDelete: (id: number) => Promise<void>;
 }) {
   const { isOpen, close } = useDialog();
 
-  const onDelete = () => {
-    // id로 삭제 요청
-    console.log(id);
+  const onDeleteClick = async () => {
+    if (!id) return errorToast("잘못된 요청이에요.");
+
     close();
+    await onDelete(id);
   };
 
   useEffect(() => {
@@ -56,7 +73,7 @@ function DeleteDialogContent({
           <Button variant="outline" asChild>
             <DialogClose>취소</DialogClose>
           </Button>
-          <Button onClick={onDelete}>삭제</Button>
+          <Button onClick={onDeleteClick}>삭제</Button>
         </div>
       </div>
     </DialogContent>
@@ -64,12 +81,16 @@ function DeleteDialogContent({
 }
 
 export default function ContentSidebar({
+  categoryId,
   isOpen,
   onClose,
   selectedContentId,
 }: KnowledgeSidebarProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const { data, isLoading, isError } = useGetContentById(selectedContentId);
+  const { mutateAsync, isPending: isDeletePending } = useRemoveContentById();
 
   const tagInputRef = useRef<HTMLInputElement>(null);
 
@@ -88,30 +109,26 @@ export default function ContentSidebar({
     formState: { errors },
   } = useForm<ContentSchemaType>({
     resolver: zodResolver(contentSchema),
-    defaultValues: {
-      title: "",
-      summary: "",
-      memo: "",
-      tags: [],
-    },
+    defaultValues: data || DEFAULT_CONTENT,
   });
 
   const watchedTags = watch("tags");
+  const buttonDisabled = isLoading || isError || isDeletePending;
 
   const onEdit = () => {
-    if (knowledge) {
+    if (data) {
       reset({
-        title: knowledge.title,
-        summary: knowledge.summary || "",
-        memo: knowledge.memo || "",
-        tags: knowledge.tags,
+        title: data.title,
+        summary: data.summary || "",
+        memo: data.memo || "",
+        tags: data.tags,
       });
       setIsEditing(true);
     }
   };
 
   const onSave = handleSubmit((data) => {
-    if (knowledge) {
+    if (data) {
       setIsEditing(false);
     }
   });
@@ -119,6 +136,20 @@ export default function ContentSidebar({
   const onCancel = () => {
     setIsEditing(false);
     reset();
+  };
+
+  const onDelete = async () => {
+    if (!selectedContentId) return errorToast("잘못된 요청이에요.");
+    await mutateAsync(selectedContentId, {
+      onSuccess: () => {
+        onClose();
+        invalidateQueries([
+          [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
+          [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
+          [CATEGORY.GET_CATEGORIES],
+        ]);
+      },
+    });
   };
 
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
@@ -175,7 +206,17 @@ export default function ContentSidebar({
 
           {/* 내용 */}
           <div className="flex-1 overflow-y-auto p-6">
-            {isEditing ? (
+            {isLoading ? (
+              <div className="flex h-full flex-col items-center justify-center gap-2">
+                <Loader2 className="animate-spin" />
+                <p>콘텐츠 정보를 가져오고 있어요</p>
+              </div>
+            ) : isError ? (
+              <div className="flex h-full flex-col items-center justify-center gap-2">
+                <AlertCircle className="text-destructive size-8" />
+                <p>콘텐츠 정보를 가져오는데 실패했어요</p>
+              </div>
+            ) : isEditing ? (
               // 편집 모드
               <div className="space-y-6">
                 <div>
@@ -213,7 +254,6 @@ export default function ContentSidebar({
                 <div>
                   <label className="mb-2 block text-sm font-medium">태그</label>
                   <div className="space-y-3">
-                    {/* 기존 태그들 */}
                     <div className="flex flex-wrap gap-2">
                       {watchedTags.map((tag, index) => (
                         <button
@@ -229,7 +269,6 @@ export default function ContentSidebar({
                       ))}
                     </div>
 
-                    {/* 새 태그 추가 */}
                     <div className="space-y-2">
                       <form className="flex space-x-2" onSubmit={onAddTag}>
                         <Input ref={tagInputRef} placeholder="새 태그 입력" className="flex-1" />
@@ -257,10 +296,10 @@ export default function ContentSidebar({
               // 보기 모드
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  {knowledge?.thumbnail ? (
-                    <div className="relative size-24 overflow-hidden rounded-2xl border">
+                  {data?.thumbnail ? (
+                    <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border">
                       <Image
-                        src={knowledge?.thumbnail}
+                        src={data?.thumbnail}
                         alt="페이지 썸네일"
                         fill
                         className="object-cover"
@@ -272,31 +311,31 @@ export default function ContentSidebar({
                     </div>
                   )}
                   <div>
-                    <h3 className="line-clamp-1 text-xl font-semibold">{knowledge?.title}</h3>
+                    <h3 className="line-clamp-1 text-xl font-semibold">{data?.title}</h3>
                     <a
                       className="text-muted-foreground line-clamp-1 text-sm underline"
-                      href={knowledge?.url}
+                      href={data?.url}
                       target="_blank"
                     >
-                      {knowledge?.url}
+                      {data?.url}
                     </a>
                   </div>
                 </div>
 
                 <div>
                   <h4 className="mb-2 font-medium">요약</h4>
-                  <p className="text-muted-foreground">{knowledge?.summary}</p>
+                  <p className="text-muted-foreground">{data?.summary}</p>
                 </div>
 
                 <div>
                   <h4 className="mb-2 font-medium">메모</h4>
-                  <p className="text-muted-foreground">{knowledge?.memo}</p>
+                  <p className="text-muted-foreground">{data?.memo}</p>
                 </div>
 
                 <div>
                   <h4 className="mb-2 font-medium">태그</h4>
                   <div className="flex flex-wrap gap-2">
-                    {knowledge?.tags.map((tag) => (
+                    {data?.tags.map((tag) => (
                       <span
                         key={tag}
                         className="bg-muted text-muted-foreground rounded px-2 py-1 text-sm"
@@ -324,20 +363,21 @@ export default function ContentSidebar({
               </div>
             ) : (
               <div className="flex gap-2">
-                <Button onClick={onEdit} className="flex-1">
+                <Button onClick={onEdit} className="flex-1" disabled={buttonDisabled}>
                   <Edit size={16} className="mr-2" />
                   편집
                 </Button>
                 <Dialog>
-                  <Button className="bg-red-400 hover:bg-red-500" asChild>
+                  <Button className="bg-red-400 hover:bg-red-500" asChild disabled={buttonDisabled}>
                     <DialogTrigger>
                       <Trash2 size={16} className="mr-2" />
                       삭제
                     </DialogTrigger>
                   </Button>
                   <DeleteDialogContent
-                    id={knowledge?.id ?? -1}
+                    id={selectedContentId}
                     setIsDeleteModalOpen={setIsDeleteModalOpen}
+                    onDelete={onDelete}
                   />
                 </Dialog>
               </div>

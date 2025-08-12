@@ -1,4 +1,4 @@
-export interface KnowledgeItemProps {
+export interface ContentItemProps {
   id: number;
   category: string;
   thumbnail: string;

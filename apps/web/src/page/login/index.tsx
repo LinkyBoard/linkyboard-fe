@@ -1,33 +1,11 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import Google from "@/assets/google.svg";
-import { Button } from "@/components/ui/button";
 
-import { Loader2 } from "lucide-react";
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const href = baseUrl + "/auth/google?redirectType=web";
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-
-  const onLogin = async () => {
-    setIsLoading(true);
-    try {
-      // TODO: Google OAuth 로그인 구현
-      console.log("Google 로그인");
-      // 임시로 2초 후 대시보드로 이동
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      router.push("/dashboard");
-    } catch (error) {
-      console.error("Google 로그인 실패:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="flex min-h-screen flex-col bg-white">
       {/* 헤더 */}
@@ -48,29 +26,14 @@ export default function LoginPage() {
           오신 것을 환영합니다
         </h1>
 
-        {/* 로그인 폼 */}
-        <Button
-          onClick={onLogin}
-          disabled={isLoading}
-          size="lg"
-          className="shadow-google hover:text-foreground w-full max-w-sm bg-white hover:bg-gray-100"
+        <Link
+          href={href}
+          className="shadow-google hover:text-foreground border-input flex h-12 w-full max-w-sm items-center justify-center space-x-2 rounded-md border bg-white px-8 text-base font-semibold transition-transform hover:-translate-y-0.5 hover:bg-gray-100 hover:shadow-lg"
           aria-label="구글로 시작하기"
-          variant="outline"
         >
-          <div className="flex items-center justify-center space-x-2">
-            {isLoading ? (
-              <>
-                <Loader2 className="animate-spin" />
-                <span>로그인 중...</span>
-              </>
-            ) : (
-              <>
-                <Google />
-                <span>Google로 시작하기</span>
-              </>
-            )}
-          </div>
-        </Button>
+          <Google />
+          <span>Google로 시작하기</span>
+        </Link>
 
         {/* 약관 동의 */}
         <div className="space-y-2 text-center">

@@ -1,4 +1,5 @@
-import { BaseResponseDTO } from "@repo/types";
+import { TopicDTO } from "@/models/topic";
+import { BaseResponseDTO, PaginationDTO } from "@repo/types";
 import { getParams } from "@repo/ui/utils/params";
 
 import { clientApi, serverApi } from ".";
@@ -20,7 +21,7 @@ export const removeTopicById = async (id: string): Promise<BaseResponseDTO<unkno
   return clientApi.delete(`topics/${id}`);
 };
 
-export const getAllTopics = async (page: number): Promise<BaseResponseDTO<unknown>> => {
+export const getAllTopics = async (page: number): Promise<PaginationDTO<TopicDTO[]>> => {
   const params = getParams({ page }, { size: 10 });
   return clientApi.get(`topics?${params}`);
 };

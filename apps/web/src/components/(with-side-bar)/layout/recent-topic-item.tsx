@@ -1,9 +1,9 @@
-import { type Topic } from "@/lib/zustand/topic-store";
+import type { TopicDTO } from "@/models/topic";
 import { cn } from "@repo/ui/utils/cn";
 
 interface RecentTopicItemProps {
   isSelected: boolean;
-  topic: Topic;
+  topic: TopicDTO;
   onTopicClick: () => void;
 }
 
@@ -51,7 +51,7 @@ export default function RecentTopicItem({ isSelected, topic, onTopicClick }: Rec
             isSelected ? "text-sidebar-primary-foreground/80" : "text-muted-foreground"
           )}
         >
-          {topic.description}
+          {topic.content}
         </div>
       </div>
     </div>

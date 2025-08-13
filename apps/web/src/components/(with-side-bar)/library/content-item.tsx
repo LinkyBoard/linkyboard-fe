@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { CategoryContentDTO } from "@/models/content";
+import { cn } from "@repo/ui/utils/cn";
 
 import { Link } from "lucide-react";
 
@@ -8,10 +9,14 @@ interface ContentItemProps extends React.HTMLAttributes<HTMLButtonElement> {
   item: CategoryContentDTO;
 }
 
-export default function ContentItem({ item, ...restProps }: ContentItemProps) {
+export default function ContentItem({ item, ...props }: ContentItemProps) {
+  const { className, ...restProps } = props;
   return (
     <button
-      className="bg-card border-border hover:border-primary group cursor-pointer rounded-lg border p-6 text-start transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg"
+      className={cn(
+        "bg-card border-border hover:border-primary group cursor-pointer rounded-lg border p-6 text-start transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg",
+        className
+      )}
       aria-label={`${item.title} 콘텐츠 상세보기`}
       {...restProps}
     >

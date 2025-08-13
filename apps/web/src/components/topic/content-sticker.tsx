@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-import { ContentItemProps } from "@/types/library";
+import { CategoryContentDTO } from "@/models/content";
 
 import { Link, X } from "lucide-react";
 
 import { Button } from "../ui/button";
 
-export default function ContentSticker({ item }: { item: ContentItemProps }) {
+export default function ContentSticker({ item }: { item: CategoryContentDTO }) {
   return (
     <>
       <div className="mb-4 flex items-center justify-between gap-2">
@@ -25,7 +25,7 @@ export default function ContentSticker({ item }: { item: ContentItemProps }) {
         <Button
           variant="ghost"
           size="icon"
-          className="bg-muted text-muted-foreground hover:bg-destructive h-8 w-8 hover:text-white"
+          className="bg-muted text-muted-foreground hover:bg-destructive h-8 w-8 shrink-0 hover:text-white"
           onClick={() => {}}
         >
           <X size={16} />

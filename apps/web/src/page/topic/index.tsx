@@ -2,15 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import ContentItem from "@/components/(with-side-bar)/library/content-item";
+import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { recentActivitiesData } from "@/constants/sample-data";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { useTopicStore } from "@/lib/zustand/topic-store";
-import { ContentItemProps } from "@/types/library";
 import { infoToast } from "@/utils/toast";
 import { cn } from "@repo/ui/utils/cn";
 import {
@@ -45,6 +43,11 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [isResizing, setIsResizing] = useState(false);
+
+  const contentPanelRef = useRef<HTMLDivElement | null>(null);
+
+  const { toggle } = useMobileMenuStore();
+  const topicStore = useTopicStore();
 
   const [
     { data: topic, isLoading: isTopicLoading, isError: isTopicError, error, isRefetching },
@@ -81,11 +84,6 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
     setEdges((eds) => eds.filter((e) => e.id !== edge.id));
     infoToast("연결이 제거되었습니다.");
   };
-
-  const contentPanelRef = useRef<HTMLDivElement>(null);
-
-  const { toggle } = useMobileMenuStore();
-  const topicStore = useTopicStore();
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -124,16 +122,6 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
     setIsResizing(false);
     document.body.style.cursor = "";
     document.body.style.userSelect = "";
-  };
-
-  const onAddContent = (content: ContentItemProps) => {
-    const newNode: Node = {
-      id: `content-${content.id}`,
-      type: "custom",
-      position: { x: 0, y: 0 },
-      data: { nodeContent: "content", item: content },
-    };
-    setNodes((prevNodes) => [...prevNodes, newNode]);
   };
 
   // 리사이즈 이벤트 처리
@@ -210,35 +198,11 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
 
       {/* Content Panel */}
       <div className="flex h-[calc(100vh-200px)] gap-0">
-        {/* Content Panel */}
-        <div
-          ref={contentPanelRef}
-          className="bg-card border-border overflow-hidden rounded-l-lg border border-r-0"
-          style={{ width: `${contentPanelWidth}px`, minWidth: "300px" }}
-        >
-          <div className="relative p-4">
-            <Search
-              className="text-muted-foreground absolute top-1/2 left-8 -translate-y-1/2 transform"
-              size={16}
-            />
-            <Input
-              type="text"
-              placeholder="콘텐츠를 검색하세요"
-              className="pl-10"
-              value={searchQuery}
-              onChange={onSearchChange}
-            />
-          </div>
-          <div className="h-[calc(100%-120px)] space-y-3 overflow-y-auto p-4">
-            {recentActivitiesData.map((item) => (
-              <ContentItem
-                key={`${item.title}-knowledge-item`}
-                item={item}
-                onClick={() => onAddContent(item)}
-              />
-            ))}
-          </div>
-        </div>
+        <ContentList
+          setNodes={setNodes}
+          contentPanelRef={contentPanelRef}
+          contentPanelWidth={contentPanelWidth}
+        />
 
         {/* Resize Bar */}
         <div

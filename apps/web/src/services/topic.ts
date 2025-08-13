@@ -1,3 +1,4 @@
+import type { CategoryContentDTO } from "@/models/content";
 import { TopicContentDTO, TopicDTO } from "@/models/topic";
 import { BaseResponseDTO, PaginationDTO } from "@repo/types";
 import { getParams } from "@repo/ui/utils/params";
@@ -37,4 +38,11 @@ export const createTopic = async (props: {
   content: string;
 }): Promise<BaseResponseDTO<number>> => {
   return clientApi.post("topics", props);
+};
+
+export const getAllContents = async (
+  page: number
+): Promise<PaginationDTO<CategoryContentDTO[]>> => {
+  const params = getParams({ page }, { size: 10 });
+  return clientApi.get(`contents?${params}`);
 };

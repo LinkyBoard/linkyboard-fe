@@ -1,5 +1,5 @@
+import { CategoryContentDTO } from "@/models/content";
 import type { TopicDTO } from "@/models/topic";
-import { ContentItemProps } from "@/types/library";
 import { cn } from "@repo/ui/utils/cn";
 import { Handle, NodeProps, Position, useConnection } from "@xyflow/react";
 
@@ -8,7 +8,7 @@ import TopicSticker from "./topic-sticker";
 
 interface NodeData {
   nodeContent: "topic" | "content";
-  item: TopicDTO | ContentItemProps;
+  item: TopicDTO | CategoryContentDTO;
 }
 
 const stickerStyle = {
@@ -102,7 +102,7 @@ export default function CustomNode(props: NodeProps) {
       {nodeData.nodeContent === "topic" ? (
         <TopicSticker item={nodeData.item as TopicDTO} />
       ) : (
-        <ContentSticker item={nodeData.item as ContentItemProps} />
+        <ContentSticker item={nodeData.item as CategoryContentDTO} />
       )}
     </div>
   );

@@ -23,7 +23,7 @@ export const updateTopicById = async (props: {
   return clientApi.put(`topics/${id}`, restProps);
 };
 
-export const removeTopicById = async (id: string): Promise<BaseResponseDTO<unknown>> => {
+export const removeTopicById = async (id: number): Promise<BaseResponseDTO<unknown>> => {
   return clientApi.delete(`topics/${id}`);
 };
 

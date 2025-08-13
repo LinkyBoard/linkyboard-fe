@@ -117,6 +117,8 @@ export default function Sidebar() {
             <div className="flex items-center justify-center">
               <Loader2 className="animate-spin" />
             </div>
+          ) : recentTopics?.length === 0 ? (
+            <p className="text-muted-foreground text-sm">토픽이 없어요.</p>
           ) : (
             recentTopics?.map((topic) => (
               <RecentTopicItem

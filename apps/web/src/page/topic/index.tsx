@@ -25,7 +25,7 @@ import {
   useNodesState,
 } from "@xyflow/react";
 
-import { Lightbulb, Loader2, Menu, Plus, Search } from "lucide-react";
+import { AlertTriangle, Lightbulb, Loader2, Menu, Plus, Search } from "lucide-react";
 
 interface TopicBoardPageProps {
   id: string;
@@ -47,7 +47,7 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
   const [isResizing, setIsResizing] = useState(false);
 
   const [
-    { data: topic, isLoading: isTopicLoading },
+    { data: topic, isLoading: isTopicLoading, isError: isTopicError, error },
     { data: topicContent, isLoading: isTopicContentLoading },
   ] = useGetTopicById(id);
 
@@ -55,6 +55,7 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const isLoading = isTopicLoading || isTopicContentLoading;
+  const isNotFoundError = !isTopicLoading && error?.message.includes("404");
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -74,6 +75,12 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
     },
     [setEdges, edges]
   );
+
+  const onEdgeClick = (event: React.MouseEvent, edge: Edge) => {
+    // 엣지 클릭 시 제거
+    setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+    infoToast("연결이 제거되었습니다.");
+  };
 
   const contentPanelRef = useRef<HTMLDivElement>(null);
 
@@ -247,12 +254,17 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
         {/* Canvas */}
         <div className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0">
           {isLoading ? (
-            <>
-              <div className="flex h-full flex-col items-center justify-center gap-2">
-                <Loader2 className="text-muted-foreground size-8 animate-spin" />
-                <p className="text-muted-foreground">토픽을 불러오고 있어요</p>
-              </div>
-            </>
+            <div className="flex h-full flex-col items-center justify-center gap-2">
+              <Loader2 className="text-muted-foreground size-16 animate-spin" />
+              <p className="text-muted-foreground text-xl font-semibold">토픽을 불러오고 있어요</p>
+            </div>
+          ) : isTopicError ? (
+            <div className="flex h-full flex-col items-center justify-center gap-2">
+              <AlertTriangle className="text-destructive size-16" />
+              <p className="text-muted-foreground text-xl font-semibold">
+                {isNotFoundError ? "토픽을 찾을 수 없어요." : "토픽을 불러오는데 실패했어요."}
+              </p>
+            </div>
           ) : id ? (
             <ReactFlow
               nodes={nodes}
@@ -260,6 +272,7 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
+              onEdgeClick={onEdgeClick}
               nodeTypes={nodeTypes}
               connectionLineStyle={connectionLineStyle}
             >

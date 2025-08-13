@@ -70,10 +70,12 @@ function DeleteDialogContent({
           <p className="text-muted-foreground text-sm">정말 삭제 하시겠습니까?</p>
         </div>
         <div className="flex justify-end gap-2">
-          <Button variant="outline" asChild>
+          <Button variant="outline" asChild className="h-10 text-base">
             <DialogClose>취소</DialogClose>
           </Button>
-          <Button onClick={onDeleteClick}>삭제</Button>
+          <Button onClick={onDeleteClick} className="h-10 text-base">
+            삭제
+          </Button>
         </div>
       </div>
     </DialogContent>
@@ -197,9 +199,9 @@ export default function ContentSidebar({
           {/* 헤더 */}
           <div className="border-b p-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">{isEditing ? "콘텐츠 편집" : "콘텐츠 상세"}</h2>
+              <h2 className="text-xl font-semibold">{isEditing ? "콘텐츠 편집" : "콘텐츠 상세"}</h2>
               <Button variant="ghost" size="icon" onClick={onClose} aria-label="사이드바 닫기">
-                <X size={20} />
+                <X size={24} />
               </Button>
             </div>
           </div>
@@ -209,86 +211,94 @@ export default function ContentSidebar({
             {isLoading ? (
               <div className="flex h-full flex-col items-center justify-center gap-2">
                 <Loader2 className="animate-spin" />
-                <p>콘텐츠 정보를 가져오고 있어요</p>
+                <p className="text-base">콘텐츠 정보를 가져오고 있어요</p>
               </div>
             ) : isError ? (
               <div className="flex h-full flex-col items-center justify-center gap-2">
                 <AlertCircle className="text-destructive size-8" />
-                <p>콘텐츠 정보를 가져오는데 실패했어요</p>
+                <p className="text-base">콘텐츠 정보를 가져오는데 실패했어요</p>
               </div>
             ) : isEditing ? (
               // 편집 모드
               <div className="space-y-6">
                 <div>
-                  <label className="mb-2 block text-sm font-medium">제목</label>
-                  <Input {...register("title")} placeholder="제목을 입력하세요" />
+                  <label className="mb-2 block text-base font-medium">제목</label>
+                  <Input
+                    {...register("title")}
+                    placeholder="제목을 입력하세요"
+                    className="text-base"
+                  />
                   {errors.title && (
-                    <p className="text-destructive mt-1 text-xs">{errors.title.message}</p>
+                    <p className="text-destructive mt-1 text-sm">{errors.title.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium">요약</label>
+                  <label className="mb-2 block text-base font-medium">요약</label>
                   <textarea
                     {...register("summary")}
                     placeholder="요약을 입력하세요"
-                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                   />
                   {errors.summary && (
-                    <p className="text-destructive mt-1 text-xs">{errors.summary.message}</p>
+                    <p className="text-destructive mt-1 text-sm">{errors.summary.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium">메모</label>
+                  <label className="mb-2 block text-base font-medium">메모</label>
                   <textarea
                     {...register("memo")}
                     placeholder="메모를 입력하세요"
-                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                   />
                   {errors.memo && (
-                    <p className="text-destructive mt-1 text-xs">{errors.memo.message}</p>
+                    <p className="text-destructive mt-1 text-sm">{errors.memo.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium">태그</label>
+                  <label className="mb-2 block text-base font-medium">태그</label>
                   <div className="space-y-3">
                     <div className="flex flex-wrap gap-2">
                       {watchedTags.map((tag, index) => (
                         <button
                           key={index}
                           type="button"
-                          className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-sm transition-all duration-200 hover:scale-105"
+                          className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-base transition-all duration-200 hover:scale-105"
                           onClick={() => onRemoveTag(index)}
                           aria-label={`${tag} 태그 제거`}
                         >
                           <span>{tag}</span>
-                          <X className="h-3 w-3" />
+                          <X className="h-4 w-4" />
                         </button>
                       ))}
                     </div>
 
                     <div className="space-y-2">
-                      <form className="flex space-x-2" onSubmit={onAddTag}>
-                        <Input ref={tagInputRef} placeholder="새 태그 입력" className="flex-1" />
+                      <form className="flex items-center gap-2" onSubmit={onAddTag}>
+                        <Input
+                          ref={tagInputRef}
+                          placeholder="새 태그 입력"
+                          className="h-14 flex-1"
+                        />
                         <Button
                           type="submit"
-                          size="sm"
+                          size="default"
                           variant="outline"
                           aria-label="태그 추가"
-                          className="aspect-square h-full shrink-0"
+                          className="aspect-square h-14 shrink-0"
                         >
-                          <Plus />
+                          <Plus size={20} />
                         </Button>
                       </form>
-                      <p className="text-muted-foreground text-xs">
+                      <p className="text-muted-foreground text-sm">
                         Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.
                       </p>
                     </div>
                   </div>
                   {errors.tags && (
-                    <p className="text-destructive mt-1 text-xs">{errors.tags.message}</p>
+                    <p className="text-destructive mt-1 text-sm">{errors.tags.message}</p>
                   )}
                 </div>
               </div>
@@ -311,9 +321,9 @@ export default function ContentSidebar({
                     </div>
                   )}
                   <div>
-                    <h3 className="line-clamp-1 text-xl font-semibold">{data?.title}</h3>
+                    <h3 className="line-clamp-1 text-2xl font-semibold">{data?.title}</h3>
                     <a
-                      className="text-muted-foreground line-clamp-1 text-sm underline"
+                      className="text-muted-foreground line-clamp-1 text-base underline"
                       href={data?.url}
                       target="_blank"
                     >
@@ -323,22 +333,22 @@ export default function ContentSidebar({
                 </div>
 
                 <div>
-                  <h4 className="mb-2 font-medium">요약</h4>
-                  <p className="text-muted-foreground">{data?.summary}</p>
+                  <h4 className="mb-2 text-lg font-medium">요약</h4>
+                  <p className="text-muted-foreground text-base">{data?.summary}</p>
                 </div>
 
                 <div>
-                  <h4 className="mb-2 font-medium">메모</h4>
-                  <p className="text-muted-foreground">{data?.memo}</p>
+                  <h4 className="mb-2 text-lg font-medium">메모</h4>
+                  <p className="text-muted-foreground text-base">{data?.memo}</p>
                 </div>
 
                 <div>
-                  <h4 className="mb-2 font-medium">태그</h4>
+                  <h4 className="mb-2 text-lg font-medium">태그</h4>
                   <div className="flex flex-wrap gap-2">
                     {data?.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="bg-muted text-muted-foreground rounded px-2 py-1 text-sm"
+                        className="bg-muted text-muted-foreground rounded px-2 py-1 text-base"
                       >
                         {tag}
                       </span>
@@ -353,24 +363,32 @@ export default function ContentSidebar({
           <div className="border-t p-6">
             {isEditing ? (
               <div className="flex gap-2">
-                <Button onClick={onSave} className="flex-1">
-                  <Save size={16} className="mr-2" />
+                <Button onClick={onSave} className="h-12 flex-1 text-base">
+                  <Save size={18} className="mr-2" />
                   저장
                 </Button>
-                <Button variant="outline" onClick={onCancel}>
+                <Button variant="outline" onClick={onCancel} className="h-12 text-base">
                   취소
                 </Button>
               </div>
             ) : (
               <div className="flex gap-2">
-                <Button onClick={onEdit} className="flex-1" disabled={buttonDisabled}>
-                  <Edit size={16} className="mr-2" />
+                <Button
+                  onClick={onEdit}
+                  className="h-12 flex-1 text-base"
+                  disabled={buttonDisabled}
+                >
+                  <Edit size={18} className="mr-2" />
                   편집
                 </Button>
                 <Dialog>
-                  <Button className="bg-red-400 hover:bg-red-500" asChild disabled={buttonDisabled}>
+                  <Button
+                    className="h-12 bg-red-400 text-base hover:bg-red-500"
+                    asChild
+                    disabled={buttonDisabled}
+                  >
                     <DialogTrigger>
-                      <Trash2 size={16} className="mr-2" />
+                      <Trash2 size={18} className="mr-2" />
                       삭제
                     </DialogTrigger>
                   </Button>

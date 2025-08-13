@@ -4,12 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 export const useCreateTopic = () => {
   return useMutation({
     mutationFn: createTopic,
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
   });
 };
 

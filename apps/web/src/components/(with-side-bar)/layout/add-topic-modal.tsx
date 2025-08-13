@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { TOPIC } from "@/constants/topic";
+import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
 import { useTopicStore } from "@/lib/zustand/topic-store";
-import { infoToast } from "@/utils/toast";
+import { errorToast, infoToast } from "@/utils/toast";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 
 import { Input } from "../../ui/input";
@@ -30,14 +32,6 @@ export default function AddTopicModal() {
     const title = formData.get("title") as string;
     const content = formData.get("description") as string;
 
-    const existingTopic = topicStore.topics.find(
-      (topic) => topic.title.toLowerCase() === title.toLowerCase()
-    );
-
-    if (existingTopic) {
-      return infoToast("이미 존재하는 토픽입니다.");
-    }
-
     await mutateAsync(
       {
         title,
@@ -46,7 +40,16 @@ export default function AddTopicModal() {
       {
         onSuccess: (data) => {
           router.push(`/topic?id=${data.result}`);
+          invalidateQueries([TOPIC.GET_ALL_TOPICS]);
           onCloseModal();
+        },
+        onError: (error: Error) => {
+          const isDuplicateError = error.message.includes("409");
+          if (isDuplicateError) {
+            return infoToast("이미 존재하는 토픽 제목이에요.");
+          }
+
+          errorToast("토픽 생성에 실패했습니다.");
         },
       }
     );

@@ -1,6 +1,6 @@
 import { BaseResponseDTO } from "@repo/types";
 
-import { clientApi, serverApi } from ".";
+import { clientApi } from ".";
 
 export const updateContentPosition = async (props: {
   topicContentId: number;
@@ -20,10 +20,6 @@ export const createContent = async (props: {
   posY: number;
 }): Promise<BaseResponseDTO<unknown>> => {
   return clientApi.post(`topic-contents`, props);
-};
-
-export const getTopicContentById = async (topicId: number): Promise<BaseResponseDTO<unknown>> => {
-  return serverApi.get(`topic-contents/topics/${topicId}`);
 };
 
 export const removeTopicContentById = async (props: {

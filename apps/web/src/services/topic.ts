@@ -1,11 +1,17 @@
-import { TopicDTO } from "@/models/topic";
+import { TopicContentDTO, TopicDTO } from "@/models/topic";
 import { BaseResponseDTO, PaginationDTO } from "@repo/types";
 import { getParams } from "@repo/ui/utils/params";
 
-import { clientApi, serverApi } from ".";
+import { clientApi } from ".";
 
-export const getTopicById = async (id: string): Promise<BaseResponseDTO<unknown>> => {
-  return serverApi.get(`topics/${id}`);
+export const getTopicById = async (id: string): Promise<BaseResponseDTO<TopicDTO>> => {
+  return clientApi.get(`topics/${id}`);
+};
+
+export const getTopicContentById = async (
+  topicId: string
+): Promise<BaseResponseDTO<TopicContentDTO[]>> => {
+  return clientApi.get(`topic-contents/topics/${topicId}`);
 };
 
 export const updateTopicById = async (props: {

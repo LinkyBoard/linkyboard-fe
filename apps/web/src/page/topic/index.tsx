@@ -7,6 +7,7 @@ import CustomNode from "@/components/topic/custom-node";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { recentActivitiesData } from "@/constants/sample-data";
+import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import { ContentItemProps } from "@/types/library";
@@ -24,20 +25,13 @@ import {
   useNodesState,
 } from "@xyflow/react";
 
-import { Lightbulb, Menu, Plus, Search } from "lucide-react";
+import { Lightbulb, Loader2, Menu, Plus, Search } from "lucide-react";
 
 interface TopicBoardPageProps {
   id: string;
 }
 
-const initialNodes: Node[] = [
-  {
-    id: "1",
-    type: "custom",
-    position: { x: 0, y: 0 },
-    data: { nodeContent: "topic", item: { title: "test", summary: "test" } },
-  },
-];
+const initialNodes: Node[] = [];
 
 const connectionLineStyle = {
   stroke: "#b1b1b7",
@@ -52,8 +46,15 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [isResizing, setIsResizing] = useState(false);
 
+  const [
+    { data: topic, isLoading: isTopicLoading },
+    { data: topicContent, isLoading: isTopicContentLoading },
+  ] = useGetTopicById(id);
+
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  const isLoading = isTopicLoading || isTopicContentLoading;
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -144,6 +145,25 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
     }
   }, [isResizing]);
 
+  useEffect(() => {
+    if (id && !isLoading && topic && topicContent) {
+      const topicNode = {
+        id: `topic-${topic?.id}`,
+        type: "custom",
+        position: { x: 0, y: 0 },
+        data: { nodeContent: "topic", item: topic },
+      };
+      const contentNodes = topicContent.map((content) => ({
+        id: `content-${content.id}`,
+        type: "custom",
+        position: { x: content.posX, y: content.posY },
+        data: { nodeContent: "content", item: content },
+      }));
+
+      setNodes([topicNode, ...contentNodes]);
+    }
+  }, [id, isLoading]);
+
   return (
     <div>
       {/* Header */}
@@ -226,7 +246,14 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
 
         {/* Canvas */}
         <div className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0">
-          {id ? (
+          {isLoading ? (
+            <>
+              <div className="flex h-full flex-col items-center justify-center gap-2">
+                <Loader2 className="text-muted-foreground size-8 animate-spin" />
+                <p className="text-muted-foreground">토픽을 불러오고 있어요</p>
+              </div>
+            </>
+          ) : id ? (
             <ReactFlow
               nodes={nodes}
               edges={edges}

@@ -3,12 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import ContentItem from "@/components/(with-side-bar)/library/content-item";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { recentActivitiesData } from "@/constants/sample-data";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import type { ContentItemProps } from "@/types/library";
 import { cn } from "@repo/ui/utils/cn";
 
 import {
@@ -86,10 +83,6 @@ export default function Dashboard() {
 
   const onActionClick = (title: string) => {
     console.log("Activity clicked:", title);
-  };
-
-  const onActivityClick = (item: ContentItemProps) => {
-    router.push(`/library?category=${item.category}&id=${item.id}`);
   };
 
   return (
@@ -172,9 +165,9 @@ export default function Dashboard() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-white/20">
                   <insight.icon size={20} />
                 </div>
-                <div className="text-lg font-semibold">{insight.title}</div>
+                <div className="line-clamp-1 text-lg font-semibold">{insight.title}</div>
               </div>
-              <p className="mb-4 leading-relaxed opacity-90">{insight.description}</p>
+              <p className="mb-4 line-clamp-2 leading-relaxed opacity-90">{insight.description}</p>
               <Button
                 variant="white"
                 size="sm"
@@ -215,30 +208,6 @@ export default function Dashboard() {
               <div className="mb-1 text-3xl font-bold">{card.number}</div>
               <div className="text-muted-foreground text-sm">{card.label}</div>
             </button>
-          ))}
-        </div>
-      </section>
-
-      {/* 최근 활동 - 라이브러리 콘텐츠 뷰 스타일 */}
-      <section className="mb-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">최근 활동</h2>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.push("/library")}
-            aria-label="라이브러리로 이동"
-          >
-            더보기
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {recentActivitiesData.map((activity) => (
-            <ContentItem
-              key={activity.id}
-              item={activity}
-              onClick={() => onActivityClick(activity)}
-            />
           ))}
         </div>
       </section>

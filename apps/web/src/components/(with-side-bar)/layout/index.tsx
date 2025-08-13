@@ -35,7 +35,7 @@ export default function Sidebar() {
   const router = useRouter();
 
   const { isOpen, close } = useMobileMenuStore();
-  const topicStore = useTopicStore();
+  const setShowNewTopicModal = useTopicStore((state) => state.setShowNewTopicModal);
 
   // 현재 선택된 토픽 ID 가져오기
   const currentTopicId = Number(searchParams.get("id") || "");
@@ -56,7 +56,7 @@ export default function Sidebar() {
   useEffect(() => {
     const onKeydown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        topicStore.setShowNewTopicModal(false);
+        setShowNewTopicModal(false);
       }
     };
 

@@ -10,12 +10,6 @@ export const useCreateTopic = () => {
 export const useUpdateTopic = () => {
   return useMutation({
     mutationFn: updateTopicById,
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
   });
 };
 

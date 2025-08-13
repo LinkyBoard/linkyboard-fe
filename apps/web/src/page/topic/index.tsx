@@ -47,7 +47,7 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
   const [isResizing, setIsResizing] = useState(false);
 
   const [
-    { data: topic, isLoading: isTopicLoading, isError: isTopicError, error },
+    { data: topic, isLoading: isTopicLoading, isError: isTopicError, error, isRefetching },
     { data: topicContent, isLoading: isTopicContentLoading },
   ] = useGetTopicById(id);
 
@@ -169,7 +169,7 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
 
       setNodes([topicNode, ...contentNodes]);
     }
-  }, [id, isLoading]);
+  }, [id, isLoading, isRefetching]);
 
   return (
     <div>

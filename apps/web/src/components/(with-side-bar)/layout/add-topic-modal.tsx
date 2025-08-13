@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
-import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
+import { useCreateTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import { errorToast, infoToast } from "@/utils/toast";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
+
+import { Loader2 } from "lucide-react";
 
 import { Input } from "../../ui/input";
 
@@ -17,7 +19,10 @@ export default function AddTopicModal() {
 
   const topicStore = useTopicStore();
 
-  const { mutateAsync } = useCreateTopic();
+  const { mutateAsync: createTopic, isPending: isCreateTopicPending } = useCreateTopic();
+  const { mutateAsync: updateTopic, isPending: isUpdateTopicPending } = useUpdateTopic();
+
+  const isPending = isCreateTopicPending || isUpdateTopicPending;
 
   const onCloseModal = () => {
     topicStore.setShowNewTopicModal(false);
@@ -32,12 +37,31 @@ export default function AddTopicModal() {
     const title = formData.get("title") as string;
     const content = formData.get("description") as string;
 
-    await mutateAsync(
-      {
-        title,
-        content,
-      },
-      {
+    const body = {
+      title,
+      content,
+    };
+
+    if (topicStore.editingTopic) {
+      await updateTopic(
+        {
+          id: topicStore.editingTopic.id,
+          ...body,
+        },
+        {
+          onSuccess: () => {
+            invalidateQueries([TOPIC.GET_ALL_TOPICS]);
+            invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicStore.editingTopic?.id.toString()]);
+            infoToast("토픽 수정에 성공했어요.");
+            onCloseModal();
+          },
+          onError: () => {
+            errorToast("토픽 수정에 실패했어요.");
+          },
+        }
+      );
+    } else {
+      await createTopic(body, {
         onSuccess: (data) => {
           router.push(`/topic?id=${data.result}`);
           invalidateQueries([TOPIC.GET_ALL_TOPICS]);
@@ -49,10 +73,10 @@ export default function AddTopicModal() {
             return infoToast("이미 존재하는 토픽 제목이에요.");
           }
 
-          errorToast("토픽 생성에 실패했습니다.");
+          errorToast("토픽 생성에 실패했어요.");
         },
-      }
-    );
+      });
+    }
   };
 
   return (
@@ -87,7 +111,7 @@ export default function AddTopicModal() {
               <textarea
                 className="border-border bg-background resize-vertical min-h-[100px] w-full rounded-md border p-3"
                 placeholder="토픽에 대한 설명을 입력하세요"
-                defaultValue={topicStore.editingTopic?.description || ""}
+                defaultValue={topicStore.editingTopic?.content || ""}
                 name="description"
               />
             </div>
@@ -95,7 +119,15 @@ export default function AddTopicModal() {
               <Button type="button" variant="outline" onClick={onCloseModal}>
                 취소
               </Button>
-              <Button type="submit">{topicStore.editingTopic ? "수정" : "생성"}</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : topicStore.editingTopic ? (
+                  "수정"
+                ) : (
+                  "생성"
+                )}
+              </Button>
             </div>
           </form>
         </div>

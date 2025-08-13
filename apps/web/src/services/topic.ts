@@ -15,7 +15,7 @@ export const getTopicContentById = async (
 };
 
 export const updateTopicById = async (props: {
-  id: string;
+  id: number;
   title: string;
   content: string;
 }): Promise<BaseResponseDTO<unknown>> => {

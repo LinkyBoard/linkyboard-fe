@@ -10,3 +10,7 @@ export const createCategory = async (name: string) => {
 export const getCategories = async (): Promise<BaseResponseDTO<CategoryDTO[]>> => {
   return clientApi.get("categories");
 };
+
+export const removeCategory = async (id: number) => {
+  return clientApi.delete(`categories/${id}`);
+};

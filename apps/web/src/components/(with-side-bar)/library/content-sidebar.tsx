@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 
+import Image from "@/components/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CATEGORY } from "@/constants/category";
 import { CONTENT, CONTENT_TYPE } from "@/constants/content";
-import { invalidateQueries } from "@/lib/tanstack";
-import { useRemoveContentById } from "@/lib/tanstack/mutation/content";
+import { invalidateMany } from "@/lib/tanstack";
+import { useRemoveContentById, useUpdateContent } from "@/lib/tanstack/mutation/content";
 import { useGetContentById } from "@/lib/tanstack/query/content";
+import { UpdateContentDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { errorToast } from "@/utils/toast";
 import { extractYoutubeId } from "@/utils/youtube";
@@ -31,7 +32,8 @@ interface KnowledgeSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   selectedContentId: number | null;
-  categoryId: string;
+  categoryId?: string;
+  category?: string;
 }
 
 const DEFAULT_CONTENT = {
@@ -90,12 +92,15 @@ export default function ContentSidebar({
   isOpen,
   onClose,
   selectedContentId,
+  category,
 }: KnowledgeSidebarProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const { data, isLoading, isError } = useGetContentById(selectedContentId);
-  const { mutateAsync, isPending: isDeletePending } = useRemoveContentById();
+  const { data, isLoading, isError, isRefetching } = useGetContentById(selectedContentId);
+  const { mutateAsync: removeContent, isPending: isDeletePending } = useRemoveContentById();
+  const { mutateAsync: updateContent, isPending: isUpdatePending } = useUpdateContent();
+  console.log(isRefetching);
 
   const tagInputRef = useRef<HTMLInputElement>(null);
 
@@ -134,9 +139,24 @@ export default function ContentSidebar({
     }
   };
 
-  const onSave = handleSubmit((data) => {
-    if (data) {
-      setIsEditing(false);
+  const onSave = handleSubmit(async (submitData) => {
+    if (submitData && category && selectedContentId) {
+      const body = {
+        ...data,
+        ...submitData,
+        category,
+      } as UpdateContentDTO;
+
+      await updateContent(body, {
+        onSuccess: async () => {
+          setIsEditing(false);
+          await invalidateMany([
+            [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
+            [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
+            [CATEGORY.GET_CATEGORIES],
+          ]);
+        },
+      });
     }
   });
 
@@ -147,10 +167,10 @@ export default function ContentSidebar({
 
   const onDelete = async () => {
     if (!selectedContentId) return errorToast("잘못된 요청이에요.");
-    await mutateAsync(selectedContentId, {
+    await removeContent(selectedContentId, {
       onSuccess: () => {
         onClose();
-        invalidateQueries([
+        invalidateMany([
           [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
           [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
           [CATEGORY.GET_CATEGORIES],
@@ -311,13 +331,13 @@ export default function ContentSidebar({
                 <div className="flex items-center gap-4">
                   <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border">
                     <Image
-                      src={data?.thumbnail || DEFAULT_THUMBNAIL}
+                      src={data?.thumbnail || ""}
                       alt="페이지 썸네일"
                       fill
                       className="object-cover"
                     />
                   </div>
-                  <div>
+                  <div className="overflow-hidden">
                     <h3 className="line-clamp-1 text-2xl font-semibold">{data?.title}</h3>
                     <a
                       className="text-muted-foreground line-clamp-1 text-base underline"
@@ -340,12 +360,12 @@ export default function ContentSidebar({
 
                 <div>
                   <h4 className="mb-2 text-lg font-medium">요약</h4>
-                  <p className="text-muted-foreground text-base">{data?.summary}</p>
+                  <p className="text-muted-foreground text-base">{data?.summary || "-"}</p>
                 </div>
 
                 <div>
                   <h4 className="mb-2 text-lg font-medium">메모</h4>
-                  <p className="text-muted-foreground text-base">{data?.memo}</p>
+                  <p className="text-muted-foreground text-base">{data?.memo || "-"}</p>
                 </div>
 
                 <div>
@@ -369,11 +389,20 @@ export default function ContentSidebar({
           <div className="border-t p-6">
             {isEditing ? (
               <div className="flex gap-2">
-                <Button onClick={onSave} className="h-12 flex-1 text-base">
+                <Button
+                  onClick={onSave}
+                  className="h-12 flex-1 text-base"
+                  disabled={isUpdatePending}
+                >
                   <Save size={18} className="mr-2" />
                   저장
                 </Button>
-                <Button variant="outline" onClick={onCancel} className="h-12 text-base">
+                <Button
+                  variant="outline"
+                  onClick={onCancel}
+                  className="h-12 text-base"
+                  disabled={isUpdatePending}
+                >
                   취소
                 </Button>
               </div>

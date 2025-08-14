@@ -180,8 +180,9 @@ export default function ContentList({ category, id }: ContentListProps) {
       <ContentSidebar
         isOpen={isSidebarOpen}
         onClose={onCloseSidebar}
-        categoryId={categoryId!}
+        categoryId={categoryId}
         selectedContentId={selectedContentId}
+        category={categoryName}
       />
     </div>
   );

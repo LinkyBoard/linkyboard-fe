@@ -76,7 +76,9 @@ export default function CreateContent() {
     formData.append("memo", data.memo || "");
     formData.append("summary", data.summary || "");
     formData.append("category", data.category);
-    formData.append("tags", JSON.stringify(data.tags));
+    for (const tag of data.tags) {
+      formData.append("tags", tag);
+    }
     formData.append("htmlFile", htmlFile);
     formData.append("type", state.type);
 

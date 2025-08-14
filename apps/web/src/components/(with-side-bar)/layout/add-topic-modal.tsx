@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { TOPIC } from "@/constants/topic";
-import { invalidateQueries } from "@/lib/tanstack";
+import { invalidateMany, invalidateQueries } from "@/lib/tanstack";
 import { useCreateTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import { errorToast, infoToast } from "@/utils/toast";
@@ -49,9 +49,11 @@ export default function AddTopicModal() {
           ...body,
         },
         {
-          onSuccess: () => {
-            invalidateQueries([TOPIC.GET_ALL_TOPICS]);
-            invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicStore.editingTopic?.id.toString()]);
+          onSuccess: async () => {
+            await invalidateMany([
+              [TOPIC.GET_ALL_TOPICS],
+              [TOPIC.GET_TOPIC_BY_ID, topicStore.editingTopic?.id.toString()],
+            ]);
             infoToast("토픽 수정에 성공했어요.");
             onCloseModal();
           },

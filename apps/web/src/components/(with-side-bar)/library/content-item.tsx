@@ -1,13 +1,10 @@
-import Image from "next/image";
-
+import Image from "@/components/image";
 import { CategoryContentDTO } from "@/models/content";
 import { cn } from "@repo/ui/utils/cn";
 
 interface ContentItemProps extends React.HTMLAttributes<HTMLButtonElement> {
   item: CategoryContentDTO;
 }
-
-const DEFAULT_THUMBNAIL = "/static/logo.png";
 
 export default function ContentItem({ item, ...props }: ContentItemProps) {
   const { className, ...restProps } = props;
@@ -23,12 +20,7 @@ export default function ContentItem({ item, ...props }: ContentItemProps) {
     >
       <div className="mb-4 flex items-center gap-4">
         <div className="relative size-12 overflow-hidden rounded-lg border">
-          <Image
-            src={item.thumbnail || DEFAULT_THUMBNAIL}
-            alt="페이지 썸네일"
-            fill
-            className="object-cover"
-          />
+          <Image src={item.thumbnail} alt="페이지 썸네일" fill className="object-cover" />
         </div>
         <div className="line-clamp-1 flex-1 text-lg font-semibold">{item.title}</div>
       </div>

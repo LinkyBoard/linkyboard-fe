@@ -72,7 +72,7 @@ function CategoryItem(props: CategoryDTO) {
         <DeleteCategoryDialog id={props.id} name={props.name} />
       </Dialog>
 
-      <button onClick={onRouteToCategory} className="w-full">
+      <button onClick={onRouteToCategory} className="w-full text-start">
         <div className="mb-4 flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-md bg-blue-100 text-blue-600">
             <FileText size={24} />
@@ -113,7 +113,7 @@ export default function CategoryList() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {data?.map((category) => (
         <CategoryItem key={category.id} {...category} />
       ))}

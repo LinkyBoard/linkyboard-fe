@@ -1,12 +1,9 @@
-import Image from "next/image";
-
 import { CategoryContentDTO } from "@/models/content";
 
 import { X } from "lucide-react";
 
+import Image from "../image";
 import { Button } from "../ui/button";
-
-const DEFAULT_THUMBNAIL = "/static/logo.png";
 
 export default function ContentSticker({ item }: { item: CategoryContentDTO }) {
   return (
@@ -14,12 +11,7 @@ export default function ContentSticker({ item }: { item: CategoryContentDTO }) {
       <div className="mb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-4 overflow-hidden">
           <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border">
-            <Image
-              src={item.thumbnail || DEFAULT_THUMBNAIL}
-              alt="페이지 썸네일"
-              fill
-              className="object-cover"
-            />
+            <Image src={item.thumbnail} alt="페이지 썸네일" fill className="object-cover" />
           </div>
           <div className="line-clamp-1 flex-1 text-lg font-semibold">{item.title}</div>
         </div>

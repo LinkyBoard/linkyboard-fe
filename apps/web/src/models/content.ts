@@ -19,3 +19,7 @@ export interface ContentDetailDTO {
   tags: string[];
   type: ContentType;
 }
+
+export interface UpdateContentDTO extends ContentDetailDTO {
+  category: string;
+}

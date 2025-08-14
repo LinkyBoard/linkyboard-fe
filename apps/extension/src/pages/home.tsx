@@ -1,3 +1,4 @@
+import Logo from "@/assets/logo.svg?react";
 import LoginButton from "@/components/home/login-button";
 
 import { Bot, FolderArchive, Lightbulb, Link } from "lucide-react";
@@ -8,9 +9,7 @@ export default function Home() {
       <div className="animate-fade-in-up bg-card w-full max-w-md rounded-2xl p-8 shadow-xl">
         {/* 로고 및 제목 */}
         <div className="mb-8 text-center">
-          <div className="from-primary to-chart-2 mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-r shadow-lg">
-            <Link className="size-8 text-white" />
-          </div>
+          <Logo className="mx-auto mb-4 shadow-lg" />
           <h1 className="from-primary to-chart-2 mb-2 bg-gradient-to-r bg-clip-text text-3xl font-bold text-transparent">
             LinkyBoard
           </h1>

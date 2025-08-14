@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { CONTENT_TYPE } from "@/constants/content";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
@@ -82,6 +83,10 @@ export default function SearchContent() {
   const saveDisabledd =
     isFindingExistPath || isPendingQuickSaveContent || isPendingDetailSaveContent;
 
+  const currentContentType = currentTab.url.includes("youtube.com")
+    ? CONTENT_TYPE.YOUTUBE
+    : CONTENT_TYPE.WEB;
+
   const onSaveOnly = async () => {
     const { htmlContent, thumbnail } = await getHtmlContent();
     if (!htmlContent || !thumbnail) return;
@@ -95,6 +100,7 @@ export default function SearchContent() {
     formData.append("title", currentTab.title);
     formData.append("url", currentTab.url);
     formData.append("thumbnail", thumbnail);
+    formData.append("type", currentContentType);
 
     await mutateQuickSaveContent(formData);
   };
@@ -108,6 +114,7 @@ export default function SearchContent() {
 
     const formData = new FormData();
     formData.append("htmlFile", htmlFile);
+    formData.append("type", currentContentType);
 
     await mutateDetailSaveContent(
       {
@@ -117,7 +124,13 @@ export default function SearchContent() {
       {
         onSuccess: (data) => {
           navigate("/create-content", {
-            state: { ...data.result, ...currentTab, thumbnail, htmlFile },
+            state: {
+              ...data.result,
+              ...currentTab,
+              thumbnail,
+              htmlFile,
+              type: currentContentType,
+            },
           });
         },
       }
@@ -167,7 +180,7 @@ export default function SearchContent() {
         </div>
 
         {/* 저장 옵션 */}
-        <div className="space-y-4">
+        <div className="space-y-2">
           <h3 className="text-foreground text-base font-semibold">저장 옵션</h3>
 
           {/* 저장만 하기 */}

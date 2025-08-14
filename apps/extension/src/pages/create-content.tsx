@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 
+import Logo from "@/assets/logo.svg?react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
@@ -10,7 +11,7 @@ import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 
-import { ArrowLeft, ChevronDown, Link, Plus, Save, X } from "lucide-react";
+import { ArrowLeft, ChevronDown, Plus, Save, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Navigate, useLocation } from "react-router-dom";
 
@@ -23,6 +24,7 @@ interface CreateContentState {
   tags: string[];
   category: string;
   htmlFile: File;
+  type: string;
 }
 
 export default function CreateContent() {
@@ -76,6 +78,7 @@ export default function CreateContent() {
     formData.append("category", data.category);
     formData.append("tags", JSON.stringify(data.tags));
     formData.append("htmlFile", htmlFile);
+    formData.append("type", state.type);
 
     await mutateAsync(formData, {
       onSuccess: () => {
@@ -155,9 +158,7 @@ export default function CreateContent() {
                 />
               </div>
             ) : (
-              <div className="from-primary to-chart-2 flex aspect-square size-32 items-center justify-center rounded-2xl bg-gradient-to-r">
-                <Link className="size-16 text-white" />
-              </div>
+              <Logo className="size-32" />
             )}
           </div>
 

@@ -6,6 +6,7 @@ import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { ContentType } from "@/constants/content";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { useTopicStore } from "@/lib/zustand/topic-store";
@@ -27,6 +28,7 @@ import { AlertTriangle, Lightbulb, Loader2, Menu, Plus, Search } from "lucide-re
 
 interface TopicBoardPageProps {
   id: string;
+  type: ContentType;
 }
 
 const initialNodes: Node[] = [];
@@ -39,7 +41,7 @@ const nodeTypes: NodeTypes = {
   custom: CustomNode,
 };
 
-export default function TopicBoardPage({ id }: TopicBoardPageProps) {
+export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [isResizing, setIsResizing] = useState(false);
@@ -202,6 +204,8 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
           setNodes={setNodes}
           contentPanelRef={contentPanelRef}
           contentPanelWidth={contentPanelWidth}
+          id={id}
+          type={type}
         />
 
         {/* Resize Bar */}

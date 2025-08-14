@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { CONTENT_TYPE, ContentType } from "@/constants/content";
 import { useGetCategoryContentById } from "@/lib/tanstack/query/content";
 import { CategoryContentDTO } from "@/models/content";
 
@@ -16,8 +17,24 @@ interface ContentListProps {
   id?: string;
 }
 
+const TYPE_OPTIONS = [
+  {
+    label: "모두",
+    value: CONTENT_TYPE.ALL,
+  },
+  {
+    label: "웹",
+    value: CONTENT_TYPE.WEB,
+  },
+  {
+    label: "유튜브",
+    value: CONTENT_TYPE.YOUTUBE,
+  },
+];
+
 export default function ContentList({ category, id }: ContentListProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<ContentType>(CONTENT_TYPE.ALL);
   const [showFilter, setShowFilter] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedContentId, setSelectedContentId] = useState<number | null>(null);
@@ -32,10 +49,15 @@ export default function ContentList({ category, id }: ContentListProps) {
 
   // 태그 필터링된 지식들
   const filteredContents = (() => {
-    if (selectedTags.length === 0) return contents;
+    if (selectedTags.length === 0 && selectedType === CONTENT_TYPE.ALL) return contents;
 
-    return contents.filter((content) => selectedTags.some((tag) => content.tags.includes(tag)));
+    return contents.filter(
+      (content) =>
+        selectedTags.some((tag) => content.tags.includes(tag)) || content.type === selectedType
+    );
   })();
+
+  const isFilterApplied = selectedTags.length > 0 || selectedType !== CONTENT_TYPE.ALL;
 
   const onToggleTag = (tagName: string) => {
     setSelectedTags((prev) =>
@@ -51,6 +73,11 @@ export default function ContentList({ category, id }: ContentListProps) {
   const onCloseSidebar = () => {
     setIsSidebarOpen(false);
     setSelectedContentId(null);
+  };
+
+  const onResetFilter = () => {
+    setSelectedTags([]);
+    setSelectedType(CONTENT_TYPE.ALL);
   };
 
   useEffect(() => {
@@ -81,32 +108,50 @@ export default function ContentList({ category, id }: ContentListProps) {
       </div>
 
       {showFilter && (
-        <div className="bg-card mb-6 rounded-lg border p-4">
-          <h3 className="mb-3 font-medium">태그로 필터링</h3>
-          <div className="flex flex-wrap gap-2">
-            {allTags.map((tagName) => (
-              <Button
-                key={tagName}
-                variant={selectedTags.includes(tagName) ? "default" : "outline"}
-                size="sm"
-                onClick={() => onToggleTag(tagName)}
-                aria-label={`${tagName} 태그 ${selectedTags.includes(tagName) ? "해제" : "선택"}`}
-              >
-                {tagName}
-              </Button>
-            ))}
+        <div className="bg-card mb-6 space-y-4 rounded-lg border p-4">
+          <div>
+            <h3 className="mb-2 font-medium">유형</h3>
+            <div className="flex flex-wrap gap-2">
+              {TYPE_OPTIONS.map((option) => (
+                <Button
+                  key={option.label}
+                  variant={selectedType === option.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedType(option.value)}
+                  aria-label={`${option.label} 유형 ${selectedType === option.value ? "해제" : "선택"}`}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
           </div>
-          {selectedTags.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelectedTags([])}
-              className="mt-2"
-              aria-label="모든 필터 해제"
-            >
-              필터 초기화
-            </Button>
-          )}
+          <div>
+            <h3 className="mb-2 font-medium">태그</h3>
+            <div className="flex flex-wrap gap-2">
+              {allTags.map((tagName) => (
+                <Button
+                  key={tagName}
+                  variant={selectedTags.includes(tagName) ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onToggleTag(tagName)}
+                  aria-label={`${tagName} 태그 ${selectedTags.includes(tagName) ? "해제" : "선택"}`}
+                >
+                  {tagName}
+                </Button>
+              ))}
+            </div>
+            {isFilterApplied && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onResetFilter}
+                className="mt-2"
+                aria-label="모든 필터 해제"
+              >
+                필터 초기화
+              </Button>
+            )}
+          </div>
         </div>
       )}
 

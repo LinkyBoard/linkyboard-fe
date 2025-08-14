@@ -1,7 +1,9 @@
 "use client";
 
 import { Dispatch, SetStateAction, useState } from "react";
+import Link from "next/link";
 
+import { CONTENT_TYPE, type ContentType } from "@/constants/content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
 import { CategoryContentDTO } from "@/models/content";
 import type { Node } from "@xyflow/react";
@@ -9,23 +11,28 @@ import type { Node } from "@xyflow/react";
 import { Loader2, Search } from "lucide-react";
 
 import ContentItem from "../(with-side-bar)/library/content-item";
+import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 interface ContentListProps {
   contentPanelRef: React.RefObject<HTMLDivElement | null>;
   contentPanelWidth: number;
   setNodes: Dispatch<SetStateAction<Node[]>>;
+  type: ContentType;
+  id: string;
 }
 
 export default function ContentList({
   setNodes,
   contentPanelRef,
   contentPanelWidth,
+  type,
+  id,
 }: ContentListProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: contents, isLoading } = useGetAllContents();
-
+  const { data: contents, isLoading } = useGetAllContents(type);
+  console.log(contents);
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
@@ -59,7 +66,18 @@ export default function ContentList({
           onChange={onSearchChange}
         />
       </div>
-      <div className="flex h-[calc(100%-120px)] flex-col gap-3 p-4">
+      <div className="flex gap-2 px-4">
+        <Button variant={type === CONTENT_TYPE.ALL ? "default" : "outline"} size="sm" asChild>
+          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE.ALL}`}>모두</Link>
+        </Button>
+        <Button variant={type === CONTENT_TYPE.WEB ? "default" : "outline"} size="sm" asChild>
+          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE.WEB}`}>웹</Link>
+        </Button>
+        <Button variant={type === CONTENT_TYPE.YOUTUBE ? "default" : "outline"} size="sm" asChild>
+          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE.YOUTUBE}`}>유튜브</Link>
+        </Button>
+      </div>
+      <div className="flex h-[calc(100%-120px)] flex-col gap-3 overflow-y-auto p-4">
         {isLoading ? (
           <div className="flex justify-center">
             <Loader2 className="text-muted-foreground animate-spin" />
@@ -69,7 +87,7 @@ export default function ContentList({
         ) : (
           contents?.map((item) => (
             <ContentItem
-              key={`${item.title}-knowledge-item`}
+              key={`${item.id}-content-item`}
               item={item}
               onClick={() => onAddContent(item)}
             />

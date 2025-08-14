@@ -11,6 +11,7 @@ interface ContentItemProps extends React.HTMLAttributes<HTMLButtonElement> {
 
 export default function ContentItem({ item, ...props }: ContentItemProps) {
   const { className, ...restProps } = props;
+
   return (
     <button
       className={cn(

@@ -1,3 +1,4 @@
+import { type ContentType } from "@/constants/content";
 import { TOPIC } from "@/constants/topic";
 import type { TopicContentDTO, TopicDTO } from "@/models/topic";
 import { getAllContents, getAllTopics, getTopicById, getTopicContentById } from "@/services/topic";
@@ -39,10 +40,10 @@ export const useGetAllTopics = () => {
   });
 };
 
-export const useGetAllContents = () => {
+export const useGetAllContents = (type: ContentType) => {
   return useInfiniteQuery({
-    queryKey: [TOPIC.GET_ALL_CONTENTS],
-    queryFn: async ({ pageParam = 0 }) => await getAllContents(pageParam),
+    queryKey: [TOPIC.GET_ALL_CONTENTS, type],
+    queryFn: async ({ pageParam = 0 }) => await getAllContents({ page: pageParam, type }),
     getNextPageParam: (lastPage) =>
       calculateNextPageParam({
         totalPages: lastPage.result.totalPages,

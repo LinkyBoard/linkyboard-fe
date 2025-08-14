@@ -6,12 +6,13 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CATEGORY } from "@/constants/category";
-import { CONTENT } from "@/constants/content";
+import { CONTENT, CONTENT_TYPE } from "@/constants/content";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveContentById } from "@/lib/tanstack/mutation/content";
 import { useGetContentById } from "@/lib/tanstack/query/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { errorToast } from "@/utils/toast";
+import { extractYoutubeId } from "@/utils/youtube";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
@@ -116,6 +117,8 @@ export default function ContentSidebar({
 
   const watchedTags = watch("tags");
   const buttonDisabled = isLoading || isError || isDeletePending;
+  const isYoutube = data?.type === CONTENT_TYPE.YOUTUBE;
+  const youtubeId = extractYoutubeId(data?.url || "");
 
   const onEdit = () => {
     if (data) {
@@ -197,13 +200,11 @@ export default function ContentSidebar({
       >
         <div className="flex h-full flex-col">
           {/* 헤더 */}
-          <div className="border-b p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">{isEditing ? "콘텐츠 편집" : "콘텐츠 상세"}</h2>
-              <Button variant="ghost" size="icon" onClick={onClose} aria-label="사이드바 닫기">
-                <X size={24} />
-              </Button>
-            </div>
+          <div className="flex items-center justify-between border-b p-6">
+            <h2 className="text-xl font-semibold">{isEditing ? "콘텐츠 편집" : "콘텐츠 상세"}</h2>
+            <Button variant="ghost" size="icon" onClick={onClose} aria-label="사이드바 닫기">
+              <X size={24} />
+            </Button>
           </div>
 
           {/* 내용 */}
@@ -331,6 +332,15 @@ export default function ContentSidebar({
                     </a>
                   </div>
                 </div>
+
+                {isYoutube && (
+                  <iframe
+                    className="aspect-video"
+                    src={`https://www.youtube.com/embed/${youtubeId}`}
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  />
+                )}
 
                 <div>
                   <h4 className="mb-2 text-lg font-medium">요약</h4>

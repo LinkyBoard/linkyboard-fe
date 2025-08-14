@@ -41,6 +41,8 @@ const DEFAULT_CONTENT = {
   tags: [],
 };
 
+const DEFAULT_THUMBNAIL = "/static/logo.png";
+
 function DeleteDialogContent({
   id,
   setIsDeleteModalOpen,
@@ -307,20 +309,14 @@ export default function ContentSidebar({
               // 보기 모드
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  {data?.thumbnail ? (
-                    <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border">
-                      <Image
-                        src={data?.thumbnail}
-                        alt="페이지 썸네일"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="from-primary to-chart-2 flex aspect-square size-24 items-center justify-center rounded-2xl bg-gradient-to-r">
-                      <Link className="size-12 text-white" />
-                    </div>
-                  )}
+                  <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border">
+                    <Image
+                      src={data?.thumbnail || DEFAULT_THUMBNAIL}
+                      alt="페이지 썸네일"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                   <div>
                     <h3 className="line-clamp-1 text-2xl font-semibold">{data?.title}</h3>
                     <a

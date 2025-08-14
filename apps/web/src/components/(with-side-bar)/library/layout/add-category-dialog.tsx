@@ -26,7 +26,6 @@ function AddCategoryForm() {
       onSuccess: (data) => {
         successToast(`${name} 카테고리를 생성했어요.`);
         close();
-        console.log(data);
       },
       onError: () => {
         errorToast("카테고리 생성에 실패했어요.");

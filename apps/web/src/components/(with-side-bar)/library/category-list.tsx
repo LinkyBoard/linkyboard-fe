@@ -72,7 +72,7 @@ function CategoryItem(props: CategoryDTO) {
         <DeleteCategoryDialog id={props.id} name={props.name} />
       </Dialog>
 
-      <button onClick={onRouteToCategory}>
+      <button onClick={onRouteToCategory} className="w-full">
         <div className="mb-4 flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-md bg-blue-100 text-blue-600">
             <FileText size={24} />

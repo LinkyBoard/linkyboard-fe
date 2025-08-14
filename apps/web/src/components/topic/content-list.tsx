@@ -32,7 +32,7 @@ export default function ContentList({
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: contents, isLoading } = useGetAllContents(type);
-  console.log(contents);
+
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };

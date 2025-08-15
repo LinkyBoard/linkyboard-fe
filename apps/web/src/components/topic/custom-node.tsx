@@ -5,7 +5,7 @@ import { useUpdateContentPosition } from "@/lib/tanstack/mutation/topic-content"
 import { CategoryContentDTO } from "@/models/content";
 import type { TopicDTO } from "@/models/topic";
 import { cn } from "@repo/ui/utils/cn";
-import { Handle, NodeProps, Position, useConnection } from "@xyflow/react";
+import { Handle, NodeProps, NodeResizer, Position, useConnection } from "@xyflow/react";
 
 import ContentSticker from "./content-sticker";
 import TopicSticker from "./topic-sticker";
@@ -58,12 +58,25 @@ export default function CustomNode(props: CustomNodeProps) {
   return (
     <div
       className={cn(
-        "group max-w-[450px] min-w-[350px] rounded-2xl p-6 shadow-lg transition-all hover:-translate-y-1 hover:scale-[1.02] hover:shadow-xl",
+        "group relative rounded-2xl p-6 shadow-lg transition-shadow duration-300 ease-in-out hover:shadow-xl",
         stickerClass,
         isTarget && "border-primary",
         isSource && "border-muted-foreground/50"
       )}
+      style={{
+        minWidth: "21.875rem",
+        minHeight: "13.75rem",
+        width: props.width,
+        height: props.height,
+      }}
     >
+      <NodeResizer
+        minWidth={350}
+        minHeight={220}
+        lineClassName="opacity-0"
+        handleClassName="opacity-0"
+      />
+
       {/* Source Handles - 연결 시작점 */}
       {!connection.inProgress && (
         <>

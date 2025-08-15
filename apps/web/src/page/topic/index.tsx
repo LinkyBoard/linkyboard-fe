@@ -38,6 +38,13 @@ const initialNodes: Node[] = [];
 
 const connectionLineStyle = {
   stroke: "#b1b1b7",
+  strokeWidth: 3,
+};
+
+const defaultEdgeOptions = {
+  style: {
+    strokeWidth: 3,
+  },
 };
 
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
@@ -259,6 +266,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
               onEdgeClick={onEdgeClick}
               nodeTypes={nodeTypes}
               connectionLineStyle={connectionLineStyle}
+              defaultEdgeOptions={defaultEdgeOptions}
             >
               <Background />
             </ReactFlow>

@@ -54,9 +54,8 @@ export default function RecentTopicItem({ isSelected, topic, onTopicClick }: Rec
             "text-xs",
             isSelected ? "text-sidebar-primary-foreground/80" : "text-muted-foreground"
           )}
-        >
-          {topic.content}
-        </div>
+          dangerouslySetInnerHTML={{ __html: topic.content }}
+        />
       </div>
       <Dialog>
         <DialogTrigger

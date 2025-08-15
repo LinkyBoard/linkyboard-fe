@@ -156,7 +156,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     document.body.style.userSelect = "";
   };
 
-  // 리사이즈 이벤트 처리
   useEffect(() => {
     if (isResizing) {
       const onMouseMove = (e: MouseEvent) => onResizeMove(e);

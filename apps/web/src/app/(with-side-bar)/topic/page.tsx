@@ -5,8 +5,6 @@ interface TopicBoardProps {
   searchParams: Promise<{ id?: string; type?: ContentTypeOptions }>;
 }
 
-export const runtime = "edge";
-
 export default async function TopicBoard({ searchParams }: TopicBoardProps) {
   const { id, type } = await searchParams;
 

@@ -4,7 +4,7 @@ import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveTopic } from "@/lib/tanstack/mutation/topic";
 import { revalidatePath } from "@/utils/revalidate";
-import { errorToast, infoToast } from "@/utils/toast";
+import { errorToast, successToast } from "@/utils/toast";
 import { DialogClose, DialogContent, useDialog } from "@repo/ui/components/dialog";
 
 import { Loader2 } from "lucide-react";
@@ -20,14 +20,14 @@ export default function RemoveTopicDialog({ topicId }: { topicId: number }) {
   const onRemoveTopic = async () => {
     await mutateAsync(topicId, {
       onSuccess: () => {
-        infoToast("토픽이 삭제되었습니다.");
+        successToast("토픽이 삭제되었어요.");
         invalidateQueries([TOPIC.GET_ALL_TOPICS]);
         revalidatePath(`/topic?id=${topicId}`);
         router.back();
         close();
       },
       onError: () => {
-        errorToast("토픽 삭제에 실패했습니다.");
+        errorToast("토픽 삭제에 실패했어요.");
       },
     });
   };

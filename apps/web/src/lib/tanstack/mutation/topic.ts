@@ -16,11 +16,5 @@ export const useUpdateTopic = () => {
 export const useRemoveTopic = () => {
   return useMutation({
     mutationFn: removeTopicById,
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
   });
 };

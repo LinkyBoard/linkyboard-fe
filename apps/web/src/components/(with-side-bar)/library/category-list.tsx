@@ -74,10 +74,10 @@ function CategoryItem(props: CategoryDTO) {
 
       <button onClick={onRouteToCategory} className="w-full text-start">
         <div className="mb-4 flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-md bg-blue-100 text-blue-600">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-blue-100 text-blue-600">
             <FileText size={24} />
           </div>
-          <div className="text-lg font-semibold">{props.name}</div>
+          <div className="line-clamp-2 text-lg font-semibold">{props.name}</div>
         </div>
         <div className="border-border flex gap-4 border-t pt-4">
           <div className="text-muted-foreground flex items-center gap-2 text-sm text-nowrap">

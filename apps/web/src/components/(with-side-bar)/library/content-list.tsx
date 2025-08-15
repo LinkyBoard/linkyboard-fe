@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { CONTENT_TYPE, ContentType } from "@/constants/content";
+import { CONTENT_TYPE_OPTIONS, ContentTypeOptions } from "@/constants/content";
 import { useGetCategoryContentById } from "@/lib/tanstack/query/content";
 import { CategoryContentDTO } from "@/models/content";
 
@@ -20,21 +20,21 @@ interface ContentListProps {
 const TYPE_OPTIONS = [
   {
     label: "모두",
-    value: CONTENT_TYPE.ALL,
+    value: CONTENT_TYPE_OPTIONS.ALL,
   },
   {
     label: "웹",
-    value: CONTENT_TYPE.WEB,
+    value: CONTENT_TYPE_OPTIONS.WEB,
   },
   {
     label: "유튜브",
-    value: CONTENT_TYPE.YOUTUBE,
+    value: CONTENT_TYPE_OPTIONS.YOUTUBE,
   },
 ];
 
 export default function ContentList({ category, id }: ContentListProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedType, setSelectedType] = useState<ContentType>(CONTENT_TYPE.ALL);
+  const [selectedType, setSelectedType] = useState<ContentTypeOptions>(CONTENT_TYPE_OPTIONS.ALL);
   const [showFilter, setShowFilter] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedContentId, setSelectedContentId] = useState<number | null>(null);
@@ -49,7 +49,7 @@ export default function ContentList({ category, id }: ContentListProps) {
 
   // 태그 필터링된 지식들
   const filteredContents = (() => {
-    if (selectedTags.length === 0 && selectedType === CONTENT_TYPE.ALL) return contents;
+    if (selectedTags.length === 0 && selectedType === CONTENT_TYPE_OPTIONS.ALL) return contents;
 
     return contents.filter(
       (content) =>
@@ -57,7 +57,7 @@ export default function ContentList({ category, id }: ContentListProps) {
     );
   })();
 
-  const isFilterApplied = selectedTags.length > 0 || selectedType !== CONTENT_TYPE.ALL;
+  const isFilterApplied = selectedTags.length > 0 || selectedType !== CONTENT_TYPE_OPTIONS.ALL;
 
   const onToggleTag = (tagName: string) => {
     setSelectedTags((prev) =>
@@ -77,7 +77,7 @@ export default function ContentList({ category, id }: ContentListProps) {
 
   const onResetFilter = () => {
     setSelectedTags([]);
-    setSelectedType(CONTENT_TYPE.ALL);
+    setSelectedType(CONTENT_TYPE_OPTIONS.ALL);
   };
 
   useEffect(() => {

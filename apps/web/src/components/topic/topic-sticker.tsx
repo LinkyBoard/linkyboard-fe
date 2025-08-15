@@ -1,5 +1,5 @@
 import { useTopicStore } from "@/lib/zustand/topic-store";
-import { TopicDTO } from "@/models/topic";
+import type { TopicDTO } from "@/models/topic";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 
 import { Edit, Lightbulb, Trash2 } from "lucide-react";
@@ -8,11 +8,11 @@ import RemoveTopicDialog from "./remove-topic-dialog";
 import { Button } from "../ui/button";
 
 export default function TopicSticker({ item }: { item: TopicDTO }) {
-  const { setEditingTopic, setShowNewTopicModal } = useTopicStore();
+  const { setEditingTopic, setShowEditTopicSidebar } = useTopicStore();
 
   const onEditTopic = () => {
     setEditingTopic(item);
-    setShowNewTopicModal(true);
+    setShowEditTopicSidebar(true);
   };
 
   return (
@@ -47,7 +47,10 @@ export default function TopicSticker({ item }: { item: TopicDTO }) {
       </div>
       <div>
         <h2 className="mb-3 text-2xl leading-tight font-bold">{item.title}</h2>
-        <p className="text-lg leading-relaxed opacity-90">{item.content}</p>
+        <p
+          className="line-clamp-2 text-lg leading-relaxed opacity-90"
+          dangerouslySetInnerHTML={{ __html: item.content }}
+        />
       </div>
     </>
   );

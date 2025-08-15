@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import { CONTENT_TYPE, type ContentType } from "@/constants/content";
+import { CONTENT_TYPE_OPTIONS, type ContentTypeOptions } from "@/constants/content";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
 import { CategoryContentDTO } from "@/models/content";
@@ -17,7 +17,7 @@ import { Input } from "../ui/input";
 interface ContentListProps {
   contentPanelRef: React.RefObject<HTMLDivElement | null>;
   contentPanelWidth: number;
-  type: ContentType;
+  type: ContentTypeOptions;
   id: string;
 }
 
@@ -63,14 +63,26 @@ export default function ContentList({
         />
       </div>
       <div className="flex gap-2 px-4">
-        <Button variant={type === CONTENT_TYPE.ALL ? "default" : "outline"} size="sm" asChild>
-          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE.ALL}`}>모두</Link>
+        <Button
+          variant={type === CONTENT_TYPE_OPTIONS.ALL ? "default" : "outline"}
+          size="sm"
+          asChild
+        >
+          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE_OPTIONS.ALL}`}>모두</Link>
         </Button>
-        <Button variant={type === CONTENT_TYPE.WEB ? "default" : "outline"} size="sm" asChild>
-          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE.WEB}`}>웹</Link>
+        <Button
+          variant={type === CONTENT_TYPE_OPTIONS.WEB ? "default" : "outline"}
+          size="sm"
+          asChild
+        >
+          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE_OPTIONS.WEB}`}>웹</Link>
         </Button>
-        <Button variant={type === CONTENT_TYPE.YOUTUBE ? "default" : "outline"} size="sm" asChild>
-          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE.YOUTUBE}`}>유튜브</Link>
+        <Button
+          variant={type === CONTENT_TYPE_OPTIONS.YOUTUBE ? "default" : "outline"}
+          size="sm"
+          asChild
+        >
+          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE_OPTIONS.YOUTUBE}`}>유튜브</Link>
         </Button>
       </div>
       <div className="flex h-[calc(100%-120px)] flex-col gap-3 overflow-y-auto p-4">

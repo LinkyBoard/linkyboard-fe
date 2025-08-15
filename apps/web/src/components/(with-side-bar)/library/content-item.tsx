@@ -1,10 +1,26 @@
-import Image from "@/components/image";
 import { CategoryContentDTO } from "@/models/content";
 import { cn } from "@repo/ui/utils/cn";
+
+import { FileText, Globe, Youtube } from "lucide-react";
 
 interface ContentItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   item: CategoryContentDTO;
 }
+
+const contentType = {
+  WEB: {
+    icon: <Globe />,
+    color: "text-blue-500",
+  },
+  YOUTUBE: {
+    icon: <Youtube />,
+    color: "text-red-500",
+  },
+  PDF: {
+    icon: <FileText />,
+    color: "text-gray-500",
+  },
+};
 
 export default function ContentItem({ item, ...props }: ContentItemProps) {
   const { className, ...restProps } = props;
@@ -19,8 +35,13 @@ export default function ContentItem({ item, ...props }: ContentItemProps) {
       {...restProps}
     >
       <div className="mb-4 flex items-center gap-4">
-        <div className="relative size-12 overflow-hidden rounded-lg border">
-          <Image src={item.thumbnail} alt="페이지 썸네일" fill className="object-cover" />
+        <div
+          className={cn(
+            contentType[item.type].color,
+            "flex size-12 items-center justify-center rounded-lg border p-2"
+          )}
+        >
+          {contentType[item.type].icon}
         </div>
         <div className="line-clamp-1 flex-1 text-lg font-semibold">{item.title}</div>
       </div>

@@ -37,16 +37,16 @@ function getGreeting() {
 }
 
 const summaryCards = [
-  { icon: Bookmark, number: 24, label: "저장된 항목", color: "blue", href: "/library" },
-  { icon: Star, number: 5, label: "토픽", color: "green", href: "/topic" },
-  { icon: Lightbulb, number: 18, label: "AI 인사이트", color: "purple", href: "/dashboard" },
+  { icon: Bookmark, number: 5, label: "저장된 항목", color: "blue", href: "/library" },
+  { icon: Star, number: 1, label: "토픽", color: "green", href: "/topic" },
+  { icon: Lightbulb, number: 3, label: "AI 인사이트", color: "purple", href: "/dashboard" },
 ];
 
 const aiInsights = [
   {
     title: "연결 발견",
     description:
-      "최근 저장한 'AI 디자인' 관련 콘텐츠와 '사용자 경험' 토픽 간의 흥미로운 연결점을 발견했습니다.",
+      "최근 저장한 'expo + FCM으로 푸시 알람 보내기' 관련 콘텐츠와 'expo 프로젝트 시작하기' 토픽 간의 흥미로운 연결점을 발견했습니다.",
     buttonText: "연결 확인",
     gradient: "from-blue-500 to-purple-600",
     icon: Link,
@@ -60,7 +60,7 @@ const aiInsights = [
   },
   {
     title: "요약 생성",
-    description: "지난 주에 수집한 12개의 콘텐츠를 바탕으로 주간 학습 요약을 생성했습니다.",
+    description: "지난 주에 수집한 2개의 콘텐츠를 바탕으로 주간 학습 요약을 생성했습니다.",
     buttonText: "요약 보기",
     gradient: "from-orange-500 to-red-600",
     icon: FileText,

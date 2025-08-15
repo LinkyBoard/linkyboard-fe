@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import Image from "@/components/image";
 import { Button } from "@/components/ui/button";
@@ -15,20 +15,16 @@ import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { errorToast } from "@/utils/toast";
 import { extractYoutubeId } from "@/utils/youtube";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTrigger,
-  useDialog,
-} from "@repo/ui/components/dialog";
+import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 import { cn } from "@repo/ui/utils/cn";
 
-import { AlertCircle, Edit, Link, Loader2, Plus, Save, Trash2, X } from "lucide-react";
+import { AlertCircle, Edit, Loader2, Plus, Save, Trash2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 
-interface KnowledgeSidebarProps {
+import RemoveDialogContent from "../../topic/remove-dialog-content";
+
+interface ContentSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   selectedContentId: number | null;
@@ -43,64 +39,19 @@ const DEFAULT_CONTENT = {
   tags: [],
 };
 
-const DEFAULT_THUMBNAIL = "/static/logo.png";
-
-function DeleteDialogContent({
-  id,
-  setIsDeleteModalOpen,
-  onDelete,
-}: {
-  id: number | null;
-  setIsDeleteModalOpen: (isOpen: boolean) => void;
-  onDelete: (id: number) => Promise<void>;
-}) {
-  const { isOpen, close } = useDialog();
-
-  const onDeleteClick = async () => {
-    if (!id) return errorToast("잘못된 요청이에요.");
-
-    close();
-    await onDelete(id);
-  };
-
-  useEffect(() => {
-    setIsDeleteModalOpen(isOpen);
-  }, [isOpen]);
-
-  return (
-    <DialogContent>
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-foreground text-lg font-semibold">삭제</h2>
-          <p className="text-muted-foreground text-sm">정말 삭제 하시겠습니까?</p>
-        </div>
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" asChild className="h-10 text-base">
-            <DialogClose>취소</DialogClose>
-          </Button>
-          <Button onClick={onDeleteClick} className="h-10 text-base">
-            삭제
-          </Button>
-        </div>
-      </div>
-    </DialogContent>
-  );
-}
-
 export default function ContentSidebar({
   categoryId,
   isOpen,
   onClose,
   selectedContentId,
   category,
-}: KnowledgeSidebarProps) {
+}: ContentSidebarProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const { data, isLoading, isError, isRefetching } = useGetContentById(selectedContentId);
+  const { data, isLoading, isError } = useGetContentById(selectedContentId);
   const { mutateAsync: removeContent, isPending: isDeletePending } = useRemoveContentById();
   const { mutateAsync: updateContent, isPending: isUpdatePending } = useUpdateContent();
-  console.log(isRefetching);
 
   const tagInputRef = useRef<HTMLInputElement>(null);
 
@@ -427,7 +378,7 @@ export default function ContentSidebar({
                       삭제
                     </DialogTrigger>
                   </Button>
-                  <DeleteDialogContent
+                  <RemoveDialogContent
                     id={selectedContentId}
                     setIsDeleteModalOpen={setIsDeleteModalOpen}
                     onDelete={onDelete}

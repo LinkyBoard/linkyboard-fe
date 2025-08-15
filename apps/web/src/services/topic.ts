@@ -1,4 +1,4 @@
-import type { ContentType } from "@/constants/content";
+import type { ContentTypeOptions } from "@/constants/content";
 import type { CategoryContentDTO } from "@/models/content";
 import type { TopicDetailDTO, TopicDTO } from "@/models/topic";
 import { BaseResponseDTO, PaginationDTO } from "@repo/types";
@@ -37,7 +37,7 @@ export const createTopic = async (props: {
 
 export const getAllContents = async (props: {
   page: number;
-  type: ContentType;
+  type: ContentTypeOptions;
 }): Promise<PaginationDTO<CategoryContentDTO[]>> => {
   const { page, type } = props;
   const params = getParams({ page, type: type.toLowerCase() }, { size: 10 });

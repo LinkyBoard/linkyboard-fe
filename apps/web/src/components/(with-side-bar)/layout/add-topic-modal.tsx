@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { TOPIC } from "@/constants/topic";
-import { invalidateMany, invalidateQueries } from "@/lib/tanstack";
-import { useCreateTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
+import { invalidateQueries } from "@/lib/tanstack";
+import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import { errorToast, infoToast } from "@/utils/toast";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
@@ -19,10 +19,7 @@ export default function AddTopicModal() {
 
   const topicStore = useTopicStore();
 
-  const { mutateAsync: createTopic, isPending: isCreateTopicPending } = useCreateTopic();
-  const { mutateAsync: updateTopic, isPending: isUpdateTopicPending } = useUpdateTopic();
-
-  const isPending = isCreateTopicPending || isUpdateTopicPending;
+  const { mutateAsync: createTopic, isPending } = useCreateTopic();
 
   const onCloseModal = () => {
     topicStore.setShowNewTopicModal(false);
@@ -42,43 +39,21 @@ export default function AddTopicModal() {
       content,
     };
 
-    if (topicStore.editingTopic) {
-      await updateTopic(
-        {
-          id: topicStore.editingTopic.id,
-          ...body,
-        },
-        {
-          onSuccess: async () => {
-            await invalidateMany([
-              [TOPIC.GET_ALL_TOPICS],
-              [TOPIC.GET_TOPIC_BY_ID, topicStore.editingTopic?.id.toString()],
-            ]);
-            infoToast("토픽 수정에 성공했어요.");
-            onCloseModal();
-          },
-          onError: () => {
-            errorToast("토픽 수정에 실패했어요.");
-          },
+    await createTopic(body, {
+      onSuccess: (data) => {
+        router.push(`/topic?id=${data.result}`);
+        invalidateQueries([TOPIC.GET_ALL_TOPICS]);
+        onCloseModal();
+      },
+      onError: (error: Error) => {
+        const isDuplicateError = error.message.includes("409");
+        if (isDuplicateError) {
+          return infoToast("이미 존재하는 토픽 제목이에요.");
         }
-      );
-    } else {
-      await createTopic(body, {
-        onSuccess: (data) => {
-          router.push(`/topic?id=${data.result}`);
-          invalidateQueries([TOPIC.GET_ALL_TOPICS]);
-          onCloseModal();
-        },
-        onError: (error: Error) => {
-          const isDuplicateError = error.message.includes("409");
-          if (isDuplicateError) {
-            return infoToast("이미 존재하는 토픽 제목이에요.");
-          }
 
-          errorToast("토픽 생성에 실패했어요.");
-        },
-      });
-    }
+        errorToast("토픽 생성에 실패했어요.");
+      },
+    });
   };
 
   return (
@@ -90,9 +65,7 @@ export default function AddTopicModal() {
       >
         <div ref={dialogRef} className="m-5 w-full max-w-lg rounded-2xl bg-white p-5" tabIndex={-1}>
           <div className="mb-6">
-            <h2 className="mb-2 text-xl font-semibold">
-              {topicStore.editingTopic ? "토픽 편집" : "새 토픽 생성"}
-            </h2>
+            <h2 className="mb-2 text-xl font-semibold">새 토픽 생성</h2>
             <p className="text-muted-foreground">
               {topicStore.editingTopic ? "토픽을 수정하세요" : "새로운 토픽을 생성하고 관리하세요"}
             </p>

@@ -1,10 +1,25 @@
 import { useRemoveTopicContent } from "@/lib/tanstack/mutation/topic-content";
 import { CategoryContentDTO } from "@/models/content";
+import { cn } from "@repo/ui/utils/cn";
 
-import { Loader2, X } from "lucide-react";
+import { FileText, Globe, Loader2, X, Youtube } from "lucide-react";
 
-import Image from "../image";
 import { Button } from "../ui/button";
+
+const contentType = {
+  WEB: {
+    icon: <Globe />,
+    color: "text-blue-500",
+  },
+  YOUTUBE: {
+    icon: <Youtube />,
+    color: "text-red-500",
+  },
+  PDF: {
+    icon: <FileText />,
+    color: "text-gray-500",
+  },
+};
 
 export default function ContentSticker({
   item,
@@ -26,8 +41,13 @@ export default function ContentSticker({
     <>
       <div className="mb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-4 overflow-hidden">
-          <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border">
-            <Image src={item.thumbnail} alt="페이지 썸네일" fill className="object-cover" />
+          <div
+            className={cn(
+              contentType[item?.type || "WEB"].color,
+              "flex size-12 items-center justify-center rounded-lg border p-2"
+            )}
+          >
+            {contentType[item?.type || "WEB"].icon}
           </div>
           <div className="line-clamp-1 flex-1 text-lg font-semibold">{item.title}</div>
         </div>

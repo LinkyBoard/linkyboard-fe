@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import AddTopicModal from "@/components/(with-side-bar)/layout/add-topic-modal";
 import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
 import EditTopicSidebar from "@/components/topic/edit-topic-sidebar";
@@ -49,8 +48,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
 
   const { toggle } = useMobileMenuStore();
-  const { showEditTopicSidebar, editingTopic, setShowEditTopicSidebar, setEditingTopic } =
-    useTopicStore();
+  const { setShowNewTopicModal, setEditingTopic } = useTopicStore();
 
   const {
     data: topic,
@@ -125,12 +123,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
 
   const onNewTopicClick = () => {
     setEditingTopic(null);
-    setShowEditTopicSidebar(false);
-  };
-
-  const onCloseEditSidebar = () => {
-    setEditingTopic(null);
-    setShowEditTopicSidebar(false);
+    setShowNewTopicModal(true);
   };
 
   const onResizeStart = (e: React.MouseEvent) => {
@@ -187,9 +180,9 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   }, [id, isLoading, isRefetching]);
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex flex-col">
       {/* 헤더 */}
-      <header className="bg-background border-border flex items-center justify-between border-b p-6">
+      <header className="bg-background mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           {/* Mobile Menu Button */}
           <Button
@@ -287,15 +280,8 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         </div>
       </div>
 
-      {/* Add Topic Modal */}
-      <AddTopicModal />
-
       {/* Edit Topic Sidebar */}
-      <EditTopicSidebar
-        isOpen={showEditTopicSidebar}
-        onClose={onCloseEditSidebar}
-        topic={editingTopic}
-      />
+      <EditTopicSidebar />
     </div>
   );
 }

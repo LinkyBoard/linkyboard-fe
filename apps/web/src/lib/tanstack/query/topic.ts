@@ -1,4 +1,4 @@
-import { type ContentType } from "@/constants/content";
+import { type ContentTypeOptions } from "@/constants/content";
 import { TOPIC } from "@/constants/topic";
 import { getAllContents, getAllTopics, getTopicById } from "@/services/topic";
 import { calculateNextPageParam } from "@repo/ui/utils/params";
@@ -28,7 +28,7 @@ export const useGetAllTopics = () => {
   });
 };
 
-export const useGetAllContents = (type: ContentType) => {
+export const useGetAllContents = (type: ContentTypeOptions) => {
   return useInfiniteQuery({
     queryKey: [TOPIC.GET_ALL_CONTENTS, type],
     queryFn: async ({ pageParam = 0 }) => await getAllContents({ page: pageParam, type }),

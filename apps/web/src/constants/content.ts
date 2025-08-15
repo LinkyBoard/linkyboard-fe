@@ -4,9 +4,15 @@ export const CONTENT = {
 };
 
 export const CONTENT_TYPE = {
-  ALL: "ALL",
   WEB: "WEB",
   YOUTUBE: "YOUTUBE",
+  PDF: "PDF",
+} as const;
+
+export const CONTENT_TYPE_OPTIONS = {
+  ALL: "ALL",
+  ...CONTENT_TYPE,
 } as const;
 
 export type ContentType = (typeof CONTENT_TYPE)[keyof typeof CONTENT_TYPE];
+export type ContentTypeOptions = (typeof CONTENT_TYPE_OPTIONS)[keyof typeof CONTENT_TYPE_OPTIONS];

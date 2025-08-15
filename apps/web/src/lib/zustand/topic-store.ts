@@ -4,15 +4,21 @@ import { create } from "zustand";
 
 interface TopicStore {
   showNewTopicModal: boolean;
+  showEditTopicSidebar: boolean;
   editingTopic: TopicDTO | null;
   setEditingTopic: (topic: TopicDTO | null) => void;
   setShowNewTopicModal: (show: boolean) => void;
+  setShowEditTopicSidebar: (show: boolean) => void;
 }
 
 export const useTopicStore = create<TopicStore>((set) => ({
   showNewTopicModal: false,
+  showEditTopicSidebar: false,
   setShowNewTopicModal: (show: boolean) => {
     set({ showNewTopicModal: show });
+  },
+  setShowEditTopicSidebar: (show: boolean) => {
+    set({ showEditTopicSidebar: show });
   },
 
   editingTopic: null,

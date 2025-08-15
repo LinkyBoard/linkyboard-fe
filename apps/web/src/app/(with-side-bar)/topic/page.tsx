@@ -1,8 +1,8 @@
-import type { ContentType } from "@/constants/content";
+import type { ContentTypeOptions } from "@/constants/content";
 import TopicBoardPage from "@/page/topic";
 
 interface TopicBoardProps {
-  searchParams: Promise<{ id?: string; type?: ContentType }>;
+  searchParams: Promise<{ id?: string; type?: ContentTypeOptions }>;
 }
 
 export const runtime = "edge";

@@ -7,7 +7,7 @@ import CustomNode from "@/components/topic/custom-node";
 import EditTopicSidebar from "@/components/topic/edit-topic-sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { ContentType } from "@/constants/content";
+import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
@@ -31,7 +31,7 @@ import { AlertTriangle, Lightbulb, Loader2, Menu, Plus, Search } from "lucide-re
 
 interface TopicBoardPageProps {
   id: string;
-  type: ContentType;
+  type: ContentTypeOptions;
 }
 
 const initialNodes: Node[] = [];

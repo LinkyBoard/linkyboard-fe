@@ -42,10 +42,10 @@ export default function ContentList({ category, id }: ContentListProps) {
   const [categoryId, categoryName] = category?.split(",") || [];
 
   const { data, isLoading } = useGetCategoryContentById(categoryId);
-  const contents = data || [];
+  const contents: CategoryContentDTO[] = data || [];
 
   // 모든 지식에서 태그 추출
-  const allTags: string[] = [...new Set(contents.flatMap((content) => content.tags))];
+  const allTags = [...new Set(contents.flatMap((content) => content.tags))];
 
   // 태그 필터링된 지식들
   const filteredContents = (() => {

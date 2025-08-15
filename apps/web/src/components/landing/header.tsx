@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import Logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import { scrollToSection, useScrollSpy } from "@/hooks/use-intersection-observer";
 import { cn } from "@repo/ui/utils/cn";
@@ -57,11 +58,12 @@ export default function Header() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <a
           href="#"
-          className="text-primary hover:text-primary text-2xl font-bold transition-colors"
+          className="text-primary hover:text-primary flex items-center gap-2 text-2xl font-bold transition-colors"
           onClick={onLogoClick}
           aria-label="홈으로 이동"
         >
-          LinkyBoard
+          <Logo className="size-10" />
+          <span>LinkyBoard</span>
         </a>
 
         {/* Desktop Navigation */}

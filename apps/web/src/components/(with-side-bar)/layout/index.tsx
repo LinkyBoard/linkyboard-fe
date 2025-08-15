@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import Logo from "@/assets/logo.svg";
 import SentinelSpinner from "@/components/sentinel-spinner";
 import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
@@ -79,9 +80,7 @@ export default function Sidebar() {
           href="/dashboard"
           className="border-sidebar-border mb-8 flex items-center gap-3 border-b pb-4"
         >
-          <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-md text-xl font-bold text-white">
-            L
-          </div>
+          <Logo className="size-10" />
           <div className="text-primary text-2xl font-bold">LinkyBoard</div>
         </Link>
 

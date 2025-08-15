@@ -7,8 +7,6 @@ interface LibraryPageProps {
   }>;
 }
 
-export const runtime = "edge";
-
 export default async function Library({ searchParams }: LibraryPageProps) {
   const { category, id } = await searchParams;
 

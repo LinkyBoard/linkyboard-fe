@@ -74,7 +74,6 @@ export function useScrollSpy(ids: string[], offset: number = 200) {
   return activeId;
 }
 
-// 부드러운 스크롤 함수
 export function scrollToSection(sectionId: string) {
   const element = document.querySelector(sectionId);
   if (element) {

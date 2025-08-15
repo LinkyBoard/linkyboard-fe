@@ -18,8 +18,5 @@ export interface ContentDetailDTO {
   memo: string;
   tags: string[];
   type: ContentType;
-}
-
-export interface UpdateContentDTO extends ContentDetailDTO {
   category: string;
 }

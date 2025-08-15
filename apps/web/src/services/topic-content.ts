@@ -3,16 +3,23 @@ import { BaseResponseDTO } from "@repo/types";
 import { clientApi } from ".";
 
 export const updateContentPosition = async (props: {
-  topicContentId: number;
   topicId: string;
   contentId: number;
   posX: number;
   posY: number;
+}): Promise<BaseResponseDTO<unknown>> => {
+  const { topicId, ...restProps } = props;
+  return clientApi.put(`topic-contents/topics/${topicId}/position`, restProps);
+};
+
+export const updateContentSize = async (props: {
+  topicId: string;
+  contentId: number;
   width: number;
   height: number;
 }): Promise<BaseResponseDTO<unknown>> => {
-  const { topicContentId, ...restProps } = props;
-  return clientApi.put(`topic-contents/${topicContentId}/position`, restProps);
+  const { topicId, ...restProps } = props;
+  return clientApi.put(`topic-contents/topics/${topicId}/resize`, restProps);
 };
 
 export const createContent = async (props: {

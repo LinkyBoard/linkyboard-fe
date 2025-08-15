@@ -3,6 +3,7 @@ import {
   createContent,
   removeTopicContentById,
   updateContentPosition,
+  updateContentSize,
 } from "@/services/topic-content";
 import { errorToast, infoToast } from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
@@ -12,6 +13,15 @@ import { invalidateQueries } from "..";
 export const useUpdateContentPosition = () => {
   return useMutation({
     mutationFn: updateContentPosition,
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+};
+
+export const useUpdateContentSize = () => {
+  return useMutation({
+    mutationFn: updateContentSize,
     onError: (error) => {
       console.error(error);
     },

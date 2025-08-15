@@ -1,20 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { CONTENT_TYPE_OPTIONS, ContentTypeOptions } from "@/constants/content";
 import { useGetCategoryContentById } from "@/lib/tanstack/query/content";
+import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
 import { CategoryContentDTO } from "@/models/content";
 
 import { Filter, Loader2 } from "lucide-react";
 
 import ContentItem from "./content-item";
-import ContentSidebar from "./content-sidebar";
 
 interface ContentListProps {
   category?: string;
-  id?: string;
 }
 
 const TYPE_OPTIONS = [
@@ -32,12 +31,12 @@ const TYPE_OPTIONS = [
   },
 ];
 
-export default function ContentList({ category, id }: ContentListProps) {
+export default function ContentList({ category }: ContentListProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<ContentTypeOptions>(CONTENT_TYPE_OPTIONS.ALL);
   const [showFilter, setShowFilter] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedContentId, setSelectedContentId] = useState<number | null>(null);
+
+  const onOpen = useContentSidebarStore((state) => state.onOpen);
 
   const [categoryId, categoryName] = category?.split(",") || [];
 
@@ -66,29 +65,13 @@ export default function ContentList({ category, id }: ContentListProps) {
   };
 
   const onContentClick = (contentId: number) => {
-    setSelectedContentId(contentId);
-    setIsSidebarOpen(true);
-  };
-
-  const onCloseSidebar = () => {
-    setIsSidebarOpen(false);
-    setSelectedContentId(null);
+    onOpen(contentId);
   };
 
   const onResetFilter = () => {
     setSelectedTags([]);
     setSelectedType(CONTENT_TYPE_OPTIONS.ALL);
   };
-
-  useEffect(() => {
-    if (id) {
-      const content = contents.find((content) => content.id === +id);
-      if (content) {
-        setSelectedContentId(content.id);
-        setIsSidebarOpen(true);
-      }
-    }
-  }, [id]);
 
   return (
     <div>
@@ -177,13 +160,12 @@ export default function ContentList({ category, id }: ContentListProps) {
       )}
 
       {/* 사이드바 */}
-      <ContentSidebar
+      {/* <ContentSidebar
         isOpen={isSidebarOpen}
         onClose={onCloseSidebar}
-        categoryId={categoryId}
         selectedContentId={selectedContentId}
         category={categoryName}
-      />
+      /> */}
     </div>
   );
 }

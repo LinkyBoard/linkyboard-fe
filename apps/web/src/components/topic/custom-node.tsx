@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 
 import { useDebounce } from "@/hooks/use-debounce";
-import { useUpdateContentPosition } from "@/lib/tanstack/mutation/topic-content";
+import { useUpdateTopicPosition, useUpdateTopicSize } from "@/lib/tanstack/mutation/topic";
+import {
+  useUpdateContentPosition,
+  useUpdateContentSize,
+} from "@/lib/tanstack/mutation/topic-content";
 import { CategoryContentDTO } from "@/models/content";
 import type { TopicDTO } from "@/models/topic";
 import { cn } from "@repo/ui/utils/cn";
@@ -28,7 +32,14 @@ export default function CustomNode(props: CustomNodeProps) {
   const nodeData = props.data as unknown as NodeData;
 
   const connection = useConnection();
+
+  // 콘텐츠 위치, 크기 변경 시 호출
   const { mutateAsync: updateContentPosition } = useUpdateContentPosition();
+  const { mutateAsync: updateContentSize } = useUpdateContentSize();
+
+  // 토픽 위치, 크기 변경 시 호출
+  const { mutateAsync: updateTopicPosition } = useUpdateTopicPosition();
+  const { mutateAsync: updateTopicSize } = useUpdateTopicSize();
 
   const isTarget = connection.inProgress && connection.fromNode.id !== props.id;
   const isSource = connection.inProgress && connection.fromNode.id === props.id;
@@ -36,24 +47,47 @@ export default function CustomNode(props: CustomNodeProps) {
 
   const stickerClass = stickerStyle[nodeData.nodeContent];
 
-  const debouncedPosition = useDebounce(props, 300);
+  const debouncedProps = useDebounce(props, 300);
 
-  // TODO: 콘텐츠 위치 업데이트 API 수정 후 다시 활성화
-  // useEffect(() => {
-  //   if (isTopic) return;
-  //   const updatePosition = async () => {
-  //     await updateContentPosition({
-  //       topicContentId: nodeData.item.id,
-  //       topicId: props.topicId,
-  //       contentId: nodeData.item.id,
-  //       posX: debouncedPosition.positionAbsoluteX,
-  //       posY: debouncedPosition.positionAbsoluteY,
-  //       width: debouncedPosition.width ?? 350,
-  //       height: debouncedPosition.height ?? 220,
-  //     });
-  //   };
-  //   updatePosition();
-  // }, [debouncedPosition]);
+  // 위치 변경 시 updateContentPosition 호출
+  useEffect(() => {
+    const body = {
+      topicId: props.topicId,
+      posX: debouncedProps.positionAbsoluteX,
+      posY: debouncedProps.positionAbsoluteY,
+    };
+    const updatePosition = async () => {
+      if (isTopic) {
+        // await updateTopicPosition(body);
+      } else {
+        await updateContentPosition({
+          ...body,
+          contentId: nodeData.item.id,
+        });
+      }
+    };
+    updatePosition();
+  }, [debouncedProps.positionAbsoluteX, debouncedProps.positionAbsoluteY]);
+
+  // 크기 변경 시 updateContentSize 호출
+  useEffect(() => {
+    const body = {
+      topicId: props.topicId,
+      width: debouncedProps.width ?? 350,
+      height: debouncedProps.height ?? 220,
+    };
+    const updateSize = async () => {
+      if (isTopic) {
+        // await updateTopicSize(body);
+      } else {
+        await updateContentSize({
+          ...body,
+          contentId: nodeData.item.id,
+        });
+      }
+    };
+    updateSize();
+  }, [debouncedProps.width, debouncedProps.height]);
 
   return (
     <div

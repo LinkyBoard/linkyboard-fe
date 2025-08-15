@@ -1,8 +1,9 @@
 import { useRemoveTopicContent } from "@/lib/tanstack/mutation/topic-content";
+import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
 import { CategoryContentDTO } from "@/models/content";
 import { cn } from "@repo/ui/utils/cn";
 
-import { FileText, Globe, Loader2, X, Youtube } from "lucide-react";
+import { Edit, FileText, Globe, Loader2, X, Youtube } from "lucide-react";
 
 import { Button } from "../ui/button";
 
@@ -29,12 +30,17 @@ export default function ContentSticker({
   topicId: string;
 }) {
   const { mutateAsync: removeTopicContent, isPending } = useRemoveTopicContent(topicId);
+  const onOpen = useContentSidebarStore((state) => state.onOpen);
 
   const onRemoveTopicContent = async () => {
     await removeTopicContent({
       topicId,
       contentId: item.id,
     });
+  };
+
+  const onEditTopic = () => {
+    onOpen(item.id);
   };
 
   return (
@@ -51,15 +57,25 @@ export default function ContentSticker({
           </div>
           <div className="line-clamp-1 flex-1 text-lg font-semibold">{item.title}</div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-muted text-muted-foreground hover:bg-destructive h-8 w-8 shrink-0 hover:text-white"
-          onClick={onRemoveTopicContent}
-          disabled={isPending}
-        >
-          {isPending ? <Loader2 className="animate-spin" size={16} /> : <X size={16} />}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-muted text-muted-foreground h-8 w-8 shrink-0"
+            onClick={onEditTopic}
+          >
+            <Edit size={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-muted text-muted-foreground hover:bg-destructive h-8 w-8 shrink-0 hover:text-white"
+            onClick={onRemoveTopicContent}
+            disabled={isPending}
+          >
+            {isPending ? <Loader2 className="animate-spin" size={16} /> : <X size={16} />}
+          </Button>
+        </div>
       </div>
 
       <p className="text-muted-foreground mb-4 line-clamp-3 text-sm">{item.summary}</p>

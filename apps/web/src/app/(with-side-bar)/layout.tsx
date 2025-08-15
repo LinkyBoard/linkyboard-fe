@@ -2,6 +2,7 @@ import { Suspense } from "react";
 
 import Sidebar from "@/components/(with-side-bar)/layout";
 import SidebarSkeleton from "@/components/(with-side-bar)/layout/skeleton";
+import ContentSidebar from "@/components/(with-side-bar)/library/content-sidebar";
 
 import { Laptop } from "lucide-react";
 
@@ -17,7 +18,9 @@ export default function WithSidePanelLayout({ children }: WithSidePanelLayoutPro
           <Sidebar />
         </Suspense>
         <main className="flex-1 p-8">{children}</main>
+        <ContentSidebar />
       </div>
+
       <div className="from-background to-muted flex min-h-screen flex-col items-center justify-center bg-gradient-to-br sm:hidden">
         <div className="bg-primary/10 mx-auto mb-4 flex size-20 items-center justify-center rounded-full">
           <Laptop size={40} className="text-primary" />

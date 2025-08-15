@@ -1,4 +1,4 @@
-import { CategoryContentDTO, ContentDetailDTO, UpdateContentDTO } from "@/models/content";
+import { CategoryContentDTO, ContentDetailDTO } from "@/models/content";
 import { BaseResponseDTO } from "@repo/types";
 
 import { clientApi } from ".";
@@ -19,7 +19,7 @@ export const removeContentById = async (contentId: number): Promise<BaseResponse
   return clientApi.delete(`contents/${contentId}`);
 };
 
-export const updateContent = async (props: UpdateContentDTO): Promise<BaseResponseDTO<unknown>> => {
+export const updateContent = async (props: ContentDetailDTO): Promise<BaseResponseDTO<unknown>> => {
   const { contentId, ...restProps } = props;
   return clientApi.put(`contents/${contentId}`, restProps);
 };

@@ -4,10 +4,9 @@ import ContentList from "@/components/(with-side-bar)/library/content-list";
 
 interface LibraryPageProps {
   category: string;
-  id: string;
 }
 
-export default function LibraryPage({ category, id }: LibraryPageProps) {
+export default function LibraryPage({ category }: LibraryPageProps) {
   const currentLevel = category ? "tag" : "category";
 
   const renderContent = () => {
@@ -15,7 +14,7 @@ export default function LibraryPage({ category, id }: LibraryPageProps) {
       case "category":
         return <CategoryList />;
       case "tag":
-        return <ContentList category={category} id={id} />;
+        return <ContentList category={category} />;
       default:
         return <CategoryList />;
     }

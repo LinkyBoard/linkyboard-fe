@@ -136,11 +136,9 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const onResizeStart = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsResizing(true);
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
   };
 
-  const onResizeMove = (e: MouseEvent) => {
+  const onMouseMove = (e: MouseEvent) => {
     if (!isResizing) return;
 
     const container = contentPanelRef.current;
@@ -157,23 +155,22 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     }
   };
 
-  const onResizeEnd = () => {
+  const onMouseUp = () => {
     setIsResizing(false);
-    document.body.style.cursor = "";
-    document.body.style.userSelect = "";
   };
 
   useEffect(() => {
     if (isResizing) {
-      const onMouseMove = (e: MouseEvent) => onResizeMove(e);
-      const onMouseUp = () => onResizeEnd();
-
       document.addEventListener("mousemove", onMouseMove);
       document.addEventListener("mouseup", onMouseUp);
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
 
       return () => {
         document.removeEventListener("mousemove", onMouseMove);
         document.removeEventListener("mouseup", onMouseUp);
+        document.body.style.cursor = "default";
+        document.body.style.userSelect = "auto";
       };
     }
   }, [isResizing]);
@@ -233,10 +230,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
 
         {/* Resize Bar */}
         <div
-          className={cn(
-            "bg-border hover:bg-primary/20 relative w-1 cursor-col-resize transition-colors",
-            isResizing && "bg-primary"
-          )}
+          className="bg-border hover:bg-primary/20 relative w-1 cursor-col-resize transition-colors"
           onMouseDown={onResizeStart}
         >
           <div className="bg-muted-foreground/50 absolute top-1/2 left-1/2 h-6 w-0.5 -translate-x-1/2 -translate-y-1/2" />

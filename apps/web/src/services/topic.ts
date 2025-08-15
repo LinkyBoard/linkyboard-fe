@@ -43,3 +43,21 @@ export const getAllContents = async (props: {
   const params = getParams({ page, type: type.toLowerCase() }, { size: 10 });
   return clientApi.get(`contents?${params}`);
 };
+
+export const updateTopicPosition = async (props: {
+  topicId: string;
+  posX: number;
+  posY: number;
+}): Promise<BaseResponseDTO<unknown>> => {
+  const { topicId, ...restProps } = props;
+  return clientApi.put(`topics/${topicId}/position`, restProps);
+};
+
+export const updateTopicSize = async (props: {
+  topicId: string;
+  width: number;
+  height: number;
+}): Promise<BaseResponseDTO<unknown>> => {
+  const { topicId, ...restProps } = props;
+  return clientApi.put(`topics/${topicId}/resize`, restProps);
+};

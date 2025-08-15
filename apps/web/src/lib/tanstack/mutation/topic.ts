@@ -1,4 +1,10 @@
-import { createTopic, removeTopicById, updateTopicById } from "@/services/topic";
+import {
+  createTopic,
+  removeTopicById,
+  updateTopicById,
+  updateTopicPosition,
+  updateTopicSize,
+} from "@/services/topic";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateTopic = () => {
@@ -16,5 +22,17 @@ export const useUpdateTopic = () => {
 export const useRemoveTopic = () => {
   return useMutation({
     mutationFn: removeTopicById,
+  });
+};
+
+export const useUpdateTopicPosition = () => {
+  return useMutation({
+    mutationFn: updateTopicPosition,
+  });
+};
+
+export const useUpdateTopicSize = () => {
+  return useMutation({
+    mutationFn: updateTopicSize,
   });
 };

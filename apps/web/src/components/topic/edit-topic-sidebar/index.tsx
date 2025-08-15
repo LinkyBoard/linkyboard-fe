@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TOPIC } from "@/constants/topic";
@@ -12,8 +13,6 @@ import { useTopicStore } from "@/lib/zustand/topic-store";
 import { revalidatePath } from "@/utils/revalidate";
 import { errorToast, successToast } from "@/utils/toast";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
-import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
-import { cn } from "@repo/ui/utils/cn";
 import CodeBlock from "@tiptap/extension-code-block";
 import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
@@ -38,16 +37,18 @@ export default function EditTopicSidebar() {
   const { setEditingTopic, setShowEditTopicSidebar, editingTopic, showEditTopicSidebar } =
     useTopicStore();
 
+  const buttonDisabled = isUpdatePending || isDeletePending;
+
   const onClose = () => {
     setEditingTopic(null);
     setShowEditTopicSidebar(false);
   };
 
-  const [sidebarRef] = useOutsideClick<HTMLDivElement>(() => {
+  const onClickOutside = () => {
     if (!isDeleteModalOpen) {
       onClose();
     }
-  });
+  };
 
   const editor = useEditor({
     extensions: [
@@ -143,93 +144,76 @@ export default function EditTopicSidebar() {
   };
 
   return (
-    <div
-      className={cn(
-        "pointer-events-none fixed inset-0 z-50",
-        showEditTopicSidebar && "pointer-events-auto bg-black/50"
-      )}
-      aria-label="토픽 편집 사이드바 닫기"
-    >
-      {/* 사이드바 */}
-      <div
-        ref={sidebarRef}
-        className={cn(
-          "fixed top-0 right-0 z-50 h-full w-full max-w-xl transform bg-white shadow-xl transition-all duration-300 ease-out",
-          showEditTopicSidebar ? "translate-x-0" : "translate-x-full"
-        )}
-      >
-        <div className="flex h-full flex-col">
-          {/* 헤더 */}
-          <div className="flex items-center justify-between border-b p-6">
-            <h2 className="text-xl font-semibold">토픽 편집</h2>
-            <Button variant="ghost" size="icon" onClick={onCloseSidebar} aria-label="사이드바 닫기">
-              <X size={24} />
-            </Button>
+    <Sidebar isOpen={showEditTopicSidebar} onClose={onClickOutside}>
+      <div className="flex h-full flex-col">
+        {/* 헤더 */}
+        <div className="flex items-center justify-between border-b p-6">
+          <h2 className="text-xl font-semibold">토픽 편집</h2>
+          <Button variant="ghost" size="icon" onClick={onCloseSidebar} aria-label="사이드바 닫기">
+            <X size={24} />
+          </Button>
+        </div>
+
+        {/* 내용 */}
+        <div className="flex-1 space-y-6 overflow-y-auto p-6">
+          {/* 제목 입력 */}
+          <div>
+            <label className="mb-2 block text-base font-medium">제목</label>
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="토픽 제목을 입력하세요"
+              className="text-base"
+            />
           </div>
 
-          {/* 내용 */}
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="space-y-6">
-              {/* 제목 입력 */}
-              <div>
-                <label className="mb-2 block text-base font-medium">제목</label>
-                <Input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="토픽 제목을 입력하세요"
-                  className="text-base"
-                />
-              </div>
+          {/* 리치 텍스트 툴바 */}
+          {editor && <EditTopicTooltipList editor={editor} />}
 
-              {/* 리치 텍스트 툴바 */}
-              {editor && <EditTopicTooltipList editor={editor} />}
-
-              {/* 리치 텍스트 에디터 */}
-              <div>
-                <label className="mb-2 block text-base font-medium">내용</label>
-                <div className="min-h-[400px] rounded-md border bg-white">
-                  <EditorContent editor={editor} />
-                </div>
-              </div>
-            </div>
+          {/* 리치 텍스트 에디터 */}
+          <div className="">
+            <label className="block text-base font-medium">내용</label>
+            <EditorContent editor={editor} className="rounded-md border bg-white" />
           </div>
+        </div>
 
-          {/* 액션 버튼 */}
-          <div className="border-t p-6">
-            <div className="flex gap-2">
-              <Button
-                onClick={onSave}
-                className="h-12 flex-1 text-base"
-                disabled={isUpdatePending || !title.trim()}
-              >
-                {isUpdatePending ? (
-                  <Loader2 size={18} className="mr-2 animate-spin" />
-                ) : (
+        {/* 액션 버튼 */}
+        <div className="border-t p-6">
+          <div className="flex gap-2">
+            <Button
+              onClick={onSave}
+              className="h-12 flex-1 text-base"
+              disabled={buttonDisabled || !title.trim()}
+            >
+              {isUpdatePending ? (
+                <Loader2 size={18} className="mr-2 animate-spin" />
+              ) : (
+                <>
                   <Save size={18} className="mr-2" />
-                )}
-                저장
+                  저장
+                </>
+              )}
+            </Button>
+            <Dialog>
+              <Button
+                className="h-12 bg-red-400 text-base hover:bg-red-500"
+                asChild
+                disabled={buttonDisabled}
+              >
+                <DialogTrigger>
+                  <Trash2 size={18} className="mr-2" />
+                  삭제
+                </DialogTrigger>
               </Button>
-              <Dialog>
-                <Button
-                  className="h-12 bg-red-400 text-base hover:bg-red-500"
-                  asChild
-                  disabled={isUpdatePending || isDeletePending}
-                >
-                  <DialogTrigger>
-                    <Trash2 size={18} className="mr-2" />
-                    삭제
-                  </DialogTrigger>
-                </Button>
-                <RemoveDialogContent
-                  id={editingTopic?.id || null}
-                  setIsDeleteModalOpen={setIsDeleteModalOpen}
-                  onDelete={onDelete}
-                />
-              </Dialog>
-            </div>
+              <RemoveDialogContent
+                id={editingTopic?.id || null}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                onDelete={onDelete}
+              />
+            </Dialog>
           </div>
         </div>
       </div>
-    </div>
+    </Sidebar>
   );
 }

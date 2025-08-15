@@ -1,27 +1,15 @@
 import { type ContentType } from "@/constants/content";
 import { TOPIC } from "@/constants/topic";
-import type { TopicContentDTO, TopicDTO } from "@/models/topic";
-import { getAllContents, getAllTopics, getTopicById, getTopicContentById } from "@/services/topic";
-import { BaseResponseDTO } from "@repo/types";
+import { getAllContents, getAllTopics, getTopicById } from "@/services/topic";
 import { calculateNextPageParam } from "@repo/ui/utils/params";
-import { useInfiniteQuery, useQueries } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export const useGetTopicById = (id: string) => {
-  return useQueries({
-    queries: [
-      {
-        queryKey: [TOPIC.GET_TOPIC_BY_ID, id],
-        queryFn: async () => await getTopicById(id),
-        enabled: !!id,
-        select: (data: BaseResponseDTO<TopicDTO>) => data.result,
-      },
-      {
-        queryKey: [TOPIC.GET_TOPIC_CONTENT_BY_ID, id],
-        queryFn: async () => await getTopicContentById(id),
-        enabled: !!id,
-        select: (data: BaseResponseDTO<TopicContentDTO[]>) => data.result,
-      },
-    ],
+  return useQuery({
+    queryKey: [TOPIC.GET_TOPIC_BY_ID, id],
+    queryFn: async () => await getTopicById(id),
+    enabled: !!id,
+    select: (data) => data.result,
   });
 };
 

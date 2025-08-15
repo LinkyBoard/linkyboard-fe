@@ -1,19 +1,35 @@
+import { StickerType } from "@/types/topic";
+
+import { CategoryContentDTO } from "./content";
+
 export interface TopicDTO {
   id: number;
   title: string;
   content: string;
 }
 
-export interface TopicContentDTO {
-  id: number;
-  topicId: number;
-  contentId: number;
-  contentTitle: string;
-  contentUrl: string;
-  contentMemo: string;
-  contentSummary: string;
-  thumbnail: string;
-  tags: string[];
-  posX: number;
-  posY: number;
+export interface TopicDetailDTO {
+  nodes: {
+    data: {
+      item: TopicDTO | CategoryContentDTO;
+      nodeContent: StickerType;
+    };
+    id: string;
+    measured: {
+      height: number;
+      width: number;
+    };
+    position: {
+      x: number;
+      y: number;
+    };
+    type: "custom";
+  }[];
+  edges: {
+    id: string;
+    source: string;
+    sourceHandle: string;
+    target: string;
+    targetHandle: string;
+  }[];
 }

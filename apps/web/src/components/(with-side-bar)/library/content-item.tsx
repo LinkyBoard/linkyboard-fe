@@ -2,7 +2,7 @@ import Image from "@/components/image";
 import { CategoryContentDTO } from "@/models/content";
 import { cn } from "@repo/ui/utils/cn";
 
-interface ContentItemProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface ContentItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   item: CategoryContentDTO;
 }
 

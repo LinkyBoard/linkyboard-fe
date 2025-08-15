@@ -1,11 +1,27 @@
+import { useRemoveTopicContent } from "@/lib/tanstack/mutation/topic-content";
 import { CategoryContentDTO } from "@/models/content";
 
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 import Image from "../image";
 import { Button } from "../ui/button";
 
-export default function ContentSticker({ item }: { item: CategoryContentDTO }) {
+export default function ContentSticker({
+  item,
+  topicId,
+}: {
+  item: CategoryContentDTO;
+  topicId: string;
+}) {
+  const { mutateAsync: removeTopicContent, isPending } = useRemoveTopicContent(topicId);
+
+  const onRemoveTopicContent = async () => {
+    await removeTopicContent({
+      topicId,
+      contentId: item.id,
+    });
+  };
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between gap-2">
@@ -19,9 +35,10 @@ export default function ContentSticker({ item }: { item: CategoryContentDTO }) {
           variant="ghost"
           size="icon"
           className="bg-muted text-muted-foreground hover:bg-destructive h-8 w-8 shrink-0 hover:text-white"
-          onClick={() => {}}
+          onClick={onRemoveTopicContent}
+          disabled={isPending}
         >
-          <X size={16} />
+          {isPending ? <Loader2 className="animate-spin" size={16} /> : <X size={16} />}
         </Button>
       </div>
 

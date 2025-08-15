@@ -1,12 +1,12 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 import { CONTENT_TYPE, type ContentType } from "@/constants/content";
+import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
 import { CategoryContentDTO } from "@/models/content";
-import type { Node } from "@xyflow/react";
 
 import { Loader2, Search } from "lucide-react";
 
@@ -17,13 +17,11 @@ import { Input } from "../ui/input";
 interface ContentListProps {
   contentPanelRef: React.RefObject<HTMLDivElement | null>;
   contentPanelWidth: number;
-  setNodes: Dispatch<SetStateAction<Node[]>>;
   type: ContentType;
   id: string;
 }
 
 export default function ContentList({
-  setNodes,
   contentPanelRef,
   contentPanelWidth,
   type,
@@ -32,19 +30,17 @@ export default function ContentList({
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: contents, isLoading } = useGetAllContents(type);
+  const { mutateAsync: createContent, isPending } = useCreateContent(id);
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  const onAddContent = (content: CategoryContentDTO) => {
-    const newNode: Node = {
-      id: `content-${content.id}`,
-      type: "custom",
-      position: { x: 0, y: 0 },
-      data: { nodeContent: "content", item: content },
-    };
-    setNodes((prevNodes) => [...prevNodes, newNode]);
+  const onAddContent = async (content: CategoryContentDTO) => {
+    await createContent({
+      topicId: id,
+      contentId: content.id,
+    });
   };
 
   return (
@@ -90,6 +86,7 @@ export default function ContentList({
               key={`${item.id}-content-item`}
               item={item}
               onClick={() => onAddContent(item)}
+              disabled={isPending}
             />
           ))
         )}

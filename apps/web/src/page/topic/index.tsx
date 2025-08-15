@@ -1,12 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import AddTopicModal from "@/components/(with-side-bar)/layout/add-topic-modal";
 import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
+import EditTopicSidebar from "@/components/topic/edit-topic-sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ContentType } from "@/constants/content";
+import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { useTopicStore } from "@/lib/zustand/topic-store";
@@ -18,6 +21,7 @@ import {
   Connection,
   Edge,
   Node,
+  NodeProps,
   NodeTypes,
   ReactFlow,
   useEdgesState,
@@ -37,10 +41,6 @@ const connectionLineStyle = {
   stroke: "#b1b1b7",
 };
 
-const nodeTypes: NodeTypes = {
-  custom: CustomNode,
-};
-
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
@@ -49,21 +49,32 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
 
   const { toggle } = useMobileMenuStore();
-  const topicStore = useTopicStore();
+  const { showEditTopicSidebar, editingTopic, setShowEditTopicSidebar, setEditingTopic } =
+    useTopicStore();
 
-  const [
-    { data: topic, isLoading: isTopicLoading, isError: isTopicError, error, isRefetching },
-    { data: topicContent, isLoading: isTopicContentLoading },
-  ] = useGetTopicById(id);
+  const {
+    data: topic,
+    isLoading: isTopicLoading,
+    isError: isTopicError,
+    error,
+    isRefetching,
+  } = useGetTopicById(id);
+  const { mutateAsync: createConnection } = useCreateConnection();
+  const { mutateAsync: removeConnection } = useRemoveConnection();
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  const isLoading = isTopicLoading || isTopicContentLoading;
+  const isLoading = isTopicLoading;
   const isNotFoundError = !isTopicLoading && error?.message.includes("404");
+  const nodeTypes: NodeTypes = useMemo(() => {
+    return {
+      custom: (props: NodeProps) => <CustomNode {...props} topicId={id} />,
+    };
+  }, []);
 
   const onConnect = useCallback(
-    (params: Connection) => {
+    async (params: Connection) => {
       // 연결 유효성 검사: 같은 노드 간에는 하나의 연결만 허용
       const existingConnection = edges.find(
         (edge) =>
@@ -76,15 +87,36 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         return;
       }
 
+      const edgeId = `xy-edge__${params.source}${params.sourceHandle}-${params.target}${params.targetHandle}`;
       setEdges((eds) => addEdge(params, eds));
+
+      try {
+        await createConnection({
+          id: edgeId,
+          source: params.source,
+          sourceHandle: params.sourceHandle || "",
+          target: params.target,
+          targetHandle: params.targetHandle || "",
+          topicId: id,
+        });
+      } catch (error) {
+        setEdges((eds) => eds.filter((e) => e.id !== edgeId));
+      }
     },
-    [setEdges, edges]
+    [edges]
   );
 
-  const onEdgeClick = (event: React.MouseEvent, edge: Edge) => {
-    // 엣지 클릭 시 제거
+  const onEdgeClick = async (e: React.MouseEvent, edge: Edge) => {
+    const edgeData = edges.find((e) => e.id === edge.id);
+    if (!edgeData) return;
+
     setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-    infoToast("연결이 제거되었습니다.");
+    try {
+      await removeConnection(edge.id);
+      infoToast("연결이 제거되었습니다.");
+    } catch (error) {
+      setEdges((eds) => addEdge(edgeData, eds));
+    }
   };
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,8 +124,13 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   };
 
   const onNewTopicClick = () => {
-    topicStore.setEditingTopic(null);
-    topicStore.setShowNewTopicModal(true);
+    setEditingTopic(null);
+    setShowEditTopicSidebar(false);
+  };
+
+  const onCloseEditSidebar = () => {
+    setEditingTopic(null);
+    setShowEditTopicSidebar(false);
   };
 
   const onResizeStart = (e: React.MouseEvent) => {
@@ -143,28 +180,16 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   }, [isResizing]);
 
   useEffect(() => {
-    if (id && !isLoading && topic && topicContent) {
-      const topicNode = {
-        id: `topic-${topic?.id}`,
-        type: "custom",
-        position: { x: 0, y: 0 },
-        data: { nodeContent: "topic", item: topic },
-      };
-      const contentNodes = topicContent.map((content) => ({
-        id: `content-${content.id}`,
-        type: "custom",
-        position: { x: content.posX, y: content.posY },
-        data: { nodeContent: "content", item: content },
-      }));
-
-      setNodes([topicNode, ...contentNodes]);
+    if (id && !isLoading && topic) {
+      setNodes(topic.nodes);
+      setEdges(topic.edges);
     }
   }, [id, isLoading, isRefetching]);
 
   return (
-    <div>
-      {/* Header */}
-      <header className="border-border mb-8 flex items-center justify-between border-b pb-4">
+    <div className="flex h-screen flex-col">
+      {/* 헤더 */}
+      <header className="bg-background border-border flex items-center justify-between border-b p-6">
         <div className="flex items-center gap-4">
           {/* Mobile Menu Button */}
           <Button
@@ -201,7 +226,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       {/* Content Panel */}
       <div className="flex h-[calc(100vh-200px)] gap-0">
         <ContentList
-          setNodes={setNodes}
           contentPanelRef={contentPanelRef}
           contentPanelWidth={contentPanelWidth}
           id={id}
@@ -262,6 +286,16 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
           )}
         </div>
       </div>
+
+      {/* Add Topic Modal */}
+      <AddTopicModal />
+
+      {/* Edit Topic Sidebar */}
+      <EditTopicSidebar
+        isOpen={showEditTopicSidebar}
+        onClose={onCloseEditSidebar}
+        topic={editingTopic}
+      />
     </div>
   );
 }

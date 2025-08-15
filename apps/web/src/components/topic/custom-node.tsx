@@ -1,3 +1,7 @@
+import { useEffect } from "react";
+
+import { useDebounce } from "@/hooks/use-debounce";
+import { useUpdateContentPosition } from "@/lib/tanstack/mutation/topic-content";
 import { CategoryContentDTO } from "@/models/content";
 import type { TopicDTO } from "@/models/topic";
 import { cn } from "@repo/ui/utils/cn";
@@ -5,6 +9,10 @@ import { Handle, NodeProps, Position, useConnection } from "@xyflow/react";
 
 import ContentSticker from "./content-sticker";
 import TopicSticker from "./topic-sticker";
+
+interface CustomNodeProps extends NodeProps {
+  topicId: string;
+}
 
 interface NodeData {
   nodeContent: "topic" | "content";
@@ -16,15 +24,36 @@ const stickerStyle = {
   content: "bg-card hover:border-primary border-border border",
 };
 
-export default function CustomNode(props: NodeProps) {
+export default function CustomNode(props: CustomNodeProps) {
   const nodeData = props.data as unknown as NodeData;
 
   const connection = useConnection();
+  const { mutateAsync: updateContentPosition } = useUpdateContentPosition();
 
   const isTarget = connection.inProgress && connection.fromNode.id !== props.id;
   const isSource = connection.inProgress && connection.fromNode.id === props.id;
+  const isTopic = nodeData.nodeContent === "topic";
 
   const stickerClass = stickerStyle[nodeData.nodeContent];
+
+  const debouncedPosition = useDebounce(props, 300);
+
+  // TODO: 콘텐츠 위치 업데이트 API 수정 후 다시 활성화
+  // useEffect(() => {
+  //   if (isTopic) return;
+  //   const updatePosition = async () => {
+  //     await updateContentPosition({
+  //       topicContentId: nodeData.item.id,
+  //       topicId: props.topicId,
+  //       contentId: nodeData.item.id,
+  //       posX: debouncedPosition.positionAbsoluteX,
+  //       posY: debouncedPosition.positionAbsoluteY,
+  //       width: debouncedPosition.width ?? 350,
+  //       height: debouncedPosition.height ?? 220,
+  //     });
+  //   };
+  //   updatePosition();
+  // }, [debouncedPosition]);
 
   return (
     <div
@@ -99,10 +128,10 @@ export default function CustomNode(props: NodeProps) {
         </>
       )}
 
-      {nodeData.nodeContent === "topic" ? (
+      {isTopic ? (
         <TopicSticker item={nodeData.item as TopicDTO} />
       ) : (
-        <ContentSticker item={nodeData.item as CategoryContentDTO} />
+        <ContentSticker item={nodeData.item as CategoryContentDTO} topicId={props.topicId} />
       )}
     </div>
   );

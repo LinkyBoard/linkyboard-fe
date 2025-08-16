@@ -58,8 +58,7 @@ export default function CustomNode(props: CustomNodeProps) {
     };
     const updatePosition = async () => {
       if (isTopic) {
-        // TODO: ec2 살아나면 주석 풀기
-        // await updateTopicPosition(body);
+        await updateTopicPosition(body);
       } else {
         await updateContentPosition({
           ...body,
@@ -79,7 +78,7 @@ export default function CustomNode(props: CustomNodeProps) {
     };
     const updateSize = async () => {
       if (isTopic) {
-        // await updateTopicSize(body);
+        await updateTopicSize(body);
       } else {
         await updateContentSize({
           ...body,

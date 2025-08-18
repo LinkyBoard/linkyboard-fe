@@ -15,7 +15,6 @@ import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import { infoToast } from "@/utils/toast";
-import { cn } from "@repo/ui/utils/cn";
 import {
   addEdge,
   Background,
@@ -29,7 +28,7 @@ import {
   useNodesState,
 } from "@xyflow/react";
 
-import { AlertTriangle, Lightbulb, Loader2, Menu, Plus, Search, Sparkles } from "lucide-react";
+import { AlertTriangle, Lightbulb, Loader2, Menu, Plus, Search } from "lucide-react";
 
 interface TopicBoardPageProps {
   id: string;
@@ -148,11 +147,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const onNewTopicClick = () => {
     setEditingTopic(null);
     setShowNewTopicModal(true);
-  };
-
-  const onSummaryClick = () => {
-    console.log("요약 요청:", { topicId: id, nodeIds: selectedNodeIds });
-    infoToast("요약 기능이 준비 중입니다.");
   };
 
   const onResizeStart = (e: React.MouseEvent) => {

@@ -13,6 +13,7 @@ import { Handle, NodeProps, NodeResizer, Position, useConnection } from "@xyflow
 
 import ContentSticker from "./content-sticker";
 import TopicSticker from "./topic-sticker";
+import UserSticker from "./user-sticker";
 
 interface CustomNodeProps extends NodeProps {
   topicId: string;
@@ -21,13 +22,14 @@ interface CustomNodeProps extends NodeProps {
 }
 
 interface NodeData {
-  nodeContent: "topic" | "content";
+  nodeContent: "topic" | "content" | "sticker";
   item: TopicDTO | CategoryContentDTO;
 }
 
 const stickerStyle = {
   topic: "from-primary bg-gradient-to-br to-blue-600 text-white",
   content: "bg-card hover:border-primary border-border border",
+  sticker: "bg-yellow-50 border-yellow-300 border hover:border-yellow-400",
 };
 
 export default function CustomNode(props: CustomNodeProps) {
@@ -45,7 +47,6 @@ export default function CustomNode(props: CustomNodeProps) {
 
   const isTarget = connection.inProgress && connection.fromNode.id !== props.id;
   const isSource = connection.inProgress && connection.fromNode.id === props.id;
-  const isTopic = nodeData.nodeContent === "topic";
 
   const stickerClass = stickerStyle[nodeData.nodeContent];
 
@@ -59,13 +60,21 @@ export default function CustomNode(props: CustomNodeProps) {
       posY: debouncedProps.positionAbsoluteY,
     };
     const updatePosition = async () => {
-      if (isTopic) {
-        await updateTopicPosition(body);
-      } else {
-        await updateContentPosition({
-          ...body,
-          contentId: nodeData.item.id,
-        });
+      switch (nodeData.nodeContent) {
+        case "topic":
+          await updateTopicPosition(body);
+          break;
+        case "content":
+          await updateContentPosition({
+            ...body,
+            contentId: nodeData.item.id,
+          });
+          break;
+        case "sticker":
+          // TODO: 스티커 위치 변경 시 호출
+          break;
+        default:
+          return;
       }
     };
     updatePosition();
@@ -79,13 +88,21 @@ export default function CustomNode(props: CustomNodeProps) {
       height: debouncedProps.height ?? 220,
     };
     const updateSize = async () => {
-      if (isTopic) {
-        await updateTopicSize(body);
-      } else {
-        await updateContentSize({
-          ...body,
-          contentId: nodeData.item.id,
-        });
+      switch (nodeData.nodeContent) {
+        case "topic":
+          await updateTopicSize(body);
+          break;
+        case "content":
+          await updateContentSize({
+            ...body,
+            contentId: nodeData.item.id,
+          });
+          break;
+        case "sticker":
+          // TODO: 스티커 크기 변경 시 호출
+          break;
+        default:
+          return;
       }
     };
     updateSize();
@@ -178,14 +195,16 @@ export default function CustomNode(props: CustomNodeProps) {
         </>
       )}
 
-      {isTopic ? (
+      {nodeData.nodeContent === "topic" ? (
         <TopicSticker item={nodeData.item as TopicDTO} />
-      ) : (
+      ) : nodeData.nodeContent === "content" ? (
         <ContentSticker
           item={nodeData.item as CategoryContentDTO}
           isSelected={props.isSelected}
           onSelect={props.onSelect}
         />
+      ) : (
+        <UserSticker item={nodeData.item as TopicDTO} />
       )}
     </div>
   );

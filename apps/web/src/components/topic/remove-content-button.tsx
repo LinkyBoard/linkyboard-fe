@@ -9,7 +9,6 @@ interface RemoveContentButtonProps {
 export default function RemoveContentButton({ selectedNodeIds }: RemoveContentButtonProps) {
   const onRemoveContent = async () => {
     // TODO: 변경된 삭제 API 연동
-    console.log(selectedNodeIds);
   };
 
   return (

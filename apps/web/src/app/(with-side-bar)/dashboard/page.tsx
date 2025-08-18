@@ -128,12 +128,10 @@ export default function Dashboard() {
           <Button
             variant="ghost"
             size="icon"
-            className="relative"
             onClick={() => onActionClick("알림")}
             aria-label="알림"
           >
             <Bell size={20} />
-            <div className="bg-destructive absolute -top-1 -right-1 h-2 w-2 rounded-full" />
           </Button>
           <Button
             variant="ghost"

@@ -11,7 +11,10 @@ export default function TopicSticker({ item }: { item: TopicDTO }) {
   const { setEditingTopic, setShowEditTopicSidebar } = useTopicStore();
 
   const onEditTopic = () => {
-    setEditingTopic(item);
+    setEditingTopic({
+      ...item,
+      type: "topic",
+    });
     setShowEditTopicSidebar(true);
   };
 
@@ -46,7 +49,7 @@ export default function TopicSticker({ item }: { item: TopicDTO }) {
         </div>
       </div>
       <div>
-        <h2 className="mb-3 text-2xl leading-tight font-bold">{item.title}</h2>
+        <h2 className="mb-3 line-clamp-1 text-2xl leading-tight font-bold">{item.title}</h2>
         <p
           className="line-clamp-2 text-lg leading-relaxed opacity-90"
           dangerouslySetInnerHTML={{ __html: item.content }}

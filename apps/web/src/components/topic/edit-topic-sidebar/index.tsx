@@ -10,6 +10,7 @@ import { TOPIC } from "@/constants/topic";
 import { invalidateMany, invalidateQueries } from "@/lib/tanstack";
 import { useRemoveTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
 import { useTopicStore } from "@/lib/zustand/topic-store";
+import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
 import { revalidatePath } from "@/utils/revalidate";
 import { errorToast, successToast } from "@/utils/toast";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
@@ -52,7 +53,11 @@ export default function EditTopicSidebar() {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3, 4, 5, 6],
+        },
+      }),
       Placeholder.configure({
         placeholder: "내용을 입력하세요...",
       }),
@@ -83,7 +88,8 @@ export default function EditTopicSidebar() {
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "prose prose-sm max-w-none focus:outline-none min-h-[400px] p-4",
+        class:
+          "prose prose-sm max-w-none focus:outline-none min-h-[400px] p-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_strong]:font-bold [&_em]:italic [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_a]:text-blue-600 [&_a]:underline [&_br]:block [&_br]:h-2",
       },
     },
   });
@@ -91,7 +97,14 @@ export default function EditTopicSidebar() {
   useEffect(() => {
     if (editingTopic && editor) {
       setTitle(editingTopic.title);
-      editor.commands.setContent(editingTopic.content || "");
+
+      // 마크다운이 포함되어 있으면 HTML로 변환
+      if (editingTopic.content && containsMarkdown(editingTopic.content)) {
+        const htmlContent = markdownToHtml(editingTopic.content);
+        editor.commands.setContent(htmlContent);
+      } else {
+        editor.commands.setContent(editingTopic.content || "");
+      }
     }
   }, [editingTopic, editor]);
 
@@ -100,6 +113,7 @@ export default function EditTopicSidebar() {
 
     try {
       const content = editor.getHTML();
+      // TODO: editingTopic.type에 따라 API 요청 다르게
       await updateTopic(
         {
           id: editingTopic.id,

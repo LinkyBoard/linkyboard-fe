@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 
 import { useDebounce } from "@/hooks/use-debounce";
+import {
+  useUpdateCustomStickerPosition,
+  useUpdateCustomStickerSize,
+} from "@/lib/tanstack/mutation/custom-sticker";
 import { useUpdateTopicPosition, useUpdateTopicSize } from "@/lib/tanstack/mutation/topic";
 import {
   useUpdateContentPosition,
@@ -8,6 +12,7 @@ import {
 } from "@/lib/tanstack/mutation/topic-content";
 import { CategoryContentDTO } from "@/models/content";
 import type { TopicDTO } from "@/models/topic";
+import type { StickerType } from "@/types/topic";
 import { cn } from "@repo/ui/utils/cn";
 import { Handle, NodeProps, NodeResizer, Position, useConnection } from "@xyflow/react";
 
@@ -22,14 +27,14 @@ interface CustomNodeProps extends NodeProps {
 }
 
 interface NodeData {
-  nodeContent: "topic" | "content" | "sticker";
+  nodeContent: StickerType;
   item: TopicDTO | CategoryContentDTO;
 }
 
 const stickerStyle = {
   topic: "from-primary bg-gradient-to-br to-blue-600 text-white",
   content: "bg-card hover:border-primary border-border border",
-  sticker: "bg-yellow-50 border-yellow-300 border hover:border-yellow-400",
+  custom_sticker: "bg-yellow-50 border-yellow-300 border hover:border-yellow-400",
 };
 
 export default function CustomNode(props: CustomNodeProps) {
@@ -44,6 +49,10 @@ export default function CustomNode(props: CustomNodeProps) {
   // 토픽 위치, 크기 변경 시 호출
   const { mutateAsync: updateTopicPosition } = useUpdateTopicPosition();
   const { mutateAsync: updateTopicSize } = useUpdateTopicSize();
+
+  // 커스텀 스티커 위치, 크기 변경 시 호출
+  const { mutateAsync: updateCustomStickerPosition } = useUpdateCustomStickerPosition();
+  const { mutateAsync: updateCustomStickerSize } = useUpdateCustomStickerSize();
 
   const isTarget = connection.inProgress && connection.fromNode.id !== props.id;
   const isSource = connection.inProgress && connection.fromNode.id === props.id;
@@ -70,8 +79,11 @@ export default function CustomNode(props: CustomNodeProps) {
             contentId: nodeData.item.id,
           });
           break;
-        case "sticker":
-          // TODO: 스티커 위치 변경 시 호출
+        case "custom_sticker":
+          await updateCustomStickerPosition({
+            ...body,
+            customStickerId: nodeData.item.id,
+          });
           break;
         default:
           return;
@@ -98,8 +110,11 @@ export default function CustomNode(props: CustomNodeProps) {
             contentId: nodeData.item.id,
           });
           break;
-        case "sticker":
-          // TODO: 스티커 크기 변경 시 호출
+        case "custom_sticker":
+          await updateCustomStickerSize({
+            ...body,
+            customStickerId: nodeData.item.id,
+          });
           break;
         default:
           return;

@@ -21,6 +21,7 @@ import { extractYoutubeId } from "@/utils/youtube";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
+import { cn } from "@repo/ui/utils/cn";
 
 import { AlertCircle, ChevronDown, Edit, Loader2, Plus, Save, Trash2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -230,11 +231,11 @@ export default function ContentSidebar() {
                           key={category.id}
                           type="button"
                           onClick={() => onCategorySelect(category.name)}
-                          className={`hover:bg-accent block w-full px-3 py-2 text-left text-base ${
-                            watch("category") === category.name
-                              ? "bg-accent text-accent-foreground"
-                              : "text-foreground"
-                          }`}
+                          className={cn(
+                            "hover:bg-accent text-foreground block w-full px-3 py-2 text-left text-base",
+                            watch("category") === category.name &&
+                              "bg-accent text-accent-foreground"
+                          )}
                         >
                           {category.name}
                         </button>

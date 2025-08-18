@@ -236,7 +236,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
                 selectedNodeIds={selectedNodeIds}
                 setSelectedNodeIds={setSelectedNodeIds}
               />
-              <SummarizeDialog selectedNodeIds={selectedNodeIds} />
+              <SummarizeDialog topicId={id} selectedNodeIds={selectedNodeIds} />
             </>
           )}
           <Button variant="default" onClick={onNewTopicClick} className="flex items-center gap-2">

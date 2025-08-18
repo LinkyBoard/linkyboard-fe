@@ -2,7 +2,7 @@ import ky from "ky";
 
 // API 기본 설정
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
-const API_TIMEOUT = 10000; // 10초
+const API_TIMEOUT = 30000; // 30초
 
 // 공통 fetch 옵션
 const createFetchOptions = (

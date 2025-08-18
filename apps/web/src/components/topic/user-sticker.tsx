@@ -1,5 +1,6 @@
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import type { TopicDTO } from "@/models/topic";
+import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 
 import { Edit, Sticker, Trash2 } from "lucide-react";
@@ -11,8 +12,19 @@ export default function UserSticker({ item }: { item: TopicDTO }) {
   const { setEditingTopic, setShowEditTopicSidebar } = useTopicStore();
 
   const onEditTopic = () => {
-    setEditingTopic(item);
+    setEditingTopic({
+      ...item,
+      type: "custom_sticker",
+    });
     setShowEditTopicSidebar(true);
+  };
+
+  // 마크다운이 포함되어 있으면 HTML로 변환
+  const renderContent = (content: string) => {
+    if (content && containsMarkdown(content)) {
+      return markdownToHtml(content);
+    }
+    return content;
   };
 
   return (
@@ -46,10 +58,12 @@ export default function UserSticker({ item }: { item: TopicDTO }) {
         </div>
       </div>
       <div>
-        <h2 className="mb-3 text-2xl leading-tight font-bold text-gray-800">{item.title}</h2>
+        <h2 className="mb-3 line-clamp-1 text-2xl leading-tight font-bold text-gray-800">
+          {item.title}
+        </h2>
         <p
           className="line-clamp-2 text-lg leading-relaxed text-gray-600"
-          dangerouslySetInnerHTML={{ __html: item.content }}
+          dangerouslySetInnerHTML={{ __html: renderContent(item.content) }}
         />
       </div>
     </>

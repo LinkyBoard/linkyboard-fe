@@ -1,12 +1,17 @@
 import type { TopicDTO } from "@/models/topic";
+import { StickerType } from "@/types/topic";
 
 import { create } from "zustand";
+
+interface EditingTopic extends TopicDTO {
+  type: StickerType;
+}
 
 interface TopicStore {
   showNewTopicModal: boolean;
   showEditTopicSidebar: boolean;
-  editingTopic: TopicDTO | null;
-  setEditingTopic: (topic: TopicDTO | null) => void;
+  editingTopic: EditingTopic | null;
+  setEditingTopic: (topic: EditingTopic | null) => void;
   setShowNewTopicModal: (show: boolean) => void;
   setShowEditTopicSidebar: (show: boolean) => void;
 }
@@ -22,7 +27,7 @@ export const useTopicStore = create<TopicStore>((set) => ({
   },
 
   editingTopic: null,
-  setEditingTopic: (topic: TopicDTO | null) => {
+  setEditingTopic: (topic: EditingTopic | null) => {
     set({ editingTopic: topic });
   },
 }));

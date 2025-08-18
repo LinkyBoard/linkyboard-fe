@@ -38,7 +38,11 @@ export const createContent = async (props: {
 
 export const removeTopicContentById = async (props: {
   topicId: string;
-  contentId: number;
+  contentIds: number[];
 }): Promise<BaseResponseDTO<unknown>> => {
-  return clientApi.delete(`topic-contents/topics/${props.topicId}/contents/${props.contentId}`);
+  return clientApi.delete(`topic-contents/topics/${props.topicId}/contents`, {
+    json: {
+      contentIds: props.contentIds,
+    },
+  });
 };

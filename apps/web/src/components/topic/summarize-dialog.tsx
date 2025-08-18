@@ -48,7 +48,7 @@ function SummarizeDialogContent({ selectedNodeIds }: SummarizeDialogProps) {
             <Button type="button" variant="outline" asChild>
               <DialogClose>취소</DialogClose>
             </Button>
-            <Button type="submit">요약하기</Button>
+            <Button type="submit">요약</Button>
           </div>
         </form>
       </div>
@@ -62,7 +62,7 @@ export default function SummarizeDialog({ selectedNodeIds }: SummarizeDialogProp
       <Button className="flex items-center gap-2" asChild>
         <DialogTrigger>
           <Sparkles size={16} />
-          요약하기
+          요약
         </DialogTrigger>
       </Button>
       <SummarizeDialogContent selectedNodeIds={selectedNodeIds} />

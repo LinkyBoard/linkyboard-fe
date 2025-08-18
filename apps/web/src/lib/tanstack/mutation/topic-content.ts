@@ -5,7 +5,7 @@ import {
   updateContentPosition,
   updateContentSize,
 } from "@/services/topic-content";
-import { errorToast, infoToast } from "@/utils/toast";
+import { infoToast } from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
 
 import { invalidateQueries } from "..";
@@ -43,14 +43,8 @@ export const useCreateContent = (id: string) => {
   });
 };
 
-export const useRemoveTopicContent = (id: string) => {
+export const useRemoveTopicContentById = () => {
   return useMutation({
     mutationFn: removeTopicContentById,
-    onSuccess: () => {
-      invalidateQueries([TOPIC.GET_TOPIC_BY_ID, id]);
-    },
-    onError: () => {
-      errorToast("토픽에서 콘텐츠를 제거하지 못했어요.");
-    },
   });
 };

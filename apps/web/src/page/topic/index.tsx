@@ -231,7 +231,11 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         <div className="flex items-center gap-4">
           {selectedNodeIds.length > 0 && (
             <>
-              <RemoveContentButton selectedNodeIds={selectedNodeIds} />
+              <RemoveContentButton
+                topicId={id}
+                selectedNodeIds={selectedNodeIds}
+                setSelectedNodeIds={setSelectedNodeIds}
+              />
               <SummarizeDialog selectedNodeIds={selectedNodeIds} />
             </>
           )}

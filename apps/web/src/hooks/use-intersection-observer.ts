@@ -67,7 +67,7 @@ export function useScrollSpy(ids: string[], offset: number = 200) {
     };
 
     window.addEventListener("scroll", onScroll);
-    onScroll(); // 초기 실행
+    onScroll();
 
     return () => window.removeEventListener("scroll", onScroll);
   }, [ids, offset]);

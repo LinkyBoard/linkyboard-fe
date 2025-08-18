@@ -5,6 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
 import EditTopicSidebar from "@/components/topic/edit-topic-sidebar";
+import RemoveContentButton from "@/components/topic/remove-content-button";
+import SummarizeDialog from "@/components/topic/summarize-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ContentTypeOptions } from "@/constants/content";
@@ -27,7 +29,7 @@ import {
   useNodesState,
 } from "@xyflow/react";
 
-import { AlertTriangle, Lightbulb, Loader2, Menu, Plus, Search } from "lucide-react";
+import { AlertTriangle, Lightbulb, Loader2, Menu, Plus, Search, Sparkles } from "lucide-react";
 
 interface TopicBoardPageProps {
   id: string;
@@ -51,6 +53,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [isResizing, setIsResizing] = useState(false);
+  const [selectedNodeIds, setSelectedNodeIds] = useState<number[]>([]);
 
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
 
@@ -70,13 +73,27 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
+  const onNodeSelect = (nodeId: number) => {
+    setSelectedNodeIds((prev) =>
+      prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]
+    );
+  };
+
   const isLoading = isTopicLoading;
   const isNotFoundError = !isTopicLoading && error?.message.includes("404");
-  const nodeTypes: NodeTypes = useMemo(() => {
-    return {
-      custom: (props: NodeProps) => <CustomNode {...props} topicId={id} />,
-    };
-  }, []);
+  const nodeTypes: NodeTypes = useMemo(
+    () => ({
+      custom: (props: NodeProps) => (
+        <CustomNode
+          {...props}
+          topicId={id}
+          isSelected={selectedNodeIds.includes((props.data as { item: { id: number } }).item.id)}
+          onSelect={onNodeSelect}
+        />
+      ),
+    }),
+    [selectedNodeIds, id]
+  );
 
   const onConnect = useCallback(
     async (params: Connection) => {
@@ -131,6 +148,11 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const onNewTopicClick = () => {
     setEditingTopic(null);
     setShowNewTopicModal(true);
+  };
+
+  const onSummaryClick = () => {
+    console.log("요약 요청:", { topicId: id, nodeIds: selectedNodeIds });
+    infoToast("요약 기능이 준비 중입니다.");
   };
 
   const onResizeStart = (e: React.MouseEvent) => {
@@ -213,6 +235,12 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          {selectedNodeIds.length > 0 && (
+            <>
+              <RemoveContentButton selectedNodeIds={selectedNodeIds} />
+              <SummarizeDialog selectedNodeIds={selectedNodeIds} />
+            </>
+          )}
           <Button variant="default" onClick={onNewTopicClick} className="flex items-center gap-2">
             <Plus size={16} />새 토픽
           </Button>

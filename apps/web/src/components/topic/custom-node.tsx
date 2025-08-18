@@ -16,6 +16,8 @@ import TopicSticker from "./topic-sticker";
 
 interface CustomNodeProps extends NodeProps {
   topicId: string;
+  isSelected: boolean;
+  onSelect: (nodeId: number) => void;
 }
 
 interface NodeData {
@@ -95,7 +97,8 @@ export default function CustomNode(props: CustomNodeProps) {
         "group relative rounded-2xl p-6 shadow-lg transition-shadow duration-300 ease-in-out hover:shadow-xl",
         stickerClass,
         isTarget && "border-primary",
-        isSource && "border-muted-foreground/50"
+        isSource && "border-muted-foreground/50",
+        props.isSelected && "ring-primary ring-2 ring-offset-2"
       )}
       style={{
         minWidth: "21.875rem",
@@ -178,7 +181,11 @@ export default function CustomNode(props: CustomNodeProps) {
       {isTopic ? (
         <TopicSticker item={nodeData.item as TopicDTO} />
       ) : (
-        <ContentSticker item={nodeData.item as CategoryContentDTO} topicId={props.topicId} />
+        <ContentSticker
+          item={nodeData.item as CategoryContentDTO}
+          isSelected={props.isSelected}
+          onSelect={props.onSelect}
+        />
       )}
     </div>
   );

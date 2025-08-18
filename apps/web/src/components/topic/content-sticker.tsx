@@ -1,11 +1,16 @@
-import { useRemoveTopicContent } from "@/lib/tanstack/mutation/topic-content";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
 import { CategoryContentDTO } from "@/models/content";
 import { cn } from "@repo/ui/utils/cn";
 
-import { Edit, FileText, Globe, Loader2, X, Youtube } from "lucide-react";
+import { Check, Edit, FileText, Globe, Youtube } from "lucide-react";
 
 import { Button } from "../ui/button";
+
+interface ContentStickerProps {
+  item: CategoryContentDTO;
+  isSelected: boolean;
+  onSelect: (nodeId: number) => void;
+}
 
 const contentType = {
   WEB: {
@@ -22,22 +27,8 @@ const contentType = {
   },
 };
 
-export default function ContentSticker({
-  item,
-  topicId,
-}: {
-  item: CategoryContentDTO;
-  topicId: string;
-}) {
-  const { mutateAsync: removeTopicContent, isPending } = useRemoveTopicContent(topicId);
+export default function ContentSticker({ item, isSelected, onSelect }: ContentStickerProps) {
   const onOpen = useContentSidebarStore((state) => state.onOpen);
-
-  const onRemoveTopicContent = async () => {
-    await removeTopicContent({
-      topicId,
-      contentId: item.id,
-    });
-  };
 
   const onEditTopic = () => {
     onOpen(item.id);
@@ -69,11 +60,16 @@ export default function ContentSticker({
           <Button
             variant="ghost"
             size="icon"
-            className="bg-muted text-muted-foreground hover:bg-destructive h-8 w-8 shrink-0 hover:text-white"
-            onClick={onRemoveTopicContent}
-            disabled={isPending}
+            className={cn(
+              "h-8 w-8 shrink-0 transition-all",
+              isSelected
+                ? "bg-primary text-white"
+                : "bg-muted text-muted-foreground hover:bg-primary hover:text-white"
+            )}
+            onClick={() => onSelect(item.id)}
+            aria-label={isSelected ? "선택 해제" : "선택"}
           >
-            {isPending ? <Loader2 className="animate-spin" size={16} /> : <X size={16} />}
+            <Check size={16} />
           </Button>
         </div>
       </div>

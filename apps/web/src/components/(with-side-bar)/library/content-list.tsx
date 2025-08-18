@@ -158,14 +158,6 @@ export default function ContentList({ category }: ContentListProps) {
           ))}
         </div>
       )}
-
-      {/* 사이드바 */}
-      {/* <ContentSidebar
-        isOpen={isSidebarOpen}
-        onClose={onCloseSidebar}
-        selectedContentId={selectedContentId}
-        category={categoryName}
-      /> */}
     </div>
   );
 }

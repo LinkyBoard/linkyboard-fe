@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CATEGORY } from "@/constants/category";
+import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateCategory } from "@/lib/tanstack/mutation/category";
 import { errorToast, successToast } from "@/utils/toast";
 import {
@@ -23,8 +25,9 @@ function AddCategoryForm() {
     const name = formData.get("name") as string;
 
     await mutateAsync(name, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         successToast(`${name} 카테고리를 생성했어요.`);
+        invalidateQueries([CATEGORY.GET_CATEGORIES]);
         close();
       },
       onError: () => {

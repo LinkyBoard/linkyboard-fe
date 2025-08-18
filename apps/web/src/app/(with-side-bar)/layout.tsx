@@ -18,7 +18,9 @@ export default function WithSidePanelLayout({ children }: WithSidePanelLayoutPro
           <Sidebar />
         </Suspense>
         <main className="flex-1 p-8">{children}</main>
-        <ContentSidebar />
+        <Suspense>
+          <ContentSidebar />
+        </Suspense>
       </div>
 
       <div className="from-background to-muted flex min-h-screen flex-col items-center justify-center bg-gradient-to-br sm:hidden">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import Image from "@/components/image";
 import Sidebar from "@/components/sidebar";
@@ -10,6 +11,7 @@ import { CATEGORY } from "@/constants/category";
 import { CONTENT, CONTENT_TYPE } from "@/constants/content";
 import { invalidateMany } from "@/lib/tanstack";
 import { useRemoveContentById, useUpdateContent } from "@/lib/tanstack/mutation/content";
+import { useGetCategories } from "@/lib/tanstack/query/category";
 import { useGetContentById } from "@/lib/tanstack/query/content";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
 import { ContentDetailDTO } from "@/models/content";
@@ -18,8 +20,9 @@ import { errorToast } from "@/utils/toast";
 import { extractYoutubeId } from "@/utils/youtube";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
+import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 
-import { AlertCircle, Edit, Loader2, Plus, Save, Trash2, X } from "lucide-react";
+import { AlertCircle, ChevronDown, Edit, Loader2, Plus, Save, Trash2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import RemoveDialogContent from "../../topic/remove-dialog-content";
@@ -29,18 +32,28 @@ const DEFAULT_CONTENT = {
   summary: "",
   memo: "",
   tags: [],
+  category: "",
 };
 
 export default function ContentSidebar() {
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get("category");
+  const [categoryId] = currentCategory?.split(",") || [];
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const { isOpen, onClose, selectedContentId } = useContentSidebarStore();
   const { data, isLoading, isError } = useGetContentById(selectedContentId);
+  const { data: categories } = useGetCategories();
   const { mutateAsync: removeContent, isPending: isDeletePending } = useRemoveContentById();
   const { mutateAsync: updateContent, isPending: isUpdatePending } = useUpdateContent();
 
   const tagInputRef = useRef<HTMLInputElement>(null);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+
+  const [dropdownRef] = useOutsideClick<HTMLDivElement>(() => {
+    setIsCategoryDropdownOpen(false);
+  });
 
   const {
     register,
@@ -60,15 +73,13 @@ export default function ContentSidebar() {
   const youtubeId = extractYoutubeId(data?.url || "");
 
   const onEdit = () => {
-    if (data) {
-      reset({
-        title: data.title,
-        summary: data.summary || "",
-        memo: data.memo || "",
-        tags: data.tags,
-      });
-      setIsEditing(true);
-    }
+    if (!data) return;
+
+    reset({
+      ...data,
+      memo: data.memo || "",
+    });
+    setIsEditing(true);
   };
 
   const onSave = handleSubmit(async (submitData) => {
@@ -79,11 +90,12 @@ export default function ContentSidebar() {
       } as ContentDetailDTO;
 
       await updateContent(body, {
-        onSuccess: async () => {
+        onSuccess: () => {
           setIsEditing(false);
-          await invalidateMany([
+          setIsCategoryDropdownOpen(false);
+          invalidateMany([
             [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
-            [CONTENT.GET_CATEGORY_CONTENT_BY_ID, data?.contentId],
+            [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
             [CATEGORY.GET_CATEGORIES],
           ]);
         },
@@ -99,6 +111,7 @@ export default function ContentSidebar() {
 
   const onCancel = () => {
     setIsEditing(false);
+    setIsCategoryDropdownOpen(false);
     reset();
   };
 
@@ -109,7 +122,7 @@ export default function ContentSidebar() {
         onClose();
         invalidateMany([
           [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
-          [CONTENT.GET_CATEGORY_CONTENT_BY_ID, data?.contentId],
+          [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
           [CATEGORY.GET_CATEGORIES],
         ]);
       },
@@ -139,6 +152,11 @@ export default function ContentSidebar() {
     const newTags = watchedTags.filter((_, i) => i !== index);
     setValue("tags", newTags);
     tagInputRef.current?.focus();
+  };
+
+  const onCategorySelect = (category: string) => {
+    setValue("category", category.trim());
+    setIsCategoryDropdownOpen(false);
   };
 
   return (
@@ -180,6 +198,56 @@ export default function ContentSidebar() {
               </div>
 
               <div>
+                <label className="mb-2 block text-base font-medium">카테고리</label>
+                <div ref={dropdownRef} className="relative">
+                  <div className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-within:ring-ring flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-base focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-none disabled:cursor-not-allowed disabled:opacity-50">
+                    <input
+                      type="text"
+                      placeholder="카테고리를 입력하세요"
+                      className="w-full outline-none"
+                      onFocus={() => setIsCategoryDropdownOpen(true)}
+                      {...register("category")}
+                    />
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${isCategoryDropdownOpen ? "rotate-180" : ""}`}
+                    />
+                  </div>
+
+                  {isCategoryDropdownOpen && categories && (
+                    <div className="bg-background absolute z-10 mt-5 max-h-52 w-full overflow-y-auto rounded-md border shadow-lg">
+                      <button
+                        type="button"
+                        onClick={() => onCategorySelect(watch("category"))}
+                        disabled={!watch("category").trim()}
+                        className="hover:bg-accent text-foreground block w-full px-3 py-2 text-left text-base"
+                      >
+                        {watch("category")
+                          ? `"${watch("category")}" 사용하기`
+                          : "최소 1글자 입력해주세요."}
+                      </button>
+                      {categories.map((category) => (
+                        <button
+                          key={category.id}
+                          type="button"
+                          onClick={() => onCategorySelect(category.name)}
+                          className={`hover:bg-accent block w-full px-3 py-2 text-left text-base ${
+                            watch("category") === category.name
+                              ? "bg-accent text-accent-foreground"
+                              : "text-foreground"
+                          }`}
+                        >
+                          {category.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {errors.category && (
+                  <p className="text-destructive mt-1 text-sm">{errors.category.message}</p>
+                )}
+              </div>
+
+              <div>
                 <label className="mb-2 block text-base font-medium">요약</label>
                 <textarea
                   {...register("summary")}
@@ -198,9 +266,6 @@ export default function ContentSidebar() {
                   placeholder="메모를 입력하세요"
                   className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                 />
-                {errors.memo && (
-                  <p className="text-destructive mt-1 text-sm">{errors.memo.message}</p>
-                )}
               </div>
 
               <div>
@@ -276,6 +341,11 @@ export default function ContentSidebar() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 />
               )}
+
+              <div>
+                <h4 className="mb-2 text-lg font-medium">카테고리</h4>
+                <p className="text-muted-foreground text-base">{data?.category || "-"}</p>
+              </div>
 
               <div>
                 <h4 className="mb-2 text-lg font-medium">요약</h4>

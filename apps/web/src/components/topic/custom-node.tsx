@@ -23,7 +23,7 @@ import UserSticker from "./user-sticker";
 interface CustomNodeProps extends NodeProps {
   topicId: string;
   isSelected: boolean;
-  onSelect: (nodeId: number) => void;
+  onSelect: (nodeId: string) => void;
 }
 
 interface NodeData {

@@ -1,4 +1,4 @@
-import { useTopicStore } from "@/lib/zustand/topic-store";
+import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { TopicDTO } from "@/models/topic";
 import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
@@ -9,14 +9,14 @@ import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
 import { Button } from "../ui/button";
 
 export default function UserSticker({ item }: { item: TopicDTO }) {
-  const { setEditingTopic, setShowEditTopicSidebar } = useTopicStore();
+  const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
 
   const onEditTopic = () => {
-    setEditingTopic({
+    setEditingSticker({
       ...item,
       type: "custom_sticker",
     });
-    setShowEditTopicSidebar(true);
+    setShowEditStickerSidebar(true);
   };
 
   // 마크다운이 포함되어 있으면 HTML로 변환

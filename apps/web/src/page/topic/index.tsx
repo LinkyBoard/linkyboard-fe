@@ -4,7 +4,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "rea
 
 import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
-import EditTopicSidebar from "@/components/topic/edit-topic-sidebar";
+import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
 import RemoveContentButton from "@/components/topic/remove-content-button";
 import SummarizeDialog from "@/components/topic/summarize-dialog";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
+import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import { infoToast } from "@/utils/toast";
 import {
@@ -52,12 +53,13 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [isResizing, setIsResizing] = useState(false);
-  const [selectedNodeIds, setSelectedNodeIds] = useState<number[]>([]);
+  const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
 
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
 
   const { toggle } = useMobileMenuStore();
-  const { setShowNewTopicModal, setEditingTopic } = useTopicStore();
+  const setShowNewTopicModal = useTopicStore((state) => state.setShowNewTopicModal);
+  const setEditingSticker = useStickerStore((state) => state.setEditingSticker);
 
   const {
     data: topic,
@@ -72,7 +74,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  const onNodeSelect = (nodeId: number) => {
+  const onNodeSelect = (nodeId: string) => {
     setSelectedNodeIds((prev) =>
       prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]
     );
@@ -86,7 +88,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         <CustomNode
           {...props}
           topicId={id}
-          isSelected={selectedNodeIds.includes((props.data as { item: { id: number } }).item.id)}
+          isSelected={selectedNodeIds.includes(props.id)}
           onSelect={onNodeSelect}
         />
       ),
@@ -145,7 +147,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   };
 
   const onNewTopicClick = () => {
-    setEditingTopic(null);
+    setEditingSticker(null);
     setShowNewTopicModal(true);
   };
 

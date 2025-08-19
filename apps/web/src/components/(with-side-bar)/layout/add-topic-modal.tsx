@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
+import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import { errorToast, infoToast } from "@/utils/toast";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
@@ -17,13 +18,14 @@ import { Input } from "../../ui/input";
 export default function AddTopicModal() {
   const router = useRouter();
 
-  const topicStore = useTopicStore();
+  const { setShowNewTopicModal, showNewTopicModal } = useTopicStore();
+  const { setEditingSticker, editingSticker } = useStickerStore();
 
   const { mutateAsync: createTopic, isPending } = useCreateTopic();
 
   const onCloseModal = () => {
-    topicStore.setShowNewTopicModal(false);
-    topicStore.setEditingTopic(null);
+    setShowNewTopicModal(false);
+    setEditingSticker(null);
   };
 
   const [dialogRef] = useOutsideClick<HTMLDivElement>(onCloseModal);
@@ -57,7 +59,7 @@ export default function AddTopicModal() {
   };
 
   return (
-    topicStore.showNewTopicModal && (
+    showNewTopicModal && (
       <div
         role="dialog"
         className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50 transition-opacity duration-300"
@@ -67,7 +69,7 @@ export default function AddTopicModal() {
           <div className="mb-6">
             <h2 className="mb-2 text-xl font-semibold">새 토픽 생성</h2>
             <p className="text-muted-foreground">
-              {topicStore.editingTopic ? "토픽을 수정하세요" : "새로운 토픽을 생성하고 관리하세요"}
+              {editingSticker ? "토픽을 수정하세요" : "새로운 토픽을 생성하고 관리하세요"}
             </p>
           </div>
           <form onSubmit={onCreateTopic}>
@@ -76,7 +78,7 @@ export default function AddTopicModal() {
               <Input
                 type="text"
                 placeholder="토픽 제목을 입력하세요"
-                defaultValue={topicStore.editingTopic?.title || ""}
+                defaultValue={editingSticker?.title || ""}
                 name="title"
                 required
               />
@@ -86,7 +88,7 @@ export default function AddTopicModal() {
               <textarea
                 className="border-border bg-background resize-vertical min-h-[100px] w-full rounded-md border p-3"
                 placeholder="토픽에 대한 설명을 입력하세요"
-                defaultValue={topicStore.editingTopic?.content || ""}
+                defaultValue={editingSticker?.content || ""}
                 name="description"
               />
             </div>
@@ -97,7 +99,7 @@ export default function AddTopicModal() {
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <Loader2 size={16} className="animate-spin" />
-                ) : topicStore.editingTopic ? (
+                ) : editingSticker ? (
                   "수정"
                 ) : (
                   "생성"

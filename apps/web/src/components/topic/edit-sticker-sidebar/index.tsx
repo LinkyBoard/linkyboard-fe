@@ -13,7 +13,7 @@ import {
   useUpdateCustomSticker,
 } from "@/lib/tanstack/mutation/custom-sticker";
 import { useRemoveTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
-import { useTopicStore } from "@/lib/zustand/topic-store";
+import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
 import { revalidatePath } from "@/utils/revalidate";
 import { errorToast, successToast } from "@/utils/toast";
@@ -28,7 +28,7 @@ import StarterKit from "@tiptap/starter-kit";
 
 import { Loader2, Save, Trash2, X } from "lucide-react";
 
-import EditTopicTooltipList from "./edit-topic-tooltip-list";
+import EditTopicTooltipList from "./edit-sticker-tooltip-list";
 import RemoveDialogContent from "../remove-dialog-content";
 
 export default function EditTopicSidebar() {
@@ -49,19 +49,19 @@ export default function EditTopicSidebar() {
   const { mutateAsync: removeCustomSticker, isPending: isDeleteCustomStickerPending } =
     useRemoveCustomSticker();
 
-  const { setEditingTopic, setShowEditTopicSidebar, editingTopic, showEditTopicSidebar } =
-    useTopicStore();
+  const { setEditingSticker, setShowEditStickerSidebar, editingSticker, showEditStickerSidebar } =
+    useStickerStore();
 
   const buttonDisabled =
     isUpdatePending ||
     isDeletePending ||
     isUpdateCustomStickerPending ||
     isDeleteCustomStickerPending;
-  const currentType = editingTopic?.type === "custom_sticker" ? "스티커" : "토픽";
+  const currentType = editingSticker?.type === "custom_sticker" ? "스티커" : "토픽";
 
   const onClose = () => {
-    setEditingTopic(null);
-    setShowEditTopicSidebar(false);
+    setEditingSticker(null);
+    setShowEditStickerSidebar(false);
   };
 
   const onClickOutside = () => {
@@ -114,29 +114,29 @@ export default function EditTopicSidebar() {
   });
 
   useEffect(() => {
-    if (editingTopic && editor) {
-      setTitle(editingTopic.title);
+    if (editingSticker && editor) {
+      setTitle(editingSticker.title);
 
       // 마크다운이 포함되어 있으면 HTML로 변환
-      if (editingTopic.content && containsMarkdown(editingTopic.content)) {
-        const htmlContent = markdownToHtml(editingTopic.content);
+      if (editingSticker.content && containsMarkdown(editingSticker.content)) {
+        const htmlContent = markdownToHtml(editingSticker.content);
         editor.commands.setContent(htmlContent);
       } else {
-        editor.commands.setContent(editingTopic.content || "");
+        editor.commands.setContent(editingSticker.content || "");
       }
     }
-  }, [editingTopic, editor]);
+  }, [editingSticker, editor]);
 
   const onSave = async () => {
-    if (!editingTopic || !editor) return errorToast(`${currentType} 정보가 없어요.`);
+    if (!editingSticker || !editor) return errorToast(`${currentType} 정보가 없어요.`);
 
     try {
       const content = editor.getHTML();
-      // TODO: editingTopic.type에 따라 API 요청 다르게
-      if (editingTopic.type === "topic") {
+      // TODO: editingSticker.type에 따라 API 요청 다르게
+      if (editingSticker.type === "topic") {
         await updateTopic(
           {
-            id: editingTopic.id,
+            id: editingSticker.id,
             title,
             content,
           },
@@ -148,10 +148,10 @@ export default function EditTopicSidebar() {
             },
           }
         );
-      } else if (editingTopic.type === "custom_sticker") {
+      } else if (editingSticker.type === "custom_sticker") {
         await updateCustomSticker(
           {
-            customStickerId: editingTopic.id,
+            customStickerId: editingSticker.id,
             title,
             content,
           },
@@ -170,13 +170,13 @@ export default function EditTopicSidebar() {
   };
 
   const onCloseSidebar = () => {
-    setEditingTopic(null);
-    setShowEditTopicSidebar(false);
+    setEditingSticker(null);
+    setShowEditStickerSidebar(false);
     onClose();
   };
 
   const onDelete = async (id: number) => {
-    if (editingTopic?.type === "topic") {
+    if (editingSticker?.type === "topic") {
       await removeTopic(id, {
         onSuccess: () => {
           successToast("토픽이 성공적으로 삭제되었어요.");
@@ -189,7 +189,7 @@ export default function EditTopicSidebar() {
           errorToast("토픽 삭제에 실패했어요.");
         },
       });
-    } else if (editingTopic?.type === "custom_sticker") {
+    } else if (editingSticker?.type === "custom_sticker") {
       await removeCustomSticker(id, {
         onSuccess: () => {
           successToast("스티커가 성공적으로 삭제되었어요.");
@@ -204,7 +204,7 @@ export default function EditTopicSidebar() {
   };
 
   return (
-    <Sidebar isOpen={showEditTopicSidebar} onClose={onClickOutside}>
+    <Sidebar isOpen={showEditStickerSidebar} onClose={onClickOutside}>
       <div className="flex h-full flex-col">
         {/* 헤더 */}
         <div className="flex items-center justify-between border-b p-6">
@@ -266,7 +266,7 @@ export default function EditTopicSidebar() {
                 </DialogTrigger>
               </Button>
               <RemoveDialogContent
-                id={editingTopic?.id || null}
+                id={editingSticker?.id || null}
                 setIsDeleteModalOpen={setIsDeleteModalOpen}
                 onDelete={onDelete}
               />

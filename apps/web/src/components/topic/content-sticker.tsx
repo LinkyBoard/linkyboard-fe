@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 interface ContentStickerProps {
   item: CategoryContentDTO;
   isSelected: boolean;
-  onSelect: (nodeId: number) => void;
+  onSelect: (nodeId: string) => void;
 }
 
 const contentType = {
@@ -66,7 +66,7 @@ export default function ContentSticker({ item, isSelected, onSelect }: ContentSt
                 ? "bg-primary text-white"
                 : "bg-muted text-muted-foreground hover:bg-primary hover:text-white"
             )}
-            onClick={() => onSelect(item.id)}
+            onClick={() => onSelect(`content-${item.id}`)}
             aria-label={isSelected ? "선택 해제" : "선택"}
           >
             <Check size={16} />

@@ -1,4 +1,4 @@
-import { useTopicStore } from "@/lib/zustand/topic-store";
+import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { TopicDTO } from "@/models/topic";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 
@@ -8,14 +8,14 @@ import RemoveTopicDialog from "./remove-topic-dialog";
 import { Button } from "../ui/button";
 
 export default function TopicSticker({ item }: { item: TopicDTO }) {
-  const { setEditingTopic, setShowEditTopicSidebar } = useTopicStore();
+  const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
 
   const onEditTopic = () => {
-    setEditingTopic({
+    setEditingSticker({
       ...item,
       type: "topic",
     });
-    setShowEditTopicSidebar(true);
+    setShowEditStickerSidebar(true);
   };
 
   return (

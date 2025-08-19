@@ -9,8 +9,8 @@ import { Button } from "../ui/button";
 
 interface RemoveContentButtonProps {
   topicId: string;
-  selectedNodeIds: number[];
-  setSelectedNodeIds: React.Dispatch<React.SetStateAction<number[]>>;
+  selectedNodeIds: string[];
+  setSelectedNodeIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function RemoveContentButton({
@@ -18,13 +18,15 @@ export default function RemoveContentButton({
   selectedNodeIds,
   setSelectedNodeIds,
 }: RemoveContentButtonProps) {
+  const contentIds = selectedNodeIds.map((id) => Number(id.split("-")[1]));
+
   const { mutateAsync, isPending } = useRemoveTopicContentById();
 
   const onRemoveContent = async () => {
     await mutateAsync(
       {
         topicId,
-        contentIds: selectedNodeIds,
+        contentIds,
       },
       {
         onSuccess: () => {

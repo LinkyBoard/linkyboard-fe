@@ -4,7 +4,7 @@ import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useSummarizeTopicContent } from "@/lib/tanstack/mutation/custom-sticker";
 import { useGetAiModels } from "@/lib/tanstack/query/custom-sticker";
-import { useTopicStore } from "@/lib/zustand/topic-store";
+import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { AIModelDTO } from "@/models/custom-sticker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -25,7 +25,7 @@ import { Button } from "../ui/button";
 
 interface SummarizeDialogProps {
   topicId: string;
-  selectedNodeIds: number[];
+  selectedNodeIds: string[];
 }
 
 const DEFAULT_VALUES = {
@@ -37,7 +37,7 @@ const DEFAULT_VALUES = {
 function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogProps) {
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
 
-  const { setEditingTopic, setShowEditTopicSidebar } = useTopicStore();
+  const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
 
   const [dropdownRef] = useOutsideClick<HTMLDivElement>(() => {
     setIsModelDropdownOpen(false);
@@ -52,6 +52,7 @@ function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogPro
     defaultValues: DEFAULT_VALUES,
   });
 
+  const selectedContentIds = selectedNodeIds.map((id) => Number(id.split("-")[1]));
   const watchedModel = watch("modelName");
 
   const onModelSelect = (e: React.MouseEvent<HTMLButtonElement>, model: AIModelDTO) => {
@@ -70,19 +71,19 @@ function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogPro
     await mutateAsync(
       {
         topicId,
-        selectedContentIds: selectedNodeIds,
+        selectedContentIds,
         requirements: data.prompt,
         modelAlias: data.alias,
       },
       {
         onSuccess: (data) => {
           invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
-          setEditingTopic({
+          setEditingSticker({
             ...data.result,
             content: data.result.draftMd,
             type: "custom_sticker",
           });
-          setShowEditTopicSidebar(true);
+          setShowEditStickerSidebar(true);
           close();
         },
         onError: (error) => {

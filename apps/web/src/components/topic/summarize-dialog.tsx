@@ -6,14 +6,9 @@ import { useSummarizeTopicContent } from "@/lib/tanstack/mutation/custom-sticker
 import { useGetAiModels } from "@/lib/tanstack/query/custom-sticker";
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { AIModelDTO } from "@/models/custom-sticker";
+import { promisedToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTrigger,
-  useDialog,
-} from "@repo/ui/components/dialog";
+import { Dialog, DialogContent, DialogTrigger, useDialog } from "@repo/ui/components/dialog";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 import { cn } from "@repo/ui/utils/cn";
 
@@ -47,10 +42,15 @@ function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogPro
   const { data } = useGetAiModels();
   const { mutateAsync, isPending } = useSummarizeTopicContent();
 
-  const { register, handleSubmit, watch, setValue } = useForm<SummarizeSchemaType>({
+  const { register, handleSubmit, watch, setValue, reset } = useForm<SummarizeSchemaType>({
     resolver: zodResolver(summarizeSchema),
     defaultValues: DEFAULT_VALUES,
   });
+
+  const onClose = () => {
+    close();
+    reset();
+  };
 
   const selectedContentIds = selectedNodeIds.map((id) => Number(id.split("-")[1]));
   const watchedModel = watch("modelName");
@@ -68,7 +68,8 @@ function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogPro
   };
 
   const onSummarize = handleSubmit(async (data) => {
-    await mutateAsync(
+    close();
+    const promise = mutateAsync(
       {
         topicId,
         selectedContentIds,
@@ -84,13 +85,18 @@ function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogPro
             type: "custom_sticker",
           });
           setShowEditStickerSidebar(true);
-          close();
+          reset();
         },
         onError: (error) => {
           console.error(error);
         },
       }
     );
+    promisedToast(promise, {
+      loading: "요약 중...",
+      success: "요약이 완료되었어요.",
+      error: "요약에 실패했어요.",
+    });
   });
 
   return (
@@ -152,8 +158,8 @@ function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogPro
             />
           </div>
           <div className="mt-4 flex justify-end gap-2">
-            <Button type="button" variant="outline" asChild disabled={isPending}>
-              <DialogClose>취소</DialogClose>
+            <Button type="button" variant="outline" disabled={isPending} onClick={onClose}>
+              취소
             </Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? "요약 중..." : "요약"}

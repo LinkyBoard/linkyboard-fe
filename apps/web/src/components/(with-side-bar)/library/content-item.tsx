@@ -25,6 +25,18 @@ const contentType = {
 export default function ContentItem({ item, ...props }: ContentItemProps) {
   const { className, ...restProps } = props;
 
+  const onDragStart = (e: React.DragEvent<HTMLButtonElement>) => {
+    e.dataTransfer.setData("application/json", JSON.stringify(item));
+    e.dataTransfer.effectAllowed = "copy";
+
+    // 드래그 중인 요소에 시각적 피드백 추가
+    e.currentTarget.style.opacity = "0.5";
+  };
+
+  const onDragEnd = (e: React.DragEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.opacity = "1";
+  };
+
   return (
     <button
       className={cn(
@@ -32,6 +44,9 @@ export default function ContentItem({ item, ...props }: ContentItemProps) {
         className
       )}
       aria-label={`${item.title} 콘텐츠 상세보기`}
+      draggable
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
       {...restProps}
     >
       <div className="mb-4 flex items-center gap-4">

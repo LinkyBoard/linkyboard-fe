@@ -12,8 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
+import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
+import type { CategoryContentDTO } from "@/models/content";
 import { infoToast } from "@/utils/toast";
 import {
   addEdge,
@@ -67,6 +69,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   } = useGetTopicById(id);
   const { mutateAsync: createConnection } = useCreateConnection();
   const { mutateAsync: removeConnection } = useRemoveConnection();
+  const { mutateAsync: createContent } = useCreateContent(id);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
@@ -137,6 +140,24 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     } catch (error) {
       setEdges((eds) => addEdge(edgeData, eds));
     }
+  };
+
+  // 드래그 앤 드롭 핸들러
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  };
+
+  const onDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+
+    const contentData: CategoryContentDTO = JSON.parse(e.dataTransfer.getData("application/json"));
+
+    // 서버에 콘텐츠 추가
+    await createContent({
+      topicId: id,
+      contentId: contentData.id,
+    });
   };
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -261,7 +282,11 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         </div>
 
         {/* Canvas */}
-        <div className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0">
+        <div
+          className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0"
+          onDragOver={onDragOver}
+          onDrop={onDrop}
+        >
           {isLoading ? (
             <div className="flex h-full flex-col items-center justify-center gap-2">
               <Loader2 className="text-muted-foreground size-16 animate-spin" />

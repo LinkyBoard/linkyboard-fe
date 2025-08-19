@@ -42,7 +42,7 @@ export const removeCustomSticker = async (
 };
 
 export const createCustomSticker = async (props: {
-  topicId: number;
+  topicId: string;
   title: string;
   content: string;
 }): Promise<BaseResponseDTO<unknown>> => {

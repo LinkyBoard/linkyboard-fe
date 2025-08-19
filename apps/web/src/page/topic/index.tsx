@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
+import AddStickerDialog from "@/components/topic/add-sticker-dialog";
 import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
 import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
@@ -62,7 +63,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
 
   const {
     data: topic,
-    isLoading: isTopicLoading,
+    isLoading,
     isError: isTopicError,
     error,
     isRefetching,
@@ -80,8 +81,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     );
   };
 
-  const isLoading = isTopicLoading;
-  const isNotFoundError = !isTopicLoading && error?.message.includes("404");
+  const isNotFoundError = !isLoading && error?.message.includes("404");
   const nodeTypes: NodeTypes = useMemo(
     () => ({
       custom: (props: NodeProps) => (
@@ -261,6 +261,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
           <AddTopicDialog>
             <Plus size={16} />새 토픽
           </AddTopicDialog>
+          <AddStickerDialog topicId={id} />
         </div>
       </header>
 

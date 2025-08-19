@@ -10,6 +10,7 @@ interface ContentStickerProps {
   item: CategoryContentDTO;
   isSelected: boolean;
   onSelect: (nodeId: string) => void;
+  height?: number;
 }
 
 const contentType = {
@@ -27,15 +28,22 @@ const contentType = {
   },
 };
 
-export default function ContentSticker({ item, isSelected, onSelect }: ContentStickerProps) {
+export default function ContentSticker({
+  item,
+  isSelected,
+  onSelect,
+  height,
+}: ContentStickerProps) {
   const onOpen = useContentSidebarStore((state) => state.onOpen);
 
   const onEditTopic = () => {
     onOpen(item.id);
   };
 
+  const shouldShowMemo = height && height >= 300;
+
   return (
-    <>
+    <div className="flex h-full flex-col">
       <div className="mb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-4 overflow-hidden">
           <div
@@ -88,6 +96,14 @@ export default function ContentSticker({ item, isSelected, onSelect }: ContentSt
           </span>
         )}
       </div>
-    </>
+
+      {/* 스티커가 충분히 클 때만 메모를 보여줌 */}
+      {shouldShowMemo && (
+        <div className="mt-4 flex-1 rounded-lg bg-blue-50 p-3">
+          <h4 className="mb-2 text-sm font-semibold text-blue-900">메모</h4>
+          <p className="text-sm leading-relaxed text-blue-800">ㅇㅁㄹㅇㅁㄴㄹㅁㄴㅇ</p>
+        </div>
+      )}
+    </div>
   );
 }

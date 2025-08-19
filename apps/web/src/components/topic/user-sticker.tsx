@@ -28,7 +28,7 @@ export default function UserSticker({ item }: { item: TopicDTO }) {
   };
 
   return (
-    <>
+    <div className="flex h-full flex-col overflow-hidden">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex size-15 shrink-0 items-center justify-center rounded-2xl bg-yellow-300 text-yellow-900">
           <Sticker size={24} />
@@ -61,11 +61,8 @@ export default function UserSticker({ item }: { item: TopicDTO }) {
         <h2 className="mb-3 line-clamp-1 text-2xl leading-tight font-bold text-gray-800">
           {item.title}
         </h2>
-        <p
-          className="line-clamp-2 text-lg leading-relaxed text-gray-600"
-          dangerouslySetInnerHTML={{ __html: renderContent(item.content) }}
-        />
+        <div className="prose" dangerouslySetInnerHTML={{ __html: renderContent(item.content) }} />
       </div>
-    </>
+    </div>
   );
 }

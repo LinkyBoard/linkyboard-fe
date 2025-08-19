@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "@xyflow/react/dist/style.css";
+@plugin "@tailwindcss/typography";
 
 @theme inline {
   --color-background: var(--background);

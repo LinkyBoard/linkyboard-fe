@@ -217,6 +217,7 @@ export default function CustomNode(props: CustomNodeProps) {
           item={nodeData.item as CategoryContentDTO}
           isSelected={props.isSelected}
           onSelect={props.onSelect}
+          height={props.height}
         />
       ) : (
         <UserSticker item={nodeData.item as TopicDTO} />

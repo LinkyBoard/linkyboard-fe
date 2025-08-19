@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -8,13 +7,11 @@ import Logo from "@/assets/logo.svg";
 import SentinelSpinner from "@/components/sentinel-spinner";
 import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import { useTopicStore } from "@/lib/zustand/topic-store";
 import { TopicDTO } from "@/models/topic";
 import { cn } from "@repo/ui/utils/cn";
 
 import { Book, Grid3X3, Home, Loader2, LucideIcon } from "lucide-react";
 
-import AddTopicModal from "./add-topic-modal";
 import RecentTopicItem from "./recent-topic-item";
 
 interface NavItem {
@@ -36,7 +33,6 @@ export default function Sidebar() {
   const router = useRouter();
 
   const { isOpen, close } = useMobileMenuStore();
-  const setShowNewTopicModal = useTopicStore((state) => state.setShowNewTopicModal);
 
   // 현재 선택된 토픽 ID 가져오기
   const currentTopicId = Number(searchParams.get("id") || "");
@@ -53,17 +49,6 @@ export default function Sidebar() {
     router.push(`/topic?id=${topic.id}`);
     close(); // 모바일에서 사이드바 닫기
   };
-
-  useEffect(() => {
-    const onKeydown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setShowNewTopicModal(false);
-      }
-    };
-
-    document.addEventListener("keydown", onKeydown);
-    return () => document.removeEventListener("keydown", onKeydown);
-  }, []);
 
   return (
     <>
@@ -140,8 +125,6 @@ export default function Sidebar() {
 
       {/* Mobile Overlay */}
       {isOpen && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={close} />}
-
-      <AddTopicModal />
     </>
   );
 }

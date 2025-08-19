@@ -56,7 +56,7 @@ function DialogTrigger({
   children,
   className,
   ...restProps
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { open } = useDialog();
 
   const onOpen = (e: MouseEvent<HTMLButtonElement>) => {

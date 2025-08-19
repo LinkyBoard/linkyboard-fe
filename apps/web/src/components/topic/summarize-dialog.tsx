@@ -21,6 +21,7 @@ import { Button } from "../ui/button";
 interface SummarizeDialogProps {
   topicId: string;
   selectedNodeIds: string[];
+  setSelectedNodeIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const DEFAULT_VALUES = {
@@ -29,7 +30,11 @@ const DEFAULT_VALUES = {
   prompt: "",
 };
 
-function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogProps) {
+function SummarizeDialogContent({
+  topicId,
+  selectedNodeIds,
+  setSelectedNodeIds,
+}: SummarizeDialogProps) {
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
 
   const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
@@ -86,6 +91,7 @@ function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogPro
           });
           setShowEditStickerSidebar(true);
           reset();
+          setSelectedNodeIds([]);
         },
         onError: (error) => {
           console.error(error);

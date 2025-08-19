@@ -2,6 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
 import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
 import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
@@ -13,8 +14,6 @@ import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import { useStickerStore } from "@/lib/zustand/sticker-store";
-import { useTopicStore } from "@/lib/zustand/topic-store";
 import { infoToast } from "@/utils/toast";
 import {
   addEdge,
@@ -58,8 +57,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
 
   const { toggle } = useMobileMenuStore();
-  const setShowNewTopicModal = useTopicStore((state) => state.setShowNewTopicModal);
-  const setEditingSticker = useStickerStore((state) => state.setEditingSticker);
 
   const {
     data: topic,
@@ -144,11 +141,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
-  };
-
-  const onNewTopicClick = () => {
-    setEditingSticker(null);
-    setShowNewTopicModal(true);
   };
 
   const onResizeStart = (e: React.MouseEvent) => {
@@ -238,12 +230,16 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
                 selectedNodeIds={selectedNodeIds}
                 setSelectedNodeIds={setSelectedNodeIds}
               />
-              <SummarizeDialog topicId={id} selectedNodeIds={selectedNodeIds} />
+              <SummarizeDialog
+                topicId={id}
+                selectedNodeIds={selectedNodeIds}
+                setSelectedNodeIds={setSelectedNodeIds}
+              />
             </>
           )}
-          <Button variant="default" onClick={onNewTopicClick} className="flex items-center gap-2">
+          <AddTopicDialog>
             <Plus size={16} />새 토픽
-          </Button>
+          </AddTopicDialog>
         </div>
       </header>
 
@@ -300,9 +296,9 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
                 <p className="text-muted-foreground mb-6">
                   토픽을 선택하거나 새 토픽을 생성해보세요
                 </p>
-                <Button onClick={onNewTopicClick} className="mx-auto flex items-center gap-2">
+                <AddTopicDialog>
                   <Plus size={16} />새 토픽 생성
-                </Button>
+                </AddTopicDialog>
               </div>
             </div>
           )}

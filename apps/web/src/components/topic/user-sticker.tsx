@@ -5,7 +5,7 @@ import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 
 import { Edit, Sticker, Trash2 } from "lucide-react";
 
-import RemoveTopicDialog from "./remove-topic-dialog";
+import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
 import { Button } from "../ui/button";
 
 export default function UserSticker({ item }: { item: TopicDTO }) {
@@ -53,7 +53,7 @@ export default function UserSticker({ item }: { item: TopicDTO }) {
                 <Trash2 size={16} />
               </DialogTrigger>
             </Button>
-            <RemoveTopicDialog topicId={item.id} />
+            <RemoveUserStickerDialog topicId={item.id} />
           </Dialog>
         </div>
       </div>

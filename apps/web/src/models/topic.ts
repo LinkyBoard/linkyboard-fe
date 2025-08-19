@@ -8,6 +8,12 @@ export interface TopicDTO {
   content: string;
 }
 
+export interface SummarizeContentDTO {
+  id: number;
+  title: string;
+  draftMd: string;
+}
+
 export interface TopicDetailDTO {
   nodes: {
     data: {

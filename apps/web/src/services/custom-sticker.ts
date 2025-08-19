@@ -1,5 +1,5 @@
 import { AIModelDTO } from "@/models/custom-sticker";
-import { TopicDTO } from "@/models/topic";
+import { SummarizeContentDTO } from "@/models/topic";
 import { BaseResponseDTO } from "@repo/types";
 
 import { clientApi } from ".";
@@ -13,7 +13,7 @@ export const summarizeTopicContent = async (props: {
   selectedContentIds: number[];
   requirements: string;
   modelAlias: string;
-}): Promise<BaseResponseDTO<TopicDTO>> => {
+}): Promise<BaseResponseDTO<SummarizeContentDTO>> => {
   return clientApi.post(`custom-stickers/summarize`, props);
 };
 
@@ -33,4 +33,27 @@ export const updateCustomStickerSize = async (props: {
 }): Promise<BaseResponseDTO<unknown>> => {
   const { customStickerId, ...restProps } = props;
   return clientApi.put(`custom-stickers/${customStickerId}/resize`, restProps);
+};
+
+export const removeCustomSticker = async (
+  customStickerId: number
+): Promise<BaseResponseDTO<unknown>> => {
+  return clientApi.delete(`custom-stickers/${customStickerId}`);
+};
+
+export const createCustomSticker = async (props: {
+  topicId: number;
+  title: string;
+  content: string;
+}): Promise<BaseResponseDTO<unknown>> => {
+  return clientApi.post(`custom-stickers`, props);
+};
+
+export const updateCustomSticker = async (props: {
+  customStickerId: number;
+  title: string;
+  content: string;
+}): Promise<BaseResponseDTO<unknown>> => {
+  const { customStickerId, ...restProps } = props;
+  return clientApi.put(`custom-stickers/${customStickerId}`, restProps);
 };

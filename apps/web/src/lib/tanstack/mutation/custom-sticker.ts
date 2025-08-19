@@ -1,5 +1,8 @@
 import {
+  createCustomSticker,
+  removeCustomSticker,
   summarizeTopicContent,
+  updateCustomSticker,
   updateCustomStickerPosition,
   updateCustomStickerSize,
 } from "@/services/custom-sticker";
@@ -20,5 +23,23 @@ export const useUpdateCustomStickerPosition = () => {
 export const useUpdateCustomStickerSize = () => {
   return useMutation({
     mutationFn: updateCustomStickerSize,
+  });
+};
+
+export const useRemoveCustomSticker = () => {
+  return useMutation({
+    mutationFn: removeCustomSticker,
+  });
+};
+
+export const useCreateCustomSticker = () => {
+  return useMutation({
+    mutationFn: createCustomSticker,
+  });
+};
+
+export const useUpdateCustomSticker = () => {
+  return useMutation({
+    mutationFn: updateCustomSticker,
   });
 };

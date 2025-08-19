@@ -79,6 +79,7 @@ function SummarizeDialogContent({ topicId, selectedNodeIds }: SummarizeDialogPro
           invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
           setEditingTopic({
             ...data.result,
+            content: data.result.draftMd,
             type: "custom_sticker",
           });
           setShowEditTopicSidebar(true);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import ContentList from "@/components/topic/content-list";
 import CustomNode from "@/components/topic/custom-node";
@@ -308,7 +308,9 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       </div>
 
       {/* Edit Topic Sidebar */}
-      <EditTopicSidebar />
+      <Suspense>
+        <EditTopicSidebar />
+      </Suspense>
     </div>
   );
 }

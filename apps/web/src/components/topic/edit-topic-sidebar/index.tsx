@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TOPIC } from "@/constants/topic";
 import { invalidateMany, invalidateQueries } from "@/lib/tanstack";
+import {
+  useRemoveCustomSticker,
+  useUpdateCustomSticker,
+} from "@/lib/tanstack/mutation/custom-sticker";
 import { useRemoveTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
 import { useTopicStore } from "@/lib/zustand/topic-store";
 import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
@@ -29,16 +33,31 @@ import RemoveDialogContent from "../remove-dialog-content";
 
 export default function EditTopicSidebar() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const topicId = searchParams.get("id");
 
   const [title, setTitle] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // 토픽 관련 hook
   const { mutateAsync: updateTopic, isPending: isUpdatePending } = useUpdateTopic();
   const { mutateAsync: removeTopic, isPending: isDeletePending } = useRemoveTopic();
+
+  // 스티커 관련 hook
+  const { mutateAsync: updateCustomSticker, isPending: isUpdateCustomStickerPending } =
+    useUpdateCustomSticker();
+  const { mutateAsync: removeCustomSticker, isPending: isDeleteCustomStickerPending } =
+    useRemoveCustomSticker();
+
   const { setEditingTopic, setShowEditTopicSidebar, editingTopic, showEditTopicSidebar } =
     useTopicStore();
 
-  const buttonDisabled = isUpdatePending || isDeletePending;
+  const buttonDisabled =
+    isUpdatePending ||
+    isDeletePending ||
+    isUpdateCustomStickerPending ||
+    isDeleteCustomStickerPending;
+  const currentType = editingTopic?.type === "custom_sticker" ? "스티커" : "토픽";
 
   const onClose = () => {
     setEditingTopic(null);
@@ -109,28 +128,42 @@ export default function EditTopicSidebar() {
   }, [editingTopic, editor]);
 
   const onSave = async () => {
-    if (!editingTopic || !editor) return errorToast("토픽 정보가 없어요.");
+    if (!editingTopic || !editor) return errorToast(`${currentType} 정보가 없어요.`);
 
     try {
       const content = editor.getHTML();
       // TODO: editingTopic.type에 따라 API 요청 다르게
-      await updateTopic(
-        {
-          id: editingTopic.id,
-          title,
-          content,
-        },
-        {
-          onSuccess: async () => {
-            successToast("토픽이 성공적으로 수정되었어요.");
-            await invalidateMany([
-              [TOPIC.GET_ALL_TOPICS],
-              [TOPIC.GET_TOPIC_BY_ID, editingTopic?.id.toString()],
-            ]);
-            onClose();
+      if (editingTopic.type === "topic") {
+        await updateTopic(
+          {
+            id: editingTopic.id,
+            title,
+            content,
           },
-        }
-      );
+          {
+            onSuccess: async () => {
+              successToast("토픽이 성공적으로 수정되었어요.");
+              await invalidateMany([[TOPIC.GET_ALL_TOPICS], [TOPIC.GET_TOPIC_BY_ID, topicId]]);
+              onClose();
+            },
+          }
+        );
+      } else if (editingTopic.type === "custom_sticker") {
+        await updateCustomSticker(
+          {
+            customStickerId: editingTopic.id,
+            title,
+            content,
+          },
+          {
+            onSuccess: async () => {
+              successToast("스티커가 성공적으로 수정되었어요.");
+              invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
+              onClose();
+            },
+          }
+        );
+      }
     } catch {
       errorToast("토픽 수정에 실패했어요.");
     }
@@ -143,18 +176,31 @@ export default function EditTopicSidebar() {
   };
 
   const onDelete = async (id: number) => {
-    await removeTopic(id, {
-      onSuccess: () => {
-        successToast("토픽이 성공적으로 삭제되었어요.");
-        onCloseSidebar();
-        invalidateQueries([TOPIC.GET_ALL_TOPICS]);
-        revalidatePath(`/topic?id=${id}`);
-        router.back();
-      },
-      onError: () => {
-        errorToast("토픽 삭제에 실패했어요.");
-      },
-    });
+    if (editingTopic?.type === "topic") {
+      await removeTopic(id, {
+        onSuccess: () => {
+          successToast("토픽이 성공적으로 삭제되었어요.");
+          onCloseSidebar();
+          invalidateQueries([TOPIC.GET_ALL_TOPICS]);
+          revalidatePath(`/topic?id=${id}`);
+          router.back();
+        },
+        onError: () => {
+          errorToast("토픽 삭제에 실패했어요.");
+        },
+      });
+    } else if (editingTopic?.type === "custom_sticker") {
+      await removeCustomSticker(id, {
+        onSuccess: () => {
+          successToast("스티커가 성공적으로 삭제되었어요.");
+          onCloseSidebar();
+          invalidateQueries([TOPIC.GET_ALL_TOPICS]);
+        },
+        onError: () => {
+          errorToast("스티커 삭제에 실패했어요.");
+        },
+      });
+    }
   };
 
   return (
@@ -162,7 +208,7 @@ export default function EditTopicSidebar() {
       <div className="flex h-full flex-col">
         {/* 헤더 */}
         <div className="flex items-center justify-between border-b p-6">
-          <h2 className="text-xl font-semibold">토픽 편집</h2>
+          <h2 className="text-xl font-semibold">{currentType} 편집</h2>
           <Button variant="ghost" size="icon" onClick={onCloseSidebar} aria-label="사이드바 닫기">
             <X size={24} />
           </Button>
@@ -176,7 +222,7 @@ export default function EditTopicSidebar() {
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="토픽 제목을 입력하세요"
+              placeholder={`${currentType} 제목을 입력하세요`}
               className="text-base"
             />
           </div>

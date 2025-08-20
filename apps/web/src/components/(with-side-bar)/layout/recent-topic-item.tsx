@@ -51,7 +51,7 @@ export default function RecentTopicItem({ isSelected, topic, onTopicClick }: Rec
         </div>
         <div
           className={cn(
-            "text-xs",
+            "line-clamp-1 text-xs",
             isSelected ? "text-sidebar-primary-foreground/80" : "text-muted-foreground"
           )}
           dangerouslySetInnerHTML={{ __html: topic.content }}

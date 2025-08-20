@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 import { cn } from "@repo/ui/utils/cn";
 
-import type { ButtonHTMLAttributes, HTMLAttributes, MouseEvent, ReactNode } from "react";
+import type { HTMLAttributes, MouseEvent, ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 interface DialogContextType {
@@ -52,11 +52,7 @@ function Dialog({ children }: DialogProps) {
   );
 }
 
-function DialogTrigger({
-  children,
-  className,
-  ...restProps
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { children: ReactNode }) {
+function DialogTrigger({ children, className, ...restProps }: HTMLAttributes<HTMLButtonElement>) {
   const { open } = useDialog();
 
   const onOpen = (e: MouseEvent<HTMLButtonElement>) => {
@@ -71,11 +67,7 @@ function DialogTrigger({
   );
 }
 
-function DialogClose({
-  children,
-  className,
-  ...restProps
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
+function DialogClose({ children, className, ...restProps }: HTMLAttributes<HTMLButtonElement>) {
   const { close } = useDialog();
 
   return (

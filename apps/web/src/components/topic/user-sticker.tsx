@@ -8,7 +8,7 @@ import { Edit, Sticker, Trash2 } from "lucide-react";
 import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
 import { Button } from "../ui/button";
 
-export default function UserSticker({ item }: { item: TopicDTO }) {
+export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId: string }) {
   const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
 
   const onEditTopic = () => {
@@ -53,7 +53,7 @@ export default function UserSticker({ item }: { item: TopicDTO }) {
                 <Trash2 size={16} />
               </DialogTrigger>
             </Button>
-            <RemoveUserStickerDialog topicId={item.id} />
+            <RemoveUserStickerDialog customStickerId={item.id} topicId={topicId} />
           </Dialog>
         </div>
       </div>

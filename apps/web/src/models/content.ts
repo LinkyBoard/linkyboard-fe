@@ -10,7 +10,7 @@ export interface CategoryContentDTO {
 }
 
 export interface ContentDetailDTO {
-  contentId: number;
+  id: number;
   thumbnail: string;
   title: string;
   url: string;

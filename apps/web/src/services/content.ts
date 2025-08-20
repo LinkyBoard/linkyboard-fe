@@ -20,6 +20,6 @@ export const removeContentById = async (contentId: number): Promise<BaseResponse
 };
 
 export const updateContent = async (props: ContentDetailDTO): Promise<BaseResponseDTO<unknown>> => {
-  const { contentId, ...restProps } = props;
-  return clientApi.put(`contents/${contentId}`, restProps);
+  const { id, ...restProps } = props;
+  return clientApi.put(`contents/${id}`, restProps);
 };

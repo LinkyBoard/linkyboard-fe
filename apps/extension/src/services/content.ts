@@ -5,7 +5,7 @@ import { DetailSaveContentDTO } from "../models/content";
 import { api } from ".";
 
 export const quickSaveContent = async (formData: FormData): Promise<BaseResponseDTO<unknown>> => {
-  return api.post("contents", { body: formData }).json();
+  return api.post("contents/web", { body: formData }).json();
 };
 
 export const detailSaveContent = async ({

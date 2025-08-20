@@ -8,15 +8,21 @@ import { Loader2 } from "lucide-react";
 
 import { Button } from "../ui/button";
 
-export default function RemoveUserStickerDialog({ topicId }: { topicId: number }) {
+export default function RemoveUserStickerDialog({
+  customStickerId,
+  topicId,
+}: {
+  customStickerId: number;
+  topicId: string;
+}) {
   const { mutateAsync, isPending } = useRemoveCustomSticker();
   const { close } = useDialog();
 
   const onRemoveTopic = async () => {
-    await mutateAsync(topicId, {
+    await mutateAsync(customStickerId, {
       onSuccess: () => {
         successToast("스티커가 삭제되었어요.");
-        invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId.toString()]);
+        invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
         close();
       },
       onError: () => {

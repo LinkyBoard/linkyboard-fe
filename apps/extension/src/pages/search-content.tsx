@@ -100,7 +100,6 @@ export default function SearchContent() {
     formData.append("title", currentTab.title);
     formData.append("url", currentTab.url);
     formData.append("thumbnail", thumbnail);
-    formData.append("type", currentContentType);
 
     await mutateQuickSaveContent(formData);
   };

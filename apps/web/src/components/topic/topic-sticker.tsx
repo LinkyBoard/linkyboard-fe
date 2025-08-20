@@ -1,8 +1,7 @@
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { TopicDTO } from "@/models/topic";
-import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 
-import { Edit, NotebookPen, Trash2 } from "lucide-react";
+import { Edit, NotebookPen } from "lucide-react";
 
 import { Button } from "../ui/button";
 
@@ -32,18 +31,6 @@ export default function TopicSticker({ item }: { item: TopicDTO }) {
           >
             <Edit size={16} />
           </Button>
-          <Dialog>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-9 bg-white/20 text-white hover:bg-white/30"
-              asChild
-            >
-              <DialogTrigger>
-                <Trash2 size={16} />
-              </DialogTrigger>
-            </Button>
-          </Dialog>
         </div>
       </div>
       <div>

@@ -220,7 +220,7 @@ export default function CustomNode(props: CustomNodeProps) {
           height={props.height}
         />
       ) : (
-        <UserSticker item={nodeData.item as TopicDTO} />
+        <UserSticker item={nodeData.item as TopicDTO} topicId={props.topicId} />
       )}
     </div>
   );

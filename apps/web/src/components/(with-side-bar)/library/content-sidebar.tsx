@@ -17,11 +17,11 @@ import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
 import { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { errorToast } from "@/utils/toast";
-import { extractYoutubeId } from "@/utils/youtube";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 import { cn } from "@repo/ui/utils/cn";
+import { extractYoutubeId } from "@repo/ui/utils/youtube";
 
 import { AlertCircle, ChevronDown, Edit, Loader2, Plus, Save, Trash2, X } from "lucide-react";
 import { useForm } from "react-hook-form";

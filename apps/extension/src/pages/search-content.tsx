@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { CONTENT_TYPE } from "@/constants/content";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
@@ -17,7 +16,12 @@ import {
 import { LogOut, Save, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { useDetailSaveContent, useQuickSaveContent } from "../lib/tanstack/mutation/content";
+import {
+  useDetailSaveContent,
+  useDetailSaveYoutubeContent,
+  useQuickSaveContent,
+  useQuickSaveYoutubeContent,
+} from "../lib/tanstack/mutation/content";
 
 const getHtmlContent = async () => {
   const html = await getHtmlText();
@@ -79,61 +83,84 @@ export default function SearchContent() {
     useQuickSaveContent();
   const { mutateAsync: mutateDetailSaveContent, isPending: isPendingDetailSaveContent } =
     useDetailSaveContent();
+  const {
+    mutateAsync: mutateQuickSaveYoutubeContent,
+    isPending: isPendingQuickSaveYoutubeContent,
+  } = useQuickSaveYoutubeContent();
+  const {
+    mutateAsync: mutateDetailSaveYoutubeContent,
+    isPending: isPendingDetailSaveYoutubeContent,
+  } = useDetailSaveYoutubeContent();
 
   const saveDisabledd =
-    isFindingExistPath || isPendingQuickSaveContent || isPendingDetailSaveContent;
+    isFindingExistPath ||
+    isPendingQuickSaveContent ||
+    isPendingDetailSaveContent ||
+    isPendingQuickSaveYoutubeContent ||
+    isPendingDetailSaveYoutubeContent;
 
-  const currentContentType = currentTab.url.includes("youtube.com")
-    ? CONTENT_TYPE.YOUTUBE
-    : CONTENT_TYPE.WEB;
+  const isYoutubeUrl = currentTab.url.includes("youtube.com");
 
   const onSaveOnly = async () => {
-    const { htmlContent, thumbnail } = await getHtmlContent();
-    if (!htmlContent || !thumbnail) return;
+    if (isYoutubeUrl) {
+      await mutateQuickSaveYoutubeContent({
+        title: currentTab.title,
+        url: currentTab.url,
+      });
+    } else {
+      const { htmlContent, thumbnail } = await getHtmlContent();
+      if (!htmlContent || !thumbnail) return;
 
-    const htmlBlob = new Blob([htmlContent], { type: "text/html" });
-    const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
+      const htmlBlob = new Blob([htmlContent], { type: "text/html" });
+      const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
 
-    const formData = new FormData();
+      const formData = new FormData();
 
-    formData.append("htmlFile", htmlFile);
-    formData.append("title", currentTab.title);
-    formData.append("url", currentTab.url);
-    formData.append("thumbnail", thumbnail);
+      formData.append("htmlFile", htmlFile);
+      formData.append("title", currentTab.title);
+      formData.append("url", currentTab.url);
+      formData.append("thumbnail", thumbnail);
 
-    await mutateQuickSaveContent(formData);
+      await mutateQuickSaveContent(formData);
+    }
   };
 
   const onSaveWithSummary = async () => {
-    const { htmlContent, thumbnail } = await getHtmlContent();
-    if (!htmlContent || !thumbnail) return;
+    if (isYoutubeUrl) {
+      const res = await mutateDetailSaveYoutubeContent({
+        url: currentTab.url,
+      });
+      navigate("/create-content", {
+        state: {
+          ...res.result,
+          ...currentTab,
+          thumbnail: "",
+          transcript: "",
+        },
+      });
+    } else {
+      const { htmlContent, thumbnail } = await getHtmlContent();
+      if (!htmlContent || !thumbnail) return;
 
-    const htmlBlob = new Blob([htmlContent], { type: "text/html" });
-    const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
+      const htmlBlob = new Blob([htmlContent], { type: "text/html" });
+      const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
 
-    const formData = new FormData();
-    formData.append("htmlFile", htmlFile);
-    formData.append("type", currentContentType);
+      const formData = new FormData();
+      formData.append("htmlFile", htmlFile);
 
-    await mutateDetailSaveContent(
-      {
+      const res = await mutateDetailSaveContent({
         url: currentTab.url,
         formData,
-      },
-      {
-        onSuccess: (data) => {
-          navigate("/create-content", {
-            state: {
-              ...data.result,
-              ...currentTab,
-              thumbnail,
-              htmlFile,
-              type: currentContentType,
-            },
-          });
+      });
+      navigate("/create-content", {
+        state: {
+          ...res.result,
+          ...currentTab,
+          thumbnail,
+          htmlFile,
         },
-      }
-    );
+      });
+    }
   };
 
   return (

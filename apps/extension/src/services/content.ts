@@ -4,11 +4,25 @@ import { DetailSaveContentDTO } from "../models/content";
 
 import { api } from ".";
 
-export const quickSaveContent = async (formData: FormData): Promise<BaseResponseDTO<unknown>> => {
+export const quickSaveWebContent = async (
+  formData: FormData
+): Promise<BaseResponseDTO<unknown>> => {
   return api.post("contents/web", { body: formData }).json();
 };
 
-export const detailSaveContent = async ({
+export const quickSaveYoutubeContent = async (props: {
+  title: string;
+  url: string;
+}): Promise<BaseResponseDTO<unknown>> => {
+  const json = {
+    ...props,
+    thumbnail: "",
+    transcript: "",
+  };
+  return api.post("contents/youtube", { json }).json();
+};
+
+export const detailSaveWebContent = async ({
   url,
   formData,
 }: {
@@ -19,8 +33,27 @@ export const detailSaveContent = async ({
   return api.post(`contents/summarize?url=${encodedUrl}`, { body: formData }).json();
 };
 
-export const finishDetailSaveContent = async (
+export const detailSaveYoutubeContent = async (json: {
+  url: string;
+}): Promise<BaseResponseDTO<DetailSaveContentDTO>> => {
+  return api.post("contents/summarize/youtube", { json }).json();
+};
+
+export const finishDetailSaveWebContent = async (
   formData: FormData
 ): Promise<BaseResponseDTO<string>> => {
   return api.post("contents/summarize/save", { body: formData }).json();
+};
+
+export const finishDetailSaveYoutubeContent = async (json: {
+  title: string;
+  url: string;
+  thumbnail: string;
+  memo: string;
+  summary: string;
+  transcript: string;
+  category: string;
+  tags: string[];
+}): Promise<BaseResponseDTO<unknown>> => {
+  return api.post("contents/summarize/youtube/save", { json }).json();
 };

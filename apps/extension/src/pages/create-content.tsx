@@ -4,7 +4,10 @@ import Logo from "@/assets/logo.svg?react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
-import { useFinishDetailSaveContent } from "@/lib/tanstack/mutation/content";
+import {
+  useFinishDetailSaveContent,
+  useFinishDetailSaveYoutubeContent,
+} from "@/lib/tanstack/mutation/content";
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { infoToast, successToast } from "@/utils/toast";
@@ -24,7 +27,6 @@ interface CreateContentState {
   tags: string[];
   category: string;
   htmlFile: File;
-  type: string;
 }
 
 export default function CreateContent() {
@@ -41,7 +43,14 @@ export default function CreateContent() {
     setIsCategoryOpen(false);
   });
 
-  const { mutateAsync, isPending } = useFinishDetailSaveContent();
+  const {
+    mutateAsync: mutateFinishDetailSaveContent,
+    isPending: isPendingFinishDetailSaveContent,
+  } = useFinishDetailSaveContent();
+  const {
+    mutateAsync: mutateFinishDetailSaveYoutubeContent,
+    isPending: isPendingFinishDetailSaveYoutubeContent,
+  } = useFinishDetailSaveYoutubeContent();
 
   const { data: userCategories } = useGetCategories();
 
@@ -63,31 +72,53 @@ export default function CreateContent() {
   const categories = [state?.category || "", ...(userCategories || [])];
 
   const watchedTags = watch("tags");
+  const watchedCategory = watch("category");
+  const watchedThumbnail = watch("thumbnail");
+
+  const isYoutubeUrl = state.url.includes("youtube.com");
+  const isPending = isPendingFinishDetailSaveContent || isPendingFinishDetailSaveYoutubeContent;
 
   const onGoBack = () => {
     navigate("/search-content");
   };
 
   const onSave = handleSubmit(async (data) => {
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("url", data.url);
-    formData.append("thumbnail", data.thumbnail || "");
-    formData.append("memo", data.memo || "");
-    formData.append("summary", data.summary || "");
-    formData.append("category", data.category);
-    for (const tag of data.tags) {
-      formData.append("tags", tag);
-    }
-    formData.append("htmlFile", htmlFile);
-    formData.append("type", state.type);
+    if (isYoutubeUrl) {
+      await mutateFinishDetailSaveYoutubeContent(
+        {
+          ...data,
+          memo: data.memo || "",
+          summary: data.summary || "",
+          transcript: "",
+          thumbnail: data.thumbnail || "",
+        },
+        {
+          onSuccess: () => {
+            successToast("저장에 성공했어요.");
+            navigate("/search-content");
+          },
+        }
+      );
+    } else {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("url", data.url);
+      formData.append("thumbnail", data.thumbnail || "");
+      formData.append("memo", data.memo || "");
+      formData.append("summary", data.summary || "");
+      formData.append("category", data.category);
+      for (const tag of data.tags) {
+        formData.append("tags", tag);
+      }
+      formData.append("htmlFile", htmlFile);
 
-    await mutateAsync(formData, {
-      onSuccess: () => {
-        successToast("저장에 성공했어요.");
-        navigate("/search-content");
-      },
-    });
+      await mutateFinishDetailSaveContent(formData, {
+        onSuccess: () => {
+          successToast("저장에 성공했어요.");
+          navigate("/search-content");
+        },
+      });
+    }
   });
 
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
@@ -120,9 +151,6 @@ export default function CreateContent() {
     setValue("category", category.trim());
     setIsCategoryOpen(false);
   };
-
-  const watchedCategory = watch("category");
-  const watchedThumbnail = watch("thumbnail");
 
   return (
     <>

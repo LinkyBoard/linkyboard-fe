@@ -88,15 +88,32 @@ export default function Header() {
           ))}
         </ul>
 
-        <Button
-          variant="default"
-          size="lg"
-          className="hidden md:block"
-          onClick={() => router.push("/login")}
-          aria-label="무료 시작하기"
-        >
-          무료 시작
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="lg"
+            className="hidden w-full flex-col md:flex"
+            aria-label="무료 시작하기"
+            asChild
+          >
+            <a
+              href="https://linkyboard-demo.vercel.app/dashboard"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              데모 보기
+            </a>
+          </Button>
+          <Button
+            variant="default"
+            size="lg"
+            className="hidden md:block"
+            onClick={() => router.push("/login")}
+            aria-label="무료 시작하기"
+          >
+            무료 시작
+          </Button>
+        </div>
 
         {/* Mobile Menu Button */}
         <Button

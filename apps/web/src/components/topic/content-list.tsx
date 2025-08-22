@@ -40,6 +40,8 @@ export default function ContentList({
     await createContent({
       topicId: id,
       contentId: content.id,
+      posX: 0,
+      posY: 0,
     });
   };
 

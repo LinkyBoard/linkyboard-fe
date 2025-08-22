@@ -1,37 +1,32 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
 import AddStickerDialog from "@/components/topic/add-sticker-dialog";
 import ContentList from "@/components/topic/content-list";
-import CustomNode from "@/components/topic/custom-node";
 import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
+import FlowCanvas from "@/components/topic/flow-canvas";
 import RemoveContentButton from "@/components/topic/remove-content-button";
 import SummarizeDialog from "@/components/topic/summarize-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
-import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import type { CategoryContentDTO } from "@/models/content";
 import { infoToast } from "@/utils/toast";
 import {
   addEdge,
-  Background,
   Connection,
   Edge,
   Node,
-  NodeProps,
-  NodeTypes,
-  ReactFlow,
+  ReactFlowProvider,
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
 
-import { AlertTriangle, Lightbulb, Loader2, Menu, Plus, Search } from "lucide-react";
+import { Menu, Plus, Search } from "lucide-react";
 
 interface TopicBoardPageProps {
   id: string;
@@ -40,17 +35,6 @@ interface TopicBoardPageProps {
 
 const initialNodes: Node[] = [];
 
-const connectionLineStyle = {
-  stroke: "#b1b1b7",
-  strokeWidth: 3,
-};
-
-const defaultEdgeOptions = {
-  style: {
-    strokeWidth: 3,
-  },
-};
-
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
@@ -58,6 +42,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
 
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
+  const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 
   const { toggle } = useMobileMenuStore();
 
@@ -70,7 +55,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   } = useGetTopicById(id);
   const { mutateAsync: createConnection } = useCreateConnection();
   const { mutateAsync: removeConnection } = useRemoveConnection();
-  const { mutateAsync: createContent } = useCreateContent(id);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
@@ -82,19 +66,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   };
 
   const isNotFoundError = !isLoading && error?.message.includes("404");
-  const nodeTypes: NodeTypes = useMemo(
-    () => ({
-      custom: (props: NodeProps) => (
-        <CustomNode
-          {...props}
-          topicId={id}
-          isSelected={selectedNodeIds.includes(props.id)}
-          onSelect={onNodeSelect}
-        />
-      ),
-    }),
-    [selectedNodeIds, id]
-  );
 
   const onConnect = useCallback(
     async (params: Connection) => {
@@ -146,18 +117,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const onDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
-  };
-
-  const onDrop = async (e: React.DragEvent) => {
-    e.preventDefault();
-
-    const contentData: CategoryContentDTO = JSON.parse(e.dataTransfer.getData("application/json"));
-
-    // 서버에 콘텐츠 추가
-    await createContent({
-      topicId: id,
-      contentId: contentData.id,
-    });
   };
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -283,52 +242,24 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         </div>
 
         {/* Canvas */}
-        <div
-          className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0"
-          onDragOver={onDragOver}
-          onDrop={onDrop}
-        >
-          {isLoading ? (
-            <div className="flex h-full flex-col items-center justify-center gap-2">
-              <Loader2 className="text-muted-foreground size-16 animate-spin" />
-              <p className="text-muted-foreground text-xl font-semibold">토픽을 불러오고 있어요</p>
-            </div>
-          ) : isTopicError ? (
-            <div className="flex h-full flex-col items-center justify-center gap-2">
-              <AlertTriangle className="text-destructive size-16" />
-              <p className="text-muted-foreground text-xl font-semibold">
-                {isNotFoundError ? "토픽을 찾을 수 없어요." : "토픽을 불러오는데 실패했어요."}
-              </p>
-            </div>
-          ) : id ? (
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onEdgeClick={onEdgeClick}
-              nodeTypes={nodeTypes}
-              connectionLineStyle={connectionLineStyle}
-              defaultEdgeOptions={defaultEdgeOptions}
-            >
-              <Background />
-            </ReactFlow>
-          ) : (
-            <div className="bg-background absolute inset-0 z-10 flex items-center justify-center">
-              <div className="text-center">
-                <Lightbulb size={64} className="text-muted-foreground mx-auto mb-6 opacity-50" />
-                <h3 className="mb-4 text-xl font-semibold">선택된 토픽이 없습니다</h3>
-                <p className="text-muted-foreground mb-6">
-                  토픽을 선택하거나 새 토픽을 생성해보세요
-                </p>
-                <AddTopicDialog>
-                  <Plus size={16} />새 토픽 생성
-                </AddTopicDialog>
-              </div>
-            </div>
-          )}
-        </div>
+        <ReactFlowProvider>
+          <FlowCanvas
+            ref={reactFlowWrapper}
+            isLoading={isLoading}
+            isTopicError={isTopicError}
+            isNotFoundError={isNotFoundError || false}
+            id={id}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onEdgeClick={onEdgeClick}
+            onDragOver={onDragOver}
+            selectedNodeIds={selectedNodeIds}
+            onNodeSelect={onNodeSelect}
+          />
+        </ReactFlowProvider>
       </div>
 
       {/* Edit Topic Sidebar */}

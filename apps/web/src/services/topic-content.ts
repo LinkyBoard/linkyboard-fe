@@ -25,11 +25,11 @@ export const updateContentSize = async (props: {
 export const createContent = async (props: {
   topicId: string;
   contentId: number;
+  posX: number;
+  posY: number;
 }): Promise<BaseResponseDTO<unknown>> => {
   const body = {
     ...props,
-    posX: 0,
-    posY: 0,
     width: 350,
     height: 220,
   };

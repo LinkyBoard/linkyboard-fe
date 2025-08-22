@@ -3,7 +3,7 @@
 import { forwardRef, useMemo } from "react";
 
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
-import type { CategoryContentDTO } from "@/models/content";
+import type { CategoryContentDTO } from "@repo/types";
 import {
   Background,
   Connection,

@@ -10,9 +10,9 @@ import {
   useUpdateContentPosition,
   useUpdateContentSize,
 } from "@/lib/tanstack/mutation/topic-content";
-import { CategoryContentDTO } from "@/models/content";
 import type { TopicDTO } from "@/models/topic";
 import type { StickerType } from "@/types/topic";
+import type { CategoryContentDTO } from "@repo/types";
 import { cn } from "@repo/ui/utils/cn";
 import { Handle, NodeProps, NodeResizer, Position, useConnection } from "@xyflow/react";
 

@@ -1,4 +1,4 @@
-import { CategoryContentDTO } from "@/models/content";
+import type { CategoryContentDTO } from "@repo/types";
 import { cn } from "@repo/ui/utils/cn";
 
 import { FileText, Globe, Youtube } from "lucide-react";

@@ -1,6 +1,5 @@
 import { StickerType } from "@/types/topic";
-
-import { CategoryContentDTO } from "./content";
+import type { CategoryContentDTO } from "@repo/types";
 
 export interface TopicDTO {
   id: number;

@@ -4,13 +4,12 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import Logo from "@/assets/logo.svg";
-import SentinelSpinner from "@/components/sentinel-spinner";
-import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
+import { useTopicStore } from "@/lib/zustand/topic";
 import { TopicDTO } from "@/models/topic";
 import { cn } from "@repo/ui/utils/cn";
 
-import { Book, Grid3X3, Home, Loader2, LucideIcon } from "lucide-react";
+import { Book, Grid3X3, Home, LucideIcon } from "lucide-react";
 
 import RecentTopicItem from "./recent-topic-item";
 
@@ -31,19 +30,12 @@ export default function Sidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const topics = useTopicStore((state) => state.topics);
 
   const { isOpen, close } = useMobileMenuStore();
 
   // 현재 선택된 토픽 ID 가져오기
   const currentTopicId = Number(searchParams.get("id") || "");
-
-  const {
-    data: recentTopics,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useGetAllTopics();
 
   const onTopicClick = (topic: TopicDTO) => {
     router.push(`/topic?id=${topic.id}`);
@@ -97,14 +89,10 @@ export default function Sidebar() {
           <div className="text-muted-foreground mb-4 text-sm font-semibold tracking-wider uppercase">
             나의 토픽
           </div>
-          {isLoading ? (
-            <div className="flex items-center justify-center">
-              <Loader2 className="animate-spin" />
-            </div>
-          ) : !recentTopics || recentTopics?.length === 0 ? (
+          {!topics || topics?.length === 0 ? (
             <p className="text-muted-foreground text-sm">토픽이 없어요.</p>
           ) : (
-            recentTopics?.map((topic) => (
+            topics?.map((topic) => (
               <RecentTopicItem
                 key={topic.id}
                 isSelected={currentTopicId === topic.id}
@@ -113,13 +101,6 @@ export default function Sidebar() {
               />
             ))
           )}
-          <SentinelSpinner
-            className="mx-auto"
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            isLoading={isLoading}
-            isFetchingNextPage={isFetchingNextPage}
-          />
         </div>
       </aside>
 

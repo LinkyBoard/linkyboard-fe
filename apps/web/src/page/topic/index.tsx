@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { edgeServerAppPaths } from "next/dist/build/webpack/plugins/pages-manifest-plugin";
 
 import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
 import AddStickerDialog from "@/components/topic/add-sticker-dialog";
@@ -12,9 +13,11 @@ import SummarizeDialog from "@/components/topic/summarize-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ContentTypeOptions } from "@/constants/content";
+import { dummyEdges, dummyNodes } from "@/constants/dummy-data";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
+import { useTopicStore } from "@/lib/zustand/topic";
 import { infoToast } from "@/utils/toast";
 import {
   addEdge,
@@ -33,31 +36,33 @@ interface TopicBoardPageProps {
   type: ContentTypeOptions;
 }
 
-const initialNodes: Node[] = [];
-
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [isResizing, setIsResizing] = useState(false);
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
+  const contents = useTopicStore((state) => state.contents);
 
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 
   const { toggle } = useMobileMenuStore();
 
-  const {
-    data: topic,
-    isLoading,
-    isError: isTopicError,
-    error,
-    isRefetching,
-  } = useGetTopicById(id);
-  const { mutateAsync: createConnection } = useCreateConnection();
-  const { mutateAsync: removeConnection } = useRemoveConnection();
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(contents.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(contents.edges);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  // 초기 로드 시에만 Zustand 스토어에서 데이터 가져오기
+  useEffect(() => {
+    if (nodes.length === 0 && contents.nodes.length > 0) {
+      setNodes(contents.nodes);
+    }
+  }, [contents.nodes, setNodes, nodes.length]);
+
+  useEffect(() => {
+    if (edges.length === 0 && contents.edges.length > 0) {
+      setEdges(contents.edges);
+    }
+  }, [contents.edges, setEdges, edges.length]);
 
   const onNodeSelect = (nodeId: string) => {
     setSelectedNodeIds((prev) =>
@@ -65,7 +70,31 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     );
   };
 
-  const isNotFoundError = !isLoading && error?.message.includes("404");
+  // 새로운 노드 추가 시 React Flow 상태와 동기화
+  const addNodeToFlow = useCallback(
+    (type: string, item: any) => {
+      const newNode = {
+        id: `${type}-${item.id}`,
+        data: {
+          item,
+          nodeContent: type,
+        },
+        position: { x: 0, y: 0 },
+        measured: { height: 0, width: 0 },
+        type: "custom",
+      };
+      setNodes((nds) => [...nds, newNode]);
+    },
+    [setNodes]
+  );
+
+  // 새로운 엣지 추가 시 React Flow 상태와 동기화
+  const addEdgesToFlow = useCallback(
+    (newEdges: any[]) => {
+      setEdges((eds) => [...eds, ...newEdges]);
+    },
+    [setEdges]
+  );
 
   const onConnect = useCallback(
     async (params: Connection) => {
@@ -81,21 +110,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         return;
       }
 
-      const edgeId = `xy-edge__${params.source}${params.sourceHandle}-${params.target}${params.targetHandle}`;
       setEdges((eds) => addEdge(params, eds));
-
-      try {
-        await createConnection({
-          id: edgeId,
-          source: params.source,
-          sourceHandle: params.sourceHandle || "",
-          target: params.target,
-          targetHandle: params.targetHandle || "",
-          topicId: id,
-        });
-      } catch (error) {
-        setEdges((eds) => eds.filter((e) => e.id !== edgeId));
-      }
     },
     [edges]
   );
@@ -106,7 +121,8 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
 
     setEdges((eds) => eds.filter((e) => e.id !== edge.id));
     try {
-      await removeConnection(edge.id);
+      // await removeConnection(edge.id);
+      setEdges((eds) => eds.filter((e) => e.id !== edge.id));
       infoToast("연결이 제거되었습니다.");
     } catch (error) {
       setEdges((eds) => addEdge(edgeData, eds));
@@ -144,7 +160,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       setContentPanelWidth(newWidth);
     }
   };
-
+  console.log(nodes, edges);
   const onMouseUp = () => {
     setIsResizing(false);
   };
@@ -164,13 +180,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       };
     }
   }, [isResizing]);
-
-  useEffect(() => {
-    if (id && !isLoading && topic) {
-      setNodes(topic.nodes);
-      setEdges(topic.edges);
-    }
-  }, [id, isLoading, isRefetching]);
 
   return (
     <div className="flex flex-col">
@@ -214,13 +223,15 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
                 topicId={id}
                 selectedNodeIds={selectedNodeIds}
                 setSelectedNodeIds={setSelectedNodeIds}
+                addNodeToFlow={addNodeToFlow}
+                addEdgesToFlow={addEdgesToFlow}
               />
             </>
           )}
           <AddTopicDialog>
             <Plus size={16} />새 토픽
           </AddTopicDialog>
-          <AddStickerDialog topicId={id} />
+          <AddStickerDialog addNodeToFlow={addNodeToFlow} />
         </div>
       </header>
 
@@ -245,9 +256,9 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         <ReactFlowProvider>
           <FlowCanvas
             ref={reactFlowWrapper}
-            isLoading={isLoading}
-            isTopicError={isTopicError}
-            isNotFoundError={isNotFoundError || false}
+            isLoading={false}
+            isTopicError={false}
+            isNotFoundError={false}
             id={id}
             nodes={nodes}
             edges={edges}

@@ -4,8 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { CONTENT_TYPE_OPTIONS, type ContentTypeOptions } from "@/constants/content";
+import { dummyContents } from "@/constants/dummy-data";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
+import { useTopicStore } from "@/lib/zustand/topic";
 import { CategoryContentDTO } from "@repo/types";
 
 import { Loader2, Search } from "lucide-react";
@@ -28,21 +30,14 @@ export default function ContentList({
   id,
 }: ContentListProps) {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const { data: contents, isLoading } = useGetAllContents(type);
-  const { mutateAsync: createContent, isPending } = useCreateContent(id);
+  const addNode = useTopicStore((state) => state.addNode);
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
   const onAddContent = async (content: CategoryContentDTO) => {
-    await createContent({
-      topicId: id,
-      contentId: content.id,
-      posX: 0,
-      posY: 0,
-    });
+    addNode("content", content);
   };
 
   return (
@@ -88,22 +83,13 @@ export default function ContentList({
         </Button>
       </div>
       <div className="flex h-[calc(100%-120px)] flex-col gap-3 overflow-y-auto p-4">
-        {isLoading ? (
-          <div className="flex justify-center">
-            <Loader2 className="text-muted-foreground animate-spin" />
-          </div>
-        ) : contents?.length === 0 ? (
-          <p className="text-muted-foreground text-center">저장된 콘텐츠가 없어요</p>
-        ) : (
-          contents?.map((item) => (
-            <ContentItem
-              key={`${item.id}-content-item`}
-              item={item}
-              onClick={() => onAddContent(item)}
-              disabled={isPending}
-            />
-          ))
-        )}
+        {dummyContents?.map((item) => (
+          <ContentItem
+            key={`${item.id}-content-item`}
+            item={item}
+            onClick={() => onAddContent(item)}
+          />
+        ))}
       </div>
     </div>
   );

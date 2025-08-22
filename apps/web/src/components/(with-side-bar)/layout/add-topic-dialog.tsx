@@ -1,12 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
-import { TOPIC } from "@/constants/topic";
-import { invalidateQueries } from "@/lib/tanstack";
-import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
-import { errorToast, infoToast } from "@/utils/toast";
+import { useTopicStore } from "@/lib/zustand/topic";
 import {
   Dialog,
   DialogClose,
@@ -15,8 +10,6 @@ import {
   useDialog,
 } from "@repo/ui/components/dialog";
 
-import { Loader2 } from "lucide-react";
-
 import { Input } from "../../ui/input";
 
 interface AddTopicDialogProps {
@@ -24,10 +17,9 @@ interface AddTopicDialogProps {
 }
 
 function AddTopicDialogContent() {
-  const router = useRouter();
   const { close } = useDialog();
 
-  const { mutateAsync: createTopic, isPending } = useCreateTopic();
+  const addTopic = useTopicStore((state) => state.addTopic);
 
   const onCreateTopic = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,26 +28,15 @@ function AddTopicDialogContent() {
     const content = formData.get("description") as string;
 
     const body = {
+      id: new Date().getTime(),
       title,
       content,
     };
 
-    await createTopic(body, {
-      onSuccess: (data) => {
-        router.push(`/topic?id=${data.result}`);
-        invalidateQueries([TOPIC.GET_ALL_TOPICS]);
-        close();
-      },
-      onError: (error: Error) => {
-        const isDuplicateError = error.message.includes("409");
-        if (isDuplicateError) {
-          return infoToast("이미 존재하는 토픽 제목이에요.");
-        }
-
-        errorToast("토픽 생성에 실패했어요.");
-      },
-    });
+    addTopic(body);
+    close();
   };
+
   return (
     <DialogContent>
       <div className="mb-6">
@@ -79,9 +60,7 @@ function AddTopicDialogContent() {
           <Button type="button" variant="outline" asChild>
             <DialogClose>취소</DialogClose>
           </Button>
-          <Button type="submit" disabled={isPending}>
-            {isPending ? <Loader2 size={16} className="animate-spin" /> : "생성"}
-          </Button>
+          <Button type="submit">생성</Button>
         </div>
       </form>
     </DialogContent>

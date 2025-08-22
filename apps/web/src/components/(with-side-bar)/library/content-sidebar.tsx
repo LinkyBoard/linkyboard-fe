@@ -9,11 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CATEGORY } from "@/constants/category";
 import { CONTENT, CONTENT_TYPE } from "@/constants/content";
+import { dummyContents } from "@/constants/dummy-data";
 import { invalidateMany } from "@/lib/tanstack";
-import { useRemoveContentById, useUpdateContent } from "@/lib/tanstack/mutation/content";
 import { useGetCategories } from "@/lib/tanstack/query/category";
-import { useGetContentById } from "@/lib/tanstack/query/content";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
+import { useTopicStore } from "@/lib/zustand/topic";
 import { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { errorToast } from "@/utils/toast";
@@ -35,6 +35,7 @@ const DEFAULT_CONTENT = {
   tags: [],
   category: "",
 };
+const categories = [];
 
 export default function ContentSidebar() {
   const searchParams = useSearchParams();
@@ -42,12 +43,10 @@ export default function ContentSidebar() {
   const [categoryId] = currentCategory?.split(",") || [];
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { removeNode } = useTopicStore();
 
   const { isOpen, onClose, selectedContentId } = useContentSidebarStore();
-  const { data, isLoading, isError } = useGetContentById(selectedContentId);
-  const { data: categories } = useGetCategories();
-  const { mutateAsync: removeContent, isPending: isDeletePending } = useRemoveContentById();
-  const { mutateAsync: updateContent, isPending: isUpdatePending } = useUpdateContent();
+  const data = dummyContents.find((content) => content.id === selectedContentId);
 
   const tagInputRef = useRef<HTMLInputElement>(null);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -69,7 +68,6 @@ export default function ContentSidebar() {
   });
 
   const watchedTags = watch("tags");
-  const buttonDisabled = isLoading || isError || isDeletePending;
   const isYoutube = data?.type === CONTENT_TYPE.YOUTUBE;
   const youtubeId = extractYoutubeId(data?.url || "");
 
@@ -90,17 +88,17 @@ export default function ContentSidebar() {
         ...submitData,
       } as ContentDetailDTO;
 
-      await updateContent(body, {
-        onSuccess: () => {
-          setIsEditing(false);
-          setIsCategoryDropdownOpen(false);
-          invalidateMany([
-            [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
-            [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
-            [CATEGORY.GET_CATEGORIES],
-          ]);
-        },
-      });
+      // await updateContent(body, {
+      //   onSuccess: () => {
+      //     setIsEditing(false);
+      //     setIsCategoryDropdownOpen(false);
+      //     invalidateMany([
+      //       [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
+      //       [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
+      //       [CATEGORY.GET_CATEGORIES],
+      //     ]);
+      //   },
+      // });
     }
   });
 
@@ -118,16 +116,7 @@ export default function ContentSidebar() {
 
   const onDelete = async () => {
     if (!selectedContentId) return errorToast("잘못된 요청이에요.");
-    await removeContent(selectedContentId, {
-      onSuccess: () => {
-        onClose();
-        invalidateMany([
-          [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
-          [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
-          [CATEGORY.GET_CATEGORIES],
-        ]);
-      },
-    });
+    removeNode(selectedContentId);
   };
 
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
@@ -173,12 +162,12 @@ export default function ContentSidebar() {
 
         {/* 내용 */}
         <div className="flex-1 overflow-y-auto p-6">
-          {isLoading ? (
+          {false ? (
             <div className="flex h-full flex-col items-center justify-center gap-2">
               <Loader2 className="animate-spin" />
               <p className="text-base">콘텐츠 정보를 가져오고 있어요</p>
             </div>
-          ) : isError ? (
+          ) : false ? (
             <div className="flex h-full flex-col items-center justify-center gap-2">
               <AlertCircle className="text-destructive size-8" />
               <p className="text-base">콘텐츠 정보를 가져오는데 실패했어요</p>
@@ -226,20 +215,6 @@ export default function ContentSidebar() {
                           ? `"${watch("category")}" 사용하기`
                           : "최소 1글자 입력해주세요."}
                       </button>
-                      {categories.map((category) => (
-                        <button
-                          key={category.id}
-                          type="button"
-                          onClick={() => onCategorySelect(category.name)}
-                          className={cn(
-                            "hover:bg-accent text-foreground block w-full px-3 py-2 text-left text-base",
-                            watch("category") === category.name &&
-                              "bg-accent text-accent-foreground"
-                          )}
-                        >
-                          {category.name}
-                        </button>
-                      ))}
                     </div>
                   )}
                 </div>
@@ -379,31 +354,22 @@ export default function ContentSidebar() {
         <div className="border-t p-6">
           {isEditing ? (
             <div className="flex gap-2">
-              <Button onClick={onSave} className="h-12 flex-1 text-base" disabled={isUpdatePending}>
+              <Button onClick={onSave} className="h-12 flex-1 text-base">
                 <Save size={18} className="mr-2" />
                 저장
               </Button>
-              <Button
-                variant="outline"
-                onClick={onCancel}
-                className="h-12 text-base"
-                disabled={isUpdatePending}
-              >
+              <Button variant="outline" onClick={onCancel} className="h-12 text-base">
                 취소
               </Button>
             </div>
           ) : (
             <div className="flex gap-2">
-              <Button onClick={onEdit} className="h-12 flex-1 text-base" disabled={buttonDisabled}>
+              <Button onClick={onEdit} className="h-12 flex-1 text-base">
                 <Edit size={18} className="mr-2" />
                 편집
               </Button>
               <Dialog>
-                <Button
-                  className="h-12 bg-red-400 text-base hover:bg-red-500"
-                  asChild
-                  disabled={buttonDisabled}
-                >
+                <Button className="h-12 bg-red-400 text-base hover:bg-red-500" asChild>
                   <DialogTrigger>
                     <Trash2 size={18} className="mr-2" />
                     삭제

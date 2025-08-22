@@ -1,15 +1,3 @@
-import { useEffect } from "react";
-
-import { useDebounce } from "@/hooks/use-debounce";
-import {
-  useUpdateCustomStickerPosition,
-  useUpdateCustomStickerSize,
-} from "@/lib/tanstack/mutation/custom-sticker";
-import { useUpdateTopicPosition, useUpdateTopicSize } from "@/lib/tanstack/mutation/topic";
-import {
-  useUpdateContentPosition,
-  useUpdateContentSize,
-} from "@/lib/tanstack/mutation/topic-content";
 import type { TopicDTO } from "@/models/topic";
 import type { StickerType } from "@/types/topic";
 import type { CategoryContentDTO } from "@repo/types";
@@ -41,87 +29,10 @@ export default function CustomNode(props: CustomNodeProps) {
   const nodeData = props.data as unknown as NodeData;
 
   const connection = useConnection();
-
-  // 콘텐츠 위치, 크기 변경 시 호출
-  const { mutateAsync: updateContentPosition } = useUpdateContentPosition();
-  const { mutateAsync: updateContentSize } = useUpdateContentSize();
-
-  // 토픽 위치, 크기 변경 시 호출
-  const { mutateAsync: updateTopicPosition } = useUpdateTopicPosition();
-  const { mutateAsync: updateTopicSize } = useUpdateTopicSize();
-
-  // 커스텀 스티커 위치, 크기 변경 시 호출
-  const { mutateAsync: updateCustomStickerPosition } = useUpdateCustomStickerPosition();
-  const { mutateAsync: updateCustomStickerSize } = useUpdateCustomStickerSize();
-
   const isTarget = connection.inProgress && connection.fromNode.id !== props.id;
   const isSource = connection.inProgress && connection.fromNode.id === props.id;
 
   const stickerClass = stickerStyle[nodeData.nodeContent];
-
-  const debouncedProps = useDebounce(props, 300);
-
-  // 위치 변경 시 updateContentPosition 호출
-  useEffect(() => {
-    const body = {
-      topicId: props.topicId,
-      posX: debouncedProps.positionAbsoluteX,
-      posY: debouncedProps.positionAbsoluteY,
-    };
-    const updatePosition = async () => {
-      switch (nodeData.nodeContent) {
-        case "topic":
-          await updateTopicPosition(body);
-          break;
-        case "content":
-          await updateContentPosition({
-            ...body,
-            contentId: nodeData.item.id,
-          });
-          break;
-        case "custom_sticker":
-          await updateCustomStickerPosition({
-            ...body,
-            customStickerId: nodeData.item.id,
-          });
-          break;
-        default:
-          return;
-      }
-    };
-    updatePosition();
-  }, [debouncedProps.positionAbsoluteX, debouncedProps.positionAbsoluteY]);
-
-  // 크기 변경 시 updateContentSize 호출
-  useEffect(() => {
-    const body = {
-      topicId: props.topicId,
-      width: debouncedProps.width ?? 350,
-      height: debouncedProps.height ?? 220,
-    };
-    const updateSize = async () => {
-      switch (nodeData.nodeContent) {
-        case "topic":
-          await updateTopicSize(body);
-          break;
-        case "content":
-          await updateContentSize({
-            ...body,
-            contentId: nodeData.item.id,
-          });
-          break;
-        case "custom_sticker":
-          await updateCustomStickerSize({
-            ...body,
-            customStickerId: nodeData.item.id,
-          });
-          break;
-        default:
-          return;
-      }
-    };
-    updateSize();
-  }, [debouncedProps.width, debouncedProps.height]);
 
   return (
     <div

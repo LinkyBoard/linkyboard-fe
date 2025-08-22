@@ -1,62 +1,74 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
-import KnowledgeItem from "@/components/(with-side-bar)/library/knowledge-item";
-import CustomNode from "@/components/topic/custom-node";
+import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
+import AddStickerDialog from "@/components/topic/add-sticker-dialog";
+import ContentList from "@/components/topic/content-list";
+import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
+import FlowCanvas from "@/components/topic/flow-canvas";
+import RemoveContentButton from "@/components/topic/remove-content-button";
+import SummarizeDialog from "@/components/topic/summarize-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { recentActivitiesData } from "@/constants/sample-data";
+import type { ContentTypeOptions } from "@/constants/content";
+import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
+import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import { useTopicStore } from "@/lib/zustand/topic-store";
-import { KnowledgeItemProps } from "@/types/library";
 import { infoToast } from "@/utils/toast";
-import { cn } from "@repo/ui/utils/cn";
 import {
   addEdge,
-  Background,
   Connection,
   Edge,
   Node,
-  NodeTypes,
-  ReactFlow,
+  ReactFlowProvider,
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
 
-import { Lightbulb, Menu, Plus, Search } from "lucide-react";
+import { Menu, Plus, Search } from "lucide-react";
 
 interface TopicBoardPageProps {
   id: string;
+  type: ContentTypeOptions;
 }
 
-const initialNodes: Node[] = [
-  {
-    id: "1",
-    type: "custom",
-    position: { x: 0, y: 0 },
-    data: { nodeContent: "topic", item: { title: "test", summary: "test" } },
-  },
-];
+const initialNodes: Node[] = [];
 
-const connectionLineStyle = {
-  stroke: "#b1b1b7",
-};
-
-const nodeTypes: NodeTypes = {
-  custom: CustomNode,
-};
-
-export default function TopicBoardPage({ id }: TopicBoardPageProps) {
+export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [isResizing, setIsResizing] = useState(false);
+  const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
+
+  const contentPanelRef = useRef<HTMLDivElement | null>(null);
+  const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
+
+  const { toggle } = useMobileMenuStore();
+
+  const {
+    data: topic,
+    isLoading,
+    isError: isTopicError,
+    error,
+    isRefetching,
+  } = useGetTopicById(id);
+  const { mutateAsync: createConnection } = useCreateConnection();
+  const { mutateAsync: removeConnection } = useRemoveConnection();
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
+  const onNodeSelect = (nodeId: string) => {
+    setSelectedNodeIds((prev) =>
+      prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]
+    );
+  };
+
+  const isNotFoundError = !isLoading && error?.message.includes("404");
+
   const onConnect = useCallback(
-    (params: Connection) => {
+    async (params: Connection) => {
       // 연결 유효성 검사: 같은 노드 간에는 하나의 연결만 허용
       const existingConnection = edges.find(
         (edge) =>
@@ -69,33 +81,54 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
         return;
       }
 
+      const edgeId = `xy-edge__${params.source}${params.sourceHandle}-${params.target}${params.targetHandle}`;
       setEdges((eds) => addEdge(params, eds));
+
+      try {
+        await createConnection({
+          id: edgeId,
+          source: params.source,
+          sourceHandle: params.sourceHandle || "",
+          target: params.target,
+          targetHandle: params.targetHandle || "",
+          topicId: id,
+        });
+      } catch (error) {
+        setEdges((eds) => eds.filter((e) => e.id !== edgeId));
+      }
     },
-    [setEdges, edges]
+    [edges]
   );
 
-  const contentPanelRef = useRef<HTMLDivElement>(null);
+  const onEdgeClick = async (e: React.MouseEvent, edge: Edge) => {
+    const edgeData = edges.find((e) => e.id === edge.id);
+    if (!edgeData) return;
 
-  const { toggle } = useMobileMenuStore();
-  const topicStore = useTopicStore();
+    setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+    try {
+      await removeConnection(edge.id);
+      infoToast("연결이 제거되었습니다.");
+    } catch (error) {
+      setEdges((eds) => addEdge(edgeData, eds));
+    }
+  };
+
+  // 드래그 앤 드롭 핸들러
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  };
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  const onNewTopicClick = () => {
-    topicStore.setEditingTopic(null);
-    topicStore.setShowNewTopicModal(true);
-  };
-
   const onResizeStart = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsResizing(true);
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
   };
 
-  const onResizeMove = (e: MouseEvent) => {
+  const onMouseMove = (e: MouseEvent) => {
     if (!isResizing) return;
 
     const container = contentPanelRef.current;
@@ -112,42 +145,37 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
     }
   };
 
-  const onResizeEnd = () => {
+  const onMouseUp = () => {
     setIsResizing(false);
-    document.body.style.cursor = "";
-    document.body.style.userSelect = "";
   };
 
-  const onAddContent = (content: KnowledgeItemProps) => {
-    const newNode: Node = {
-      id: `content-${content.id}`,
-      type: "custom",
-      position: { x: 0, y: 0 },
-      data: { nodeContent: "content", item: content },
-    };
-    setNodes((prevNodes) => [...prevNodes, newNode]);
-  };
-
-  // 리사이즈 이벤트 처리
   useEffect(() => {
     if (isResizing) {
-      const onMouseMove = (e: MouseEvent) => onResizeMove(e);
-      const onMouseUp = () => onResizeEnd();
-
       document.addEventListener("mousemove", onMouseMove);
       document.addEventListener("mouseup", onMouseUp);
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
 
       return () => {
         document.removeEventListener("mousemove", onMouseMove);
         document.removeEventListener("mouseup", onMouseUp);
+        document.body.style.cursor = "default";
+        document.body.style.userSelect = "auto";
       };
     }
   }, [isResizing]);
 
+  useEffect(() => {
+    if (id && !isLoading && topic) {
+      setNodes(topic.nodes);
+      setEdges(topic.edges);
+    }
+  }, [id, isLoading, isRefetching]);
+
   return (
-    <div>
-      {/* Header */}
-      <header className="border-border mb-8 flex items-center justify-between border-b pb-4">
+    <div className="flex flex-col">
+      {/* 헤더 */}
+      <header className="bg-background mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           {/* Mobile Menu Button */}
           <Button
@@ -175,85 +203,69 @@ export default function TopicBoardPage({ id }: TopicBoardPageProps) {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="default" onClick={onNewTopicClick} className="flex items-center gap-2">
+          {selectedNodeIds.length > 0 && (
+            <>
+              <RemoveContentButton
+                topicId={id}
+                selectedNodeIds={selectedNodeIds}
+                setSelectedNodeIds={setSelectedNodeIds}
+              />
+              <SummarizeDialog
+                topicId={id}
+                selectedNodeIds={selectedNodeIds}
+                setSelectedNodeIds={setSelectedNodeIds}
+              />
+            </>
+          )}
+          <AddTopicDialog>
             <Plus size={16} />새 토픽
-          </Button>
+          </AddTopicDialog>
+          <AddStickerDialog topicId={id} />
         </div>
       </header>
 
       {/* Content Panel */}
       <div className="flex h-[calc(100vh-200px)] gap-0">
-        {/* Content Panel */}
-        <div
-          ref={contentPanelRef}
-          className="bg-card border-border overflow-hidden rounded-l-lg border border-r-0"
-          style={{ width: `${contentPanelWidth}px`, minWidth: "300px" }}
-        >
-          <div className="relative p-4">
-            <Search
-              className="text-muted-foreground absolute top-1/2 left-8 -translate-y-1/2 transform"
-              size={16}
-            />
-            <Input
-              type="text"
-              placeholder="콘텐츠를 검색하세요"
-              className="pl-10"
-              value={searchQuery}
-              onChange={onSearchChange}
-            />
-          </div>
-          <div className="h-[calc(100%-120px)] space-y-3 overflow-y-auto p-4">
-            {recentActivitiesData.map((item) => (
-              <KnowledgeItem
-                key={`${item.title}-knowledge-item`}
-                item={item}
-                onClick={() => onAddContent(item)}
-              />
-            ))}
-          </div>
-        </div>
+        <ContentList
+          contentPanelRef={contentPanelRef}
+          contentPanelWidth={contentPanelWidth}
+          id={id}
+          type={type}
+        />
 
         {/* Resize Bar */}
         <div
-          className={cn(
-            "bg-border hover:bg-primary/20 relative w-1 cursor-col-resize transition-colors",
-            isResizing && "bg-primary"
-          )}
+          className="bg-border hover:bg-primary/20 relative w-1 cursor-col-resize transition-colors"
           onMouseDown={onResizeStart}
         >
           <div className="bg-muted-foreground/50 absolute top-1/2 left-1/2 h-6 w-0.5 -translate-x-1/2 -translate-y-1/2" />
         </div>
 
         {/* Canvas */}
-        <div className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0">
-          {id ? (
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              nodeTypes={nodeTypes}
-              connectionLineStyle={connectionLineStyle}
-            >
-              <Background />
-            </ReactFlow>
-          ) : (
-            <div className="bg-background absolute inset-0 z-10 flex items-center justify-center">
-              <div className="text-center">
-                <Lightbulb size={64} className="text-muted-foreground mx-auto mb-6 opacity-50" />
-                <h3 className="mb-4 text-xl font-semibold">선택된 토픽이 없습니다</h3>
-                <p className="text-muted-foreground mb-6">
-                  토픽을 선택하거나 새 토픽을 생성해보세요
-                </p>
-                <Button onClick={onNewTopicClick} className="mx-auto flex items-center gap-2">
-                  <Plus size={16} />새 토픽 생성
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+        <ReactFlowProvider>
+          <FlowCanvas
+            ref={reactFlowWrapper}
+            isLoading={isLoading}
+            isTopicError={isTopicError}
+            isNotFoundError={isNotFoundError || false}
+            id={id}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onEdgeClick={onEdgeClick}
+            onDragOver={onDragOver}
+            selectedNodeIds={selectedNodeIds}
+            onNodeSelect={onNodeSelect}
+          />
+        </ReactFlowProvider>
       </div>
+
+      {/* Edit Topic Sidebar */}
+      <Suspense>
+        <EditTopicSidebar />
+      </Suspense>
     </div>
   );
 }

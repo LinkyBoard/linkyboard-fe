@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import Logo from "@/assets/logo.svg";
+import SentinelSpinner from "@/components/sentinel-spinner";
+import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import { type Topic, useTopicStore } from "@/lib/zustand/topic-store";
+import { TopicDTO } from "@/models/topic";
 import { cn } from "@repo/ui/utils/cn";
 
-import { Book, Grid3X3, Home, LucideIcon } from "lucide-react";
+import { Book, Grid3X3, Home, Loader2, LucideIcon } from "lucide-react";
 
-import AddTopicModal from "./add-topic-modal";
 import RecentTopicItem from "./recent-topic-item";
 
 interface NavItem {
@@ -32,29 +33,22 @@ export default function Sidebar() {
   const router = useRouter();
 
   const { isOpen, close } = useMobileMenuStore();
-  const topicStore = useTopicStore();
 
   // 현재 선택된 토픽 ID 가져오기
   const currentTopicId = Number(searchParams.get("id") || "");
 
-  // 최근 토픽 가져오기
-  const recentTopics = topicStore.getRecentTopics();
+  const {
+    data: recentTopics,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetAllTopics();
 
-  const onTopicClick = (topic: Topic) => {
+  const onTopicClick = (topic: TopicDTO) => {
     router.push(`/topic?id=${topic.id}`);
     close(); // 모바일에서 사이드바 닫기
   };
-
-  useEffect(() => {
-    const onKeydown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        topicStore.setShowNewTopicModal(false);
-      }
-    };
-
-    document.addEventListener("keydown", onKeydown);
-    return () => document.removeEventListener("keydown", onKeydown);
-  }, []);
 
   return (
     <>
@@ -71,9 +65,7 @@ export default function Sidebar() {
           href="/dashboard"
           className="border-sidebar-border mb-8 flex items-center gap-3 border-b pb-4"
         >
-          <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-md text-xl font-bold text-white">
-            L
-          </div>
+          <Logo className="size-10" />
           <div className="text-primary text-2xl font-bold">LinkyBoard</div>
         </Link>
 
@@ -103,23 +95,36 @@ export default function Sidebar() {
         {/* Recent Topics */}
         <div className="mt-8">
           <div className="text-muted-foreground mb-4 text-sm font-semibold tracking-wider uppercase">
-            최근 토픽
+            나의 토픽
           </div>
-          {recentTopics.map((topic) => (
-            <RecentTopicItem
-              key={topic.id}
-              isSelected={currentTopicId === topic.id}
-              topic={topic}
-              onTopicClick={() => onTopicClick(topic)}
-            />
-          ))}
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <Loader2 className="animate-spin" />
+            </div>
+          ) : !recentTopics || recentTopics?.length === 0 ? (
+            <p className="text-muted-foreground text-sm">토픽이 없어요.</p>
+          ) : (
+            recentTopics?.map((topic) => (
+              <RecentTopicItem
+                key={topic.id}
+                isSelected={currentTopicId === topic.id}
+                topic={topic}
+                onTopicClick={() => onTopicClick(topic)}
+              />
+            ))
+          )}
+          <SentinelSpinner
+            className="mx-auto"
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
+            isLoading={isLoading}
+            isFetchingNextPage={isFetchingNextPage}
+          />
         </div>
       </aside>
 
       {/* Mobile Overlay */}
       {isOpen && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={close} />}
-
-      <AddTopicModal />
     </>
   );
 }

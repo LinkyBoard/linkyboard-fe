@@ -16,7 +16,12 @@ import {
 import { LogOut, Save, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { useDetailSaveContent, useQuickSaveContent } from "../lib/tanstack/mutation/content";
+import {
+  useDetailSaveContent,
+  useDetailSaveYoutubeContent,
+  useQuickSaveContent,
+  useQuickSaveYoutubeContent,
+} from "../lib/tanstack/mutation/content";
 
 const getHtmlContent = async () => {
   const html = await getHtmlText();
@@ -71,6 +76,7 @@ function LogoutDialogContent() {
 
 export default function SearchContent() {
   const { currentTab, isFindingExistPath } = useTabStore();
+  const { contents } = useUserStore();
 
   const navigate = useNavigate();
 
@@ -78,50 +84,84 @@ export default function SearchContent() {
     useQuickSaveContent();
   const { mutateAsync: mutateDetailSaveContent, isPending: isPendingDetailSaveContent } =
     useDetailSaveContent();
+  const {
+    mutateAsync: mutateQuickSaveYoutubeContent,
+    isPending: isPendingQuickSaveYoutubeContent,
+  } = useQuickSaveYoutubeContent();
+  const {
+    mutateAsync: mutateDetailSaveYoutubeContent,
+    isPending: isPendingDetailSaveYoutubeContent,
+  } = useDetailSaveYoutubeContent();
 
   const saveDisabledd =
-    isFindingExistPath || isPendingQuickSaveContent || isPendingDetailSaveContent;
+    isFindingExistPath ||
+    isPendingQuickSaveContent ||
+    isPendingDetailSaveContent ||
+    isPendingQuickSaveYoutubeContent ||
+    isPendingDetailSaveYoutubeContent;
+
+  const isYoutubeUrl = currentTab.url.includes("youtube.com");
 
   const onSaveOnly = async () => {
-    const { htmlContent, thumbnail } = await getHtmlContent();
-    if (!htmlContent || !thumbnail) return;
+    if (isYoutubeUrl) {
+      await mutateQuickSaveYoutubeContent({
+        title: currentTab.title,
+        url: currentTab.url,
+      });
+    } else {
+      const { htmlContent, thumbnail } = await getHtmlContent();
+      if (!htmlContent || !thumbnail) return;
 
-    const htmlBlob = new Blob([htmlContent], { type: "text/html" });
-    const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
+      const htmlBlob = new Blob([htmlContent], { type: "text/html" });
+      const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
 
-    const formData = new FormData();
+      const formData = new FormData();
 
-    formData.append("htmlFile", htmlFile);
-    formData.append("title", currentTab.title);
-    formData.append("url", currentTab.url);
-    formData.append("thumbnail", thumbnail);
+      formData.append("htmlFile", htmlFile);
+      formData.append("title", currentTab.title);
+      formData.append("url", currentTab.url);
+      formData.append("thumbnail", thumbnail);
 
-    await mutateQuickSaveContent(formData);
+      await mutateQuickSaveContent(formData);
+    }
   };
 
   const onSaveWithSummary = async () => {
-    const { htmlContent, thumbnail } = await getHtmlContent();
-    if (!htmlContent || !thumbnail) return;
+    if (isYoutubeUrl) {
+      const res = await mutateDetailSaveYoutubeContent({
+        url: currentTab.url,
+      });
+      navigate("/create-content", {
+        state: {
+          ...res.result,
+          ...currentTab,
+          thumbnail: "",
+          transcript: "",
+        },
+      });
+    } else {
+      const { htmlContent, thumbnail } = await getHtmlContent();
+      if (!htmlContent || !thumbnail) return;
 
-    const htmlBlob = new Blob([htmlContent], { type: "text/html" });
-    const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
+      const htmlBlob = new Blob([htmlContent], { type: "text/html" });
+      const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
 
-    const formData = new FormData();
-    formData.append("htmlFile", htmlFile);
+      const formData = new FormData();
+      formData.append("htmlFile", htmlFile);
 
-    await mutateDetailSaveContent(
-      {
+      const res = await mutateDetailSaveContent({
         url: currentTab.url,
         formData,
-      },
-      {
-        onSuccess: (data) => {
-          navigate("/create-content", {
-            state: { ...data.result, ...currentTab, thumbnail, htmlFile },
-          });
+      });
+      navigate("/create-content", {
+        state: {
+          ...res.result,
+          ...currentTab,
+          thumbnail,
+          htmlFile,
         },
-      }
-    );
+      });
+    }
   };
 
   return (
@@ -167,7 +207,7 @@ export default function SearchContent() {
         </div>
 
         {/* 저장 옵션 */}
-        <div className="space-y-4">
+        <div className="space-y-2">
           <h3 className="text-foreground text-base font-semibold">저장 옵션</h3>
 
           {/* 저장만 하기 */}

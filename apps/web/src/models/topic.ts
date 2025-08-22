@@ -1,0 +1,40 @@
+import { StickerType } from "@/types/topic";
+import type { CategoryContentDTO } from "@repo/types";
+
+export interface TopicDTO {
+  id: number;
+  title: string;
+  content: string;
+}
+
+export interface SummarizeContentDTO {
+  id: number;
+  title: string;
+  draftMd: string;
+}
+
+export interface TopicDetailDTO {
+  nodes: {
+    data: {
+      item: TopicDTO | CategoryContentDTO;
+      nodeContent: StickerType;
+    };
+    id: string;
+    measured: {
+      height: number;
+      width: number;
+    };
+    position: {
+      x: number;
+      y: number;
+    };
+    type: "custom";
+  }[];
+  edges: {
+    id: string;
+    source: string;
+    sourceHandle: string;
+    target: string;
+    targetHandle: string;
+  }[];
+}

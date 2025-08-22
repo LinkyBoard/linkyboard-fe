@@ -1,9 +1,13 @@
-import { type Topic } from "@/lib/zustand/topic-store";
+import RemoveTopicDialog from "@/components/topic/remove-topic-dialog";
+import type { TopicDTO } from "@/models/topic";
+import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 import { cn } from "@repo/ui/utils/cn";
+
+import { Trash2 } from "lucide-react";
 
 interface RecentTopicItemProps {
   isSelected: boolean;
-  topic: Topic;
+  topic: TopicDTO;
   onTopicClick: () => void;
 }
 
@@ -33,7 +37,7 @@ export default function RecentTopicItem({ isSelected, topic, onTopicClick }: Rec
   return (
     <div
       className={cn(
-        "mb-2 flex cursor-pointer items-center gap-3 rounded-md p-2 transition-all duration-300",
+        "group mb-2 flex cursor-pointer items-center gap-3 rounded-md p-2 transition-all duration-300",
         isSelected ? "bg-sidebar-primary text-sidebar-primary-foreground" : "hover:bg-accent"
       )}
       onClick={onTopicClick}
@@ -47,13 +51,26 @@ export default function RecentTopicItem({ isSelected, topic, onTopicClick }: Rec
         </div>
         <div
           className={cn(
-            "text-xs",
+            "line-clamp-1 text-xs",
             isSelected ? "text-sidebar-primary-foreground/80" : "text-muted-foreground"
           )}
-        >
-          {topic.description}
-        </div>
+          dangerouslySetInnerHTML={{ __html: topic.content }}
+        />
       </div>
+      <Dialog>
+        <DialogTrigger
+          className={cn(
+            "opacity-0 transition-opacity group-hover:opacity-100",
+            "hover:bg-destructive/10 hover:text-destructive rounded p-1",
+            "disabled:opacity-50",
+            isSelected && "text-sidebar-primary-foreground/60 hover:text-sidebar-primary-foreground"
+          )}
+          aria-label="토픽 삭제"
+        >
+          <Trash2 size={14} />
+        </DialogTrigger>
+        <RemoveTopicDialog topicId={topic.id} />
+      </Dialog>
     </div>
   );
 }

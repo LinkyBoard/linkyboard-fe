@@ -1,32 +1,22 @@
 import Breadcrumb from "@/components/(with-side-bar)/library/breadcrumb";
 import CategoryList from "@/components/(with-side-bar)/library/category-list";
-import KnowledgeList from "@/components/(with-side-bar)/library/knowledge-list";
-import { libraryData } from "@/constants/sample-data";
+import ContentList from "@/components/(with-side-bar)/library/content-list";
 
 interface LibraryPageProps {
   category: string;
-  id: string;
 }
 
-export default function LibraryPage({ category, id }: LibraryPageProps) {
+export default function LibraryPage({ category }: LibraryPageProps) {
   const currentLevel = category ? "tag" : "category";
-
-  const allKnowledges = (() => {
-    if (!category) return [];
-    const categoryData = libraryData.find((item) => item.name === category);
-    if (!categoryData) return [];
-
-    return categoryData.tags.flatMap((tag) => tag.knowledge);
-  })();
 
   const renderContent = () => {
     switch (currentLevel) {
       case "category":
-        return <CategoryList categories={libraryData} />;
+        return <CategoryList />;
       case "tag":
-        return <KnowledgeList knowledges={allKnowledges} category={category} id={id} />;
+        return <ContentList category={category} />;
       default:
-        return <CategoryList categories={libraryData} />;
+        return <CategoryList />;
     }
   };
 

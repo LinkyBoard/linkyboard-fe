@@ -10,6 +10,7 @@ interface BreadcrumbProps {
 }
 
 export default function Breadcrumb({ currentLevel, currentCategory }: BreadcrumbProps) {
+  const [_, categoryName] = currentCategory?.split(",") || [];
   return (
     <nav className="mb-8 flex items-center gap-2 text-sm">
       <Link
@@ -32,7 +33,7 @@ export default function Breadcrumb({ currentLevel, currentCategory }: Breadcrumb
             )}
             href={`/library?category=${currentCategory}`}
           >
-            {currentCategory}
+            {categoryName}
           </Link>
         </>
       )}

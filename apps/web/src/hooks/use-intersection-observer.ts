@@ -46,7 +46,6 @@ export function useIntersectionObserver(options: UseIntersectionObserverOptions 
   return { elementRef, isIntersecting };
 }
 
-// 스크롤 위치에 따른 네비게이션 활성화 훅
 export function useScrollSpy(ids: string[], offset: number = 200) {
   const [activeId, setActiveId] = useState<string>("");
 
@@ -75,7 +74,6 @@ export function useScrollSpy(ids: string[], offset: number = 200) {
   return activeId;
 }
 
-// 부드러운 스크롤 함수
 export function scrollToSection(sectionId: string) {
   const element = document.querySelector(sectionId);
   if (element) {

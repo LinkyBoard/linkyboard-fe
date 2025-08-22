@@ -1,17 +1,26 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import Logo from "@/assets/logo.svg?react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CONTENT } from "@/constants/content";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
-import { useFinishDetailSaveContent } from "@/lib/tanstack/mutation/content";
+import { invalidateQueries } from "@/lib/tanstack";
+import {
+  useFinishDetailSaveContent,
+  useFinishDetailSaveYoutubeContent,
+  useUpdateContent,
+} from "@/lib/tanstack/mutation/content";
+import { useGetCategories } from "@/lib/tanstack/query/category";
+import { useGetContentById } from "@/lib/tanstack/query/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 
-import { ArrowLeft, ChevronDown, Link, Plus, Save, X } from "lucide-react";
+import { ArrowLeft, ChevronDown, Plus, Save, X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useSearchParams } from "react-router-dom";
 
 interface CreateContentState {
   thumbnail: string;
@@ -24,11 +33,24 @@ interface CreateContentState {
   htmlFile: File;
 }
 
+const DEFAULT_STATE: CreateContentState = {
+  thumbnail: "",
+  title: "",
+  url: "",
+  summary: "",
+  memo: "",
+  tags: [],
+  category: "",
+  htmlFile: new File([], ""),
+};
+
 export default function CreateContent() {
   const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
 
   const { state } = useLocation() as { state: CreateContentState };
-  const { htmlFile, ...restState } = state;
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const { data: content, isLoading, isRefetching } = useGetContentById(id);
 
   const tagInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,52 +60,130 @@ export default function CreateContent() {
     setIsCategoryOpen(false);
   });
 
-  const { mutateAsync, isPending } = useFinishDetailSaveContent();
+  const {
+    mutateAsync: mutateFinishDetailSaveContent,
+    isPending: isPendingFinishDetailSaveContent,
+  } = useFinishDetailSaveContent();
+  const {
+    mutateAsync: mutateFinishDetailSaveYoutubeContent,
+    isPending: isPendingFinishDetailSaveYoutubeContent,
+  } = useFinishDetailSaveYoutubeContent();
+  const { mutateAsync: mutateUpdateContent, isPending: isPendingUpdateContent } =
+    useUpdateContent();
+
+  const { data: userCategories } = useGetCategories();
+
+  const isBadRequest = !id && !state;
+
+  // 기본값을 미리 계산
+  const defaultValues = (() => {
+    if (isBadRequest || isLoading) {
+      return { ...DEFAULT_STATE, memo: "" };
+    }
+
+    if (id && !isLoading && content?.result) {
+      return content.result;
+    }
+
+    return { ...state, memo: "" };
+  })();
 
   const {
     register,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<ContentSchemaType>({
     resolver: zodResolver(contentSchema),
-    defaultValues: { ...restState, memo: "" },
+    defaultValues,
   });
 
-  if (!state) {
+  // defaultValues가 변경될 때 폼 값 업데이트
+  useEffect(() => {
+    if (!isLoading && !isRefetching) {
+      reset(defaultValues);
+    }
+  }, [isLoading, isRefetching]);
+
+  // state가 없으면 리다이렉트
+  if (isBadRequest) {
     return <Navigate to="/bad-request" replace />;
   }
 
-  // TODO: 사용자 카테고리 조회한 결과 값 넣기
-  const categories = [state?.category || ""];
+  const categories = [state?.category || "", ...(userCategories || [])];
 
   const watchedTags = watch("tags");
+  const watchedCategory = watch("category");
+  const watchedThumbnail = watch("thumbnail");
+
+  const isYoutubeUrl = watch("url").includes("youtube.com");
+  const isPending =
+    isPendingFinishDetailSaveContent ||
+    isPendingFinishDetailSaveYoutubeContent ||
+    isPendingUpdateContent;
 
   const onGoBack = () => {
     navigate("/search-content");
   };
 
   const onSave = handleSubmit(async (data) => {
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("url", data.url);
-    formData.append("thumbnail", data.thumbnail || "");
-    formData.append("memo", data.memo || "");
-    formData.append("summary", data.summary || "");
-    formData.append("category", data.category);
-    formData.append("tags", JSON.stringify(data.tags));
-    formData.append("htmlFile", htmlFile);
+    if (id) {
+      await mutateUpdateContent(
+        {
+          id: id as string,
+          ...data,
+          thumbnail: data.thumbnail || "",
+          summary: data.summary || "",
+          memo: data.memo || "",
+        },
+        {
+          onSuccess: () => {
+            successToast("저장에 성공했어요.");
+            navigate("/search-content");
+            invalidateQueries([CONTENT.GET_CONTENT_BY_ID, id]);
+          },
+        }
+      );
+      return;
+    }
+    if (isYoutubeUrl) {
+      await mutateFinishDetailSaveYoutubeContent(
+        {
+          ...data,
+          memo: data.memo || "",
+          summary: data.summary || "",
+          transcript: "",
+          thumbnail: data.thumbnail || "",
+        },
+        {
+          onSuccess: () => {
+            successToast("저장에 성공했어요.");
+            navigate("/search-content");
+          },
+        }
+      );
+    } else {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("url", data.url);
+      formData.append("thumbnail", data.thumbnail || "");
+      formData.append("memo", data.memo || "");
+      formData.append("summary", data.summary || "");
+      formData.append("category", data.category);
+      for (const tag of data.tags) {
+        formData.append("tags", tag);
+      }
+      formData.append("htmlFile", state.htmlFile);
 
-    await mutateAsync(formData, {
-      onSuccess: () => {
-        successToast("저장에 성공했어요.");
-        navigate("/search-content");
-      },
-      onError: (error) => {
-        console.error(error);
-      },
-    });
+      await mutateFinishDetailSaveContent(formData, {
+        onSuccess: () => {
+          successToast("저장에 성공했어요.");
+          navigate("/search-content");
+        },
+      });
+    }
   });
 
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
@@ -116,9 +216,6 @@ export default function CreateContent() {
     setValue("category", category.trim());
     setIsCategoryOpen(false);
   };
-
-  const watchedCategory = watch("category");
-  const watchedThumbnail = watch("thumbnail");
 
   return (
     <>
@@ -156,9 +253,7 @@ export default function CreateContent() {
                 />
               </div>
             ) : (
-              <div className="from-primary to-chart-2 flex aspect-square size-32 items-center justify-center rounded-2xl bg-gradient-to-r">
-                <Link className="size-16 text-white" />
-              </div>
+              <Logo className="size-32" />
             )}
           </div>
 
@@ -166,7 +261,7 @@ export default function CreateContent() {
           <div>
             <h2 className="text-muted-foreground mb-2 text-sm font-medium">URL</h2>
             <div className="bg-muted/50 rounded-md p-3">
-              <p className="text-foreground text-sm break-all">{watch("url")}</p>
+              <p className="text-foreground line-clamp-1 text-sm">{watch("url")}</p>
             </div>
           </div>
 
@@ -197,7 +292,7 @@ export default function CreateContent() {
               </div>
 
               {isCategoryOpen && (
-                <div className="bg-background absolute z-10 mt-5 w-full rounded-md border shadow-lg">
+                <div className="bg-background absolute z-10 mt-5 max-h-52 w-full overflow-y-auto rounded-md border shadow-lg">
                   <button
                     type="button"
                     onClick={() => onCategorySelect(watchedCategory)}

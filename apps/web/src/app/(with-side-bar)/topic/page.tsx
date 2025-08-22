@@ -1,13 +1,12 @@
+import type { ContentTypeOptions } from "@/constants/content";
 import TopicBoardPage from "@/page/topic";
 
 interface TopicBoardProps {
-  searchParams: Promise<{ id?: string }>;
+  searchParams: Promise<{ id?: string; type?: ContentTypeOptions }>;
 }
 
-export const runtime = "edge";
-
 export default async function TopicBoard({ searchParams }: TopicBoardProps) {
-  const { id } = await searchParams;
+  const { id, type } = await searchParams;
 
-  return <TopicBoardPage id={id || ""} />;
+  return <TopicBoardPage id={id || ""} type={type || "ALL"} />;
 }

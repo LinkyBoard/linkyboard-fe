@@ -50,6 +50,14 @@ export default function ContentList({ category }: ContentListProps) {
   const filteredContents = (() => {
     if (selectedTags.length === 0 && selectedType === CONTENT_TYPE_OPTIONS.ALL) return contents;
 
+    if (selectedTags.length > 0) {
+      return contents.filter((content) => selectedTags.every((tag) => content.tags.includes(tag)));
+    }
+
+    if (selectedType !== CONTENT_TYPE_OPTIONS.ALL) {
+      return contents.filter((content) => content.type !== selectedType);
+    }
+
     return contents.filter(
       (content) =>
         selectedTags.every((tag) => content.tags.includes(tag)) &&

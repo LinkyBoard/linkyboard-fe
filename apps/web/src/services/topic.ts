@@ -1,7 +1,6 @@
 import type { ContentTypeOptions } from "@/constants/content";
-import type { CategoryContentDTO } from "@/models/content";
 import type { TopicDetailDTO, TopicDTO } from "@/models/topic";
-import { BaseResponseDTO, PaginationDTO } from "@repo/types";
+import type { BaseResponseDTO, CategoryContentDTO, PaginationDTO } from "@repo/types";
 import { getParams } from "@repo/ui/utils/params";
 
 import { clientApi } from ".";

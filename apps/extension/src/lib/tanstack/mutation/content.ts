@@ -1,14 +1,16 @@
-import { successToast } from "@/utils/toast";
-import { useMutation } from "@tanstack/react-query";
-
+import { CONTENT } from "@/constants/content";
 import {
   detailSaveWebContent,
   detailSaveYoutubeContent,
   finishDetailSaveWebContent,
   finishDetailSaveYoutubeContent,
+  getAllContents,
   quickSaveWebContent,
   quickSaveYoutubeContent,
-} from "../../../services/content";
+  updateContent,
+} from "@/services/content";
+import { successToast } from "@/utils/toast";
+import { useMutation } from "@tanstack/react-query";
 
 export const useQuickSaveContent = () => {
   return useMutation({
@@ -65,6 +67,25 @@ export const useFinishDetailSaveContent = () => {
 export const useFinishDetailSaveYoutubeContent = () => {
   return useMutation({
     mutationFn: finishDetailSaveYoutubeContent,
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+};
+
+export const useGetAllContents = () => {
+  return useMutation({
+    mutationKey: [CONTENT.GET_ALL_CONTENTS],
+    mutationFn: getAllContents,
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+};
+
+export const useUpdateContent = () => {
+  return useMutation({
+    mutationFn: updateContent,
     onError: (error) => {
       console.error(error);
     },

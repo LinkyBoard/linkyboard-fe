@@ -6,7 +6,7 @@ import Link from "next/link";
 import { CONTENT_TYPE_OPTIONS, type ContentTypeOptions } from "@/constants/content";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
-import { CategoryContentDTO } from "@/models/content";
+import { CategoryContentDTO } from "@repo/types";
 
 import { Loader2, Search } from "lucide-react";
 

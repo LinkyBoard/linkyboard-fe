@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CONTENT_TYPE_OPTIONS, ContentTypeOptions } from "@/constants/content";
 import { useGetCategoryContentById } from "@/lib/tanstack/query/content";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
-import { CategoryContentDTO } from "@/models/content";
+import type { CategoryContentDTO } from "@repo/types";
 
 import { Filter, Loader2 } from "lucide-react";
 
@@ -52,7 +52,9 @@ export default function ContentList({ category }: ContentListProps) {
 
     return contents.filter(
       (content) =>
-        selectedTags.some((tag) => content.tags.includes(tag)) || content.type === selectedType
+        selectedTags.every((tag) => content.tags.includes(tag)) &&
+        selectedType !== CONTENT_TYPE_OPTIONS.ALL &&
+        content.type === selectedType
     );
   })();
 

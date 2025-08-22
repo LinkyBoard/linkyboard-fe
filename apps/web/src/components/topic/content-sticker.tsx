@@ -1,5 +1,5 @@
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
-import { CategoryContentDTO } from "@/models/content";
+import type { CategoryContentDTO } from "@repo/types";
 import { cn } from "@repo/ui/utils/cn";
 
 import { Check, Edit, FileText, Globe, Youtube } from "lucide-react";
@@ -101,7 +101,7 @@ export default function ContentSticker({
       {shouldShowMemo && (
         <div className="mt-4 flex-1 rounded-lg bg-blue-50 p-3">
           <h4 className="mb-2 text-sm font-semibold text-blue-900">메모</h4>
-          <p className="text-sm leading-relaxed text-blue-800">ㅇㅁㄹㅇㅁㄴㄹㅁㄴㅇ</p>
+          <p className="text-sm leading-relaxed text-blue-800">{item.memo}</p>
         </div>
       )}
     </div>

@@ -1,14 +1,18 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Logo from "@/assets/logo.svg?react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CONTENT } from "@/constants/content";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
+import { invalidateQueries } from "@/lib/tanstack";
 import {
   useFinishDetailSaveContent,
   useFinishDetailSaveYoutubeContent,
+  useUpdateContent,
 } from "@/lib/tanstack/mutation/content";
 import { useGetCategories } from "@/lib/tanstack/query/category";
+import { useGetContentById } from "@/lib/tanstack/query/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,7 +20,7 @@ import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 
 import { ArrowLeft, ChevronDown, Plus, Save, X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useSearchParams } from "react-router-dom";
 
 interface CreateContentState {
   thumbnail: string;
@@ -29,11 +33,24 @@ interface CreateContentState {
   htmlFile: File;
 }
 
+const DEFAULT_STATE: CreateContentState = {
+  thumbnail: "",
+  title: "",
+  url: "",
+  summary: "",
+  memo: "",
+  tags: [],
+  category: "",
+  htmlFile: new File([], ""),
+};
+
 export default function CreateContent() {
   const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
 
   const { state } = useLocation() as { state: CreateContentState };
-  const { htmlFile, ...restState } = state;
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const { data: content, isLoading, isRefetching } = useGetContentById(id);
 
   const tagInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,21 +68,47 @@ export default function CreateContent() {
     mutateAsync: mutateFinishDetailSaveYoutubeContent,
     isPending: isPendingFinishDetailSaveYoutubeContent,
   } = useFinishDetailSaveYoutubeContent();
+  const { mutateAsync: mutateUpdateContent, isPending: isPendingUpdateContent } =
+    useUpdateContent();
 
   const { data: userCategories } = useGetCategories();
+
+  const isBadRequest = !id && !state;
+
+  // 기본값을 미리 계산
+  const defaultValues = (() => {
+    if (isBadRequest || isLoading) {
+      return { ...DEFAULT_STATE, memo: "" };
+    }
+
+    if (id && !isLoading && content?.result) {
+      return content.result;
+    }
+
+    return { ...state, memo: "" };
+  })();
 
   const {
     register,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<ContentSchemaType>({
     resolver: zodResolver(contentSchema),
-    defaultValues: { ...restState, memo: "" },
+    defaultValues,
   });
 
-  if (!state) {
+  // defaultValues가 변경될 때 폼 값 업데이트
+  useEffect(() => {
+    if (!isLoading && !isRefetching) {
+      reset(defaultValues);
+    }
+  }, [isLoading, isRefetching]);
+
+  // state가 없으면 리다이렉트
+  if (isBadRequest) {
     return <Navigate to="/bad-request" replace />;
   }
 
@@ -75,14 +118,36 @@ export default function CreateContent() {
   const watchedCategory = watch("category");
   const watchedThumbnail = watch("thumbnail");
 
-  const isYoutubeUrl = state.url.includes("youtube.com");
-  const isPending = isPendingFinishDetailSaveContent || isPendingFinishDetailSaveYoutubeContent;
+  const isYoutubeUrl = watch("url").includes("youtube.com");
+  const isPending =
+    isPendingFinishDetailSaveContent ||
+    isPendingFinishDetailSaveYoutubeContent ||
+    isPendingUpdateContent;
 
   const onGoBack = () => {
     navigate("/search-content");
   };
 
   const onSave = handleSubmit(async (data) => {
+    if (id) {
+      await mutateUpdateContent(
+        {
+          id: id as string,
+          ...data,
+          thumbnail: data.thumbnail || "",
+          summary: data.summary || "",
+          memo: data.memo || "",
+        },
+        {
+          onSuccess: () => {
+            successToast("저장에 성공했어요.");
+            navigate("/search-content");
+            invalidateQueries([CONTENT.GET_CONTENT_BY_ID, id]);
+          },
+        }
+      );
+      return;
+    }
     if (isYoutubeUrl) {
       await mutateFinishDetailSaveYoutubeContent(
         {
@@ -110,7 +175,7 @@ export default function CreateContent() {
       for (const tag of data.tags) {
         formData.append("tags", tag);
       }
-      formData.append("htmlFile", htmlFile);
+      formData.append("htmlFile", state.htmlFile);
 
       await mutateFinishDetailSaveContent(formData, {
         onSuccess: () => {

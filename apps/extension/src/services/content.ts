@@ -1,4 +1,4 @@
-import { BaseResponseDTO } from "@repo/types";
+import type { BaseResponseDTO, CategoryContentDTO, PaginationDTO } from "@repo/types";
 
 import { DetailSaveContentDTO } from "../models/content";
 
@@ -56,4 +56,26 @@ export const finishDetailSaveYoutubeContent = async (json: {
   tags: string[];
 }): Promise<BaseResponseDTO<unknown>> => {
   return api.post("contents/summarize/youtube/save", { json }).json();
+};
+
+export const getAllContents = async (): Promise<PaginationDTO<CategoryContentDTO[]>> => {
+  return api.get("contents?size=50").json();
+};
+
+export const getContentById = async (id: string): Promise<BaseResponseDTO<CategoryContentDTO>> => {
+  return api.get(`contents/${id}`).json();
+};
+
+export const updateContent = async (props: {
+  id: string;
+  title: string;
+  url: string;
+  thumbnail: string;
+  memo: string;
+  summary: string;
+  category: string;
+  tags: string[];
+}): Promise<BaseResponseDTO<unknown>> => {
+  const { id, ...restProps } = props;
+  return api.put(`contents/${id}`, { json: restProps }).json();
 };

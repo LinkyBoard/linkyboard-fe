@@ -1,5 +1,5 @@
-import { CategoryContentDTO, ContentDetailDTO } from "@/models/content";
-import { BaseResponseDTO } from "@repo/types";
+import { ContentDetailDTO } from "@/models/content";
+import { BaseResponseDTO, CategoryContentDTO } from "@repo/types";
 
 import { clientApi } from ".";
 

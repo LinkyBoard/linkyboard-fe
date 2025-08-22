@@ -1,13 +1,4 @@
-import { type ContentType } from "@/constants/content";
-
-export interface CategoryContentDTO {
-  id: number;
-  thumbnail: string;
-  title: string;
-  summary: string;
-  tags: string[];
-  type: ContentType;
-}
+import { type ContentType } from "@repo/types";
 
 export interface ContentDetailDTO {
   id: number;

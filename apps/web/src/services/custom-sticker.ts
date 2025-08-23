@@ -51,6 +51,7 @@ export const createCustomSticker = async (props: {
 
 export const updateCustomSticker = async (props: {
   customStickerId: number;
+  topicId: string;
   title: string;
   content: string;
 }): Promise<BaseResponseDTO<unknown>> => {

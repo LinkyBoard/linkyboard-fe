@@ -148,10 +148,11 @@ export default function EditTopicSidebar() {
             },
           }
         );
-      } else if (editingSticker.type === "custom_sticker") {
+      } else if (editingSticker.type === "custom_sticker" && topicId) {
         await updateCustomSticker(
           {
             customStickerId: editingSticker.id,
+            topicId,
             title,
             content,
           },

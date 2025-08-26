@@ -1,3 +1,5 @@
+import { removeCookie } from "@/utils/cookie";
+
 import ky from "ky";
 
 // API 기본 설정
@@ -90,6 +92,7 @@ const clientKy = ky.create({
             return ky(request, options);
           } else {
             // 토큰 재발급 실패 시 로그인 페이지로 리다이렉트
+            await removeCookie("loggedIn");
             window.location.href = "/login";
           }
         }

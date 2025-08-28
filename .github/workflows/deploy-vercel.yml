@@ -44,15 +44,21 @@ jobs:
           # Extract deployment URL
           DEPLOY_URL=$(grep -Eo 'https?://[A-Za-z0-9.-]+\.vercel\.app' deploy.log | head -n1)
 
-          # 2) If deploy failed, Redeploy using URL
+          # 2) Check if failure is due to @repo/types module error and redeploy if so
           if [ $EXIT_CODE -ne 0 ]; then
-            echo "❗️ Initial deployment failed (exit code=$EXIT_CODE). Redeploying"
-            npx vercel redeploy "$DEPLOY_URL" \
-              --token "$VERCEL_TOKEN" \
-              --scope "$VERCEL_ORG_ID"
-            REDO_EXIT=$?
-            if [ $REDO_EXIT -ne 0 ]; then
-              echo "::error::Redeploy failed (exit code=$REDO_EXIT)!"
+            if grep -q "Cannot find module '@repo/types'" deploy.log; then
+              echo "❗️ Initial deployment failed due to @repo/types module error. Redeploying..."
+              npx vercel redeploy "$DEPLOY_URL" \
+                --token "$VERCEL_TOKEN" \
+                --scope "$VERCEL_ORG_ID"
+              REDO_EXIT=$?
+              if [ $REDO_EXIT -ne 0 ]; then
+                echo "::error::Redeploy failed (exit code=$REDO_EXIT)!"
+                exit 1
+              fi
+            else
+              echo "❌ Deployment failed but not due to @repo/types module error. Exiting..."
+              echo "::error::Deployment failed with exit code $EXIT_CODE"
               exit 1
             fi
           fi

@@ -34,8 +34,8 @@ jobs:
         run: |
           set +e
 
-          # 1) Initial production deploy (capture logs)
-          npx vercel --prod --yes \
+          # 1) Initial production deploy with --force flag to skip cache
+          npx vercel --prod --yes --force \
             --token "$VERCEL_TOKEN" \
             --scope "$VERCEL_ORG_ID" > deploy.log 2>&1
           EXIT_CODE=$?
@@ -48,7 +48,7 @@ jobs:
           if [ $EXIT_CODE -ne 0 ]; then
             if grep -q "Cannot find module '@repo/types'" deploy.log; then
               echo "❗️ Initial deployment failed due to @repo/types module error. Redeploying..."
-              npx vercel redeploy "$DEPLOY_URL" \
+              npx vercel redeploy "$DEPLOY_URL" --force \
                 --token "$VERCEL_TOKEN" \
                 --scope "$VERCEL_ORG_ID"
               REDO_EXIT=$?

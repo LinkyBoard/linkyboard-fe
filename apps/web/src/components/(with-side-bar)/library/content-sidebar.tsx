@@ -184,7 +184,6 @@ export default function ContentSidebar() {
               <p className="text-base">콘텐츠 정보를 가져오는데 실패했어요</p>
             </div>
           ) : isEditing ? (
-            // 편집 모드
             <div className="space-y-6">
               <div>
                 <label className="mb-2 block text-base font-medium">제목</label>

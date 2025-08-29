@@ -87,7 +87,6 @@ const FlowCanvas = forwardRef<HTMLDivElement, FlowCanvasProps>(
         y: e.clientY,
       });
 
-      // 서버에 콘텐츠 추가
       await createContent({
         topicId: id,
         contentId: contentData.id,

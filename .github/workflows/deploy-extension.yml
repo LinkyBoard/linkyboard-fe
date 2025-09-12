@@ -24,49 +24,40 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create .env.production file
+      - name: Backup original manifest
         run: |
-          echo "${{ secrets.EXTENSION_ENV }}" > apps/extension/.env.production
+          cp apps/extension/manifest.json apps/extension/manifest.json.backup
 
-      - name: Create manifest.json file
-        run: |
-          echo '${{ secrets.MANIFEST_JSON }}' > apps/extension/manifest.json
-          echo "=== Manifest.json validation ==="
-          cat apps/extension/manifest.json
-          echo "=== JSON validation ==="
-          python3 -m json.tool apps/extension/manifest.json
-
-      - name: Auto-increment version
+      - name: Bump version
         run: |
           cd apps/extension
           # 현재 버전 읽기
-          CURRENT_VERSION=$(python3 -c "import json; data=json.load(open('manifest.json')); print(data['version'])")
+          CURRENT_VERSION=$(node -p "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')).version")
           echo "Current version: $CURRENT_VERSION"
 
-          # 버전을 점으로 분리
-          IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
-          MAJOR=${VERSION_PARTS[0]}
-          MINOR=${VERSION_PARTS[1]}
-          PATCH=${VERSION_PARTS[2]:-0}
-
-          # 패치 버전 증가
-          NEW_PATCH=$((PATCH + 1))
-          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
-
+          # 버전 증가 (마지막 숫자 증가)
+          NEW_VERSION=$(node -p "
+            const version = '$CURRENT_VERSION';
+            const parts = version.split('.');
+            const lastPart = parseInt(parts[parts.length - 1]);
+            parts[parts.length - 1] = (lastPart + 1).toString();
+            parts.join('.');
+          ")
           echo "New version: $NEW_VERSION"
 
           # manifest.json 업데이트
-          python3 -c "
-          import json
-          with open('manifest.json', 'r') as f:
-              data = json.load(f)
-          data['version'] = '$NEW_VERSION'
-          with open('manifest.json', 'w') as f:
-              json.dump(data, f, indent=2)
+          node -p "
+            const fs = require('fs');
+            const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            manifest.version = '$NEW_VERSION';
+            fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2));
           "
 
-          echo "=== Updated manifest.json ==="
-          cat manifest.json
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Create .env.production file
+        run: |
+          echo "${{ secrets.EXTENSION_ENV }}" > apps/extension/.env.production
 
       - name: Build extension
         run: |
@@ -96,3 +87,20 @@ jobs:
           client-secret: ${{ secrets.CLIENT_SECRET }}
           refresh-token: ${{ secrets.REFRESH_TOKEN }}
           publish-target: trustedTesters
+
+      - name: Commit version bump
+        if: success()
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add apps/extension/manifest.json
+          git commit -m "chore: bump extension version to ${{ env.VERSION }} [skip ci]"
+          git push
+
+      - name: Restore original manifest on failure
+        if: failure()
+        run: |
+          if [ -f apps/extension/manifest.json.backup ]; then
+            cp apps/extension/manifest.json.backup apps/extension/manifest.json
+            echo "Original manifest restored"
+          fi

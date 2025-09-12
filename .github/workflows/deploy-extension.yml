@@ -36,6 +36,38 @@ jobs:
           echo "=== JSON validation ==="
           python3 -m json.tool apps/extension/manifest.json
 
+      - name: Auto-increment version
+        run: |
+          cd apps/extension
+          # 현재 버전 읽기
+          CURRENT_VERSION=$(python3 -c "import json; data=json.load(open('manifest.json')); print(data['version'])")
+          echo "Current version: $CURRENT_VERSION"
+
+          # 버전을 점으로 분리
+          IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]:-0}
+
+          # 패치 버전 증가
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+
+          echo "New version: $NEW_VERSION"
+
+          # manifest.json 업데이트
+          python3 -c "
+          import json
+          with open('manifest.json', 'r') as f:
+              data = json.load(f)
+          data['version'] = '$NEW_VERSION'
+          with open('manifest.json', 'w') as f:
+              json.dump(data, f, indent=2)
+          "
+
+          echo "=== Updated manifest.json ==="
+          cat manifest.json
+
       - name: Build extension
         run: |
           pnpm build:extension

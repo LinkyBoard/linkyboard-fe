@@ -24,10 +24,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create .env.production, manifest.json file
+      - name: Create .env.production file
         run: |
           echo "${{ secrets.EXTENSION_ENV }}" > apps/extension/.env.production
-          echo "${{ secrets.MANIFEST_JSON }}" > apps/extension/manifest.json
+
+      - name: Create manifest.json file
+        run: |
+          echo '${{ secrets.MANIFEST_JSON }}' > apps/extension/manifest.json
+          echo "=== Manifest.json validation ==="
+          cat apps/extension/manifest.json
+          echo "=== JSON validation ==="
+          python3 -m json.tool apps/extension/manifest.json
 
       - name: Build extension
         run: |
@@ -38,7 +45,6 @@ jobs:
           cd apps/extension
           mkdir -p prod
           cp manifest.json prod/
-          cat manifest.json
           cp service-worker.js prod/
           cp .env.production prod/
           cp -r public/* prod/

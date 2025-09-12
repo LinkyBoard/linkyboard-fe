@@ -1,12 +1,12 @@
 name: Deploy to Vercel with Redeploy-on-Failure
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [closed]
 
 jobs:
   deploy:
+    if: ${{ contains(github.event.pull_request.title, '[WEB]') }}
     runs-on: ubuntu-latest
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

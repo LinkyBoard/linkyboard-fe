@@ -38,6 +38,7 @@ jobs:
           cd apps/extension
           mkdir -p prod
           cp manifest.json prod/
+          cat manifest.json
           cp service-worker.js prod/
           cp .env.production prod/
           cp -r public/* prod/

@@ -26,8 +26,8 @@ jobs:
 
       - name: Create .env.production, manifest.json file
         run: |
-          echo "${{ secrets.EXTENSION_ENV }}" > .env.production
-          echo "${{ secrets.MANIFEST_JSON }}" > manifest.json
+          echo "${{ secrets.EXTENSION_ENV }}" > apps/extension/.env.production
+          echo "${{ secrets.MANIFEST_JSON }}" > apps/extension/manifest.json
 
       - name: Build extension
         run: |

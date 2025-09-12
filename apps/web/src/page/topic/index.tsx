@@ -229,6 +229,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         <ContentList
           contentPanelRef={contentPanelRef}
           contentPanelWidth={contentPanelWidth}
+          nodes={topic?.nodes || []}
           id={id}
           type={type}
         />

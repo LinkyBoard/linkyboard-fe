@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import { CONTENT_TYPE_OPTIONS, type ContentTypeOptions } from "@/constants/content";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
+import { TopicNodeProps } from "@/types/topic";
 import { CategoryContentDTO } from "@repo/types";
 
 import { Loader2, Search } from "lucide-react";
@@ -19,6 +20,7 @@ interface ContentListProps {
   contentPanelWidth: number;
   type: ContentTypeOptions;
   id: string;
+  nodes: TopicNodeProps[];
 }
 
 export default function ContentList({
@@ -26,11 +28,16 @@ export default function ContentList({
   contentPanelWidth,
   type,
   id,
+  nodes,
 }: ContentListProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: contents, isLoading } = useGetAllContents(type);
   const { mutateAsync: createContent, isPending } = useCreateContent(id);
+
+  const filteredContents = useMemo(() => {
+    return contents?.filter((content) => nodes.some((node) => node.data.item.id === content.id));
+  }, [contents, nodes]);
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -92,10 +99,10 @@ export default function ContentList({
           <div className="flex justify-center">
             <Loader2 className="text-muted-foreground animate-spin" />
           </div>
-        ) : contents?.length === 0 ? (
+        ) : filteredContents?.length === 0 ? (
           <p className="text-muted-foreground text-center">저장된 콘텐츠가 없어요</p>
         ) : (
-          contents?.map((item) => (
+          filteredContents?.map((item) => (
             <ContentItem
               key={`${item.id}-content-item`}
               item={item}

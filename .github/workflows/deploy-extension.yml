@@ -30,8 +30,7 @@ jobs:
 
       - name: Build extension
         run: |
-          cd apps/extension
-          pnpm build
+          pnpm build:extension
 
       - name: Copy files to prod directory
         run: |

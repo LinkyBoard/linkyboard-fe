@@ -76,7 +76,6 @@ function LogoutDialogContent() {
 
 export default function SearchContent() {
   const { currentTab, isFindingExistPath } = useTabStore();
-  const { contents } = useUserStore();
 
   const navigate = useNavigate();
 

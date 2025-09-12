@@ -4,7 +4,6 @@ import {
   detailSaveYoutubeContent,
   finishDetailSaveWebContent,
   finishDetailSaveYoutubeContent,
-  getAllContents,
   quickSaveWebContent,
   quickSaveYoutubeContent,
   updateContent,
@@ -12,12 +11,15 @@ import {
 import { successToast } from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
 
+import { invalidateQueries } from "..";
+
 export const useQuickSaveContent = () => {
   return useMutation({
     mutationFn: quickSaveWebContent,
     onSuccess: (data) => {
       if (data.isSuccess) {
         successToast("저장에 성공했어요.");
+        invalidateQueries([CONTENT.GET_ALL_CONTENTS]);
       }
     },
     onError: (error) => {
@@ -32,6 +34,7 @@ export const useQuickSaveYoutubeContent = () => {
     onSuccess: (data) => {
       if (data.isSuccess) {
         successToast("저장에 성공했어요.");
+        invalidateQueries([CONTENT.GET_ALL_CONTENTS]);
       }
     },
   });
@@ -67,16 +70,6 @@ export const useFinishDetailSaveContent = () => {
 export const useFinishDetailSaveYoutubeContent = () => {
   return useMutation({
     mutationFn: finishDetailSaveYoutubeContent,
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-};
-
-export const useGetAllContents = () => {
-  return useMutation({
-    mutationKey: [CONTENT.GET_ALL_CONTENTS],
-    mutationFn: getAllContents,
     onError: (error) => {
       console.error(error);
     },

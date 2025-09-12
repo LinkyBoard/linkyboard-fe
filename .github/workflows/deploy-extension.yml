@@ -96,4 +96,3 @@ jobs:
           client-secret: ${{ secrets.CLIENT_SECRET }}
           refresh-token: ${{ secrets.REFRESH_TOKEN }}
           publish-target: trustedTesters
-          publish: false

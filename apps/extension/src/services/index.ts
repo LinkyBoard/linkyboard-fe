@@ -4,10 +4,12 @@ import { infoToast } from "@/utils/toast";
 import ky, { type KyRequest, type KyResponse } from "ky";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const TIMEOUT = 30000;
 
 export const api = ky.create({
   prefixUrl: API_BASE_URL,
   credentials: "include",
+  timeout: TIMEOUT,
   retry: {
     limit: 2,
     methods: ["get", "post", "put", "patch", "delete"],

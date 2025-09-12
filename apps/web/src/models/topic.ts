@@ -1,5 +1,4 @@
-import { StickerType } from "@/types/topic";
-import type { CategoryContentDTO } from "@repo/types";
+import type { TopicNodeProps } from "@/types/topic";
 
 export interface TopicDTO {
   id: number;
@@ -14,22 +13,7 @@ export interface SummarizeContentDTO {
 }
 
 export interface TopicDetailDTO {
-  nodes: {
-    data: {
-      item: TopicDTO | CategoryContentDTO;
-      nodeContent: StickerType;
-    };
-    id: string;
-    measured: {
-      height: number;
-      width: number;
-    };
-    position: {
-      x: number;
-      y: number;
-    };
-    type: "custom";
-  }[];
+  nodes: TopicNodeProps[];
   edges: {
     id: string;
     source: string;

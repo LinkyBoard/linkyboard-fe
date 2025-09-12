@@ -1,0 +1,60 @@
+name: Deploy Extension
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  build:
+    if: ${{ contains(github.event.pull_request.title, '[EXTENSION]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable Corepack & Prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create .env.production file
+        run: |
+          echo "${{ secrets.EXTENSION_ENV }}" > .env.production
+
+      - name: Build extension
+        run: |
+          cd apps/extension
+          pnpm build
+
+      - name: Copy files to prod directory
+        run: |
+          cd apps/extension
+          mkdir -p prod
+          cp manifest.json prod/
+          cp service-worker.js prod/
+          cp .env.production prod/
+          cp -r public/* prod/
+          cp -r dist/* prod/
+
+      - name: Create zip file
+        run: |
+          cd apps/extension
+          zip -r prod/extension.zip prod/
+
+      - name: Upload & release
+        uses: mnao305/chrome-extension-upload@v5.0.0
+        with:
+          file-path: apps/extension/prod/extension.zip
+          extension-id: ${{ secrets.EXTENSION_ID }}
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          refresh-token: ${{ secrets.REFRESH_TOKEN }}
+          publish-target: trustedTesters
+          publish: false

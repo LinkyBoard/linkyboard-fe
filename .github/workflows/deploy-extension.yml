@@ -24,9 +24,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create .env.production file
+      - name: Create .env.production, manifest.json file
         run: |
           echo "${{ secrets.EXTENSION_ENV }}" > .env.production
+          echo "${{ secrets.MANIFEST_JSON }}" > manifest.json
 
       - name: Build extension
         run: |

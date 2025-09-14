@@ -15,6 +15,6 @@
   },
   "host_permissions": ["https://linkyboard.nebula-ai.kr/*", "http://localhost:3000/*"],
   "icons": {
-    "128": "icon128.png"
+    "128": "public/icon128.png"
   }
 }

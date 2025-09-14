@@ -36,7 +36,7 @@ export default function ContentList({
   const { mutateAsync: createContent, isPending } = useCreateContent(id);
 
   const filteredContents = useMemo(() => {
-    return contents?.filter((content) => nodes.some((node) => node.data.item.id !== content.id));
+    return contents?.filter((content) => !nodes.some((node) => node.data.item.id === content.id));
   }, [contents, nodes]);
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

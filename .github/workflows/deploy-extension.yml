@@ -87,11 +87,11 @@ jobs:
       - name: Commit version bump
         if: success()
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "${{ secrets.EMAIL }}"
+          git config --local user.name "${{ secrets.USERNAME }}"
           git add apps/extension/manifest.json
           git commit -m "chore: bump extension version to ${{ env.VERSION }} [skip ci]"
-          git push
+          git push origin HEAD:dev
 
       - name: Restore original manifest on failure
         if: failure()

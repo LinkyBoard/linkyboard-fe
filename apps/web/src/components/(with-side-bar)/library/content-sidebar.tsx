@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import Image from "@/components/image";
@@ -14,6 +14,7 @@ import { useRemoveContentById, useUpdateContent } from "@/lib/tanstack/mutation/
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import { useGetContentById } from "@/lib/tanstack/query/content";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
+import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { errorToast } from "@/utils/toast";
@@ -45,7 +46,7 @@ export default function ContentSidebar() {
 
   const { isOpen, onClose, selectedContentId } = useContentSidebarStore();
   const { data, isLoading, isError } = useGetContentById(selectedContentId);
-  const { data: categories } = useGetCategories();
+  const { data: categories, isPending: isCategoriesPending } = useGetCategories();
   const { mutateAsync: removeContent, isPending: isDeletePending } = useRemoveContentById();
   const { mutateAsync: updateContent, isPending: isUpdatePending } = useUpdateContent();
 
@@ -55,6 +56,8 @@ export default function ContentSidebar() {
   const [dropdownRef] = useOutsideClick<HTMLDivElement>(() => {
     setIsCategoryDropdownOpen(false);
   });
+
+  const setTotalLibraries = useDashboardStore((state) => state.setTotalLibraries);
 
   const {
     register,
@@ -159,6 +162,13 @@ export default function ContentSidebar() {
     setValue("category", category.trim());
     setIsCategoryDropdownOpen(false);
   };
+
+  useEffect(() => {
+    if (!isCategoriesPending) {
+      const totalLibraries = categories?.reduce((acc, category) => acc + category.contentCount, 0);
+      setTotalLibraries(totalLibraries || 0);
+    }
+  }, [isCategoriesPending]);
 
   return (
     <Sidebar isOpen={isOpen} onClose={onSidebarClose}>

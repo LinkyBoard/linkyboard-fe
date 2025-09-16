@@ -118,13 +118,13 @@ export default function ContentList({
             />
           ))
         )}
+        <SentinelSpinner
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
+        />
       </div>
-      <SentinelSpinner
-        fetchNextPage={fetchNextPage}
-        hasNextPage={hasNextPage}
-        isLoading={isLoading}
-        isFetchingNextPage={isFetchingNextPage}
-      />
     </div>
   );
 }

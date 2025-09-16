@@ -8,7 +8,7 @@ import { FolderArchive, Link, NotebookPen } from "lucide-react";
 
 import { Button } from "../ui/button";
 
-const extensionVideo = "/example/extension-demo.mp4";
+const extensionVideo = "/example/extension.mp4";
 const dashboardVideo = "/example/dashboard.mp4";
 const topicVideo = "/example/topic.mp4";
 

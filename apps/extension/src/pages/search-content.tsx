@@ -23,23 +23,32 @@ import {
   useQuickSaveYoutubeContent,
 } from "../lib/tanstack/mutation/content";
 
-const getHtmlContent = async () => {
+const createHtmlFile = (htmlContent: string) => {
+  const htmlBlob = new Blob([htmlContent], { type: "text/html" });
+  return new File([htmlBlob], "content.html", { type: "text/html" });
+};
+
+// 현재 탭의 HTML과 썸네일 메타 정보를 읽어 저장에 필요한 파일과 데이터를 만든다.
+const getHtmlPayload = async () => {
   const html = await getHtmlText();
   const htmlContent = html.split("------MultipartBoundary--")[1];
 
   if (!htmlContent) {
     errorToast("잘못된 페이지에요. 다시 시도해주세요.");
-    return { htmlContent: "", thumbnail: "" };
+    return null;
   }
 
   const thumbnail = extractMetaContent(htmlContent, "og:image");
 
-  if (thumbnail === null) {
+  if (!thumbnail) {
     errorToast("썸네일 추출 중 오류가 발생했어요. 다시 시도해주세요.");
-    return { htmlContent: "", thumbnail: "" };
+    return null;
   }
 
-  return { htmlContent, thumbnail };
+  return {
+    htmlFile: createHtmlFile(htmlContent),
+    thumbnail,
+  };
 };
 
 function LogoutDialogContent() {
@@ -74,6 +83,7 @@ function LogoutDialogContent() {
   );
 }
 
+// 현재 탭을 빠르게 저장하거나 요약 생성 플로우로 이어주는 북마크 저장 페이지.
 export default function SearchContent() {
   const { currentTab, isFindingExistPath } = useTabStore();
 
@@ -92,7 +102,7 @@ export default function SearchContent() {
     isPending: isPendingDetailSaveYoutubeContent,
   } = useDetailSaveYoutubeContent();
 
-  const saveDisabledd =
+  const isSaveDisabled =
     isFindingExistPath ||
     isPendingQuickSaveContent ||
     isPendingDetailSaveContent ||
@@ -108,12 +118,10 @@ export default function SearchContent() {
         url: currentTab.url,
       });
     } else {
-      const { htmlContent, thumbnail } = await getHtmlContent();
-      if (!htmlContent || !thumbnail) return;
+      const payload = await getHtmlPayload();
+      if (!payload) return;
 
-      const htmlBlob = new Blob([htmlContent], { type: "text/html" });
-      const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
-
+      const { htmlFile, thumbnail } = payload;
       const formData = new FormData();
 
       formData.append("htmlFile", htmlFile);
@@ -139,12 +147,10 @@ export default function SearchContent() {
         },
       });
     } else {
-      const { htmlContent, thumbnail } = await getHtmlContent();
-      if (!htmlContent || !thumbnail) return;
+      const payload = await getHtmlPayload();
+      if (!payload) return;
 
-      const htmlBlob = new Blob([htmlContent], { type: "text/html" });
-      const htmlFile = new File([htmlBlob], "content.html", { type: "text/html" });
-
+      const { htmlFile, thumbnail } = payload;
       const formData = new FormData();
       formData.append("htmlFile", htmlFile);
 
@@ -212,7 +218,7 @@ export default function SearchContent() {
           {/* 저장만 하기 */}
           <Button
             onClick={onSaveOnly}
-            disabled={saveDisabledd}
+            disabled={isSaveDisabled}
             variant="outline"
             size="lg"
             className="w-full justify-start"
@@ -232,7 +238,7 @@ export default function SearchContent() {
           {/* 요약과 함께 저장하기 */}
           <Button
             onClick={onSaveWithSummary}
-            disabled={saveDisabledd}
+            disabled={isSaveDisabled}
             size="lg"
             className="w-full justify-start"
             aria-label="요약과 함께 저장하기"

@@ -323,6 +323,50 @@ export default function CreateContent() {
             )}
           </div>
 
+          {/* 태그 */}
+          <div>
+            <h2 className="text-muted-foreground mb-2 text-sm font-medium">태그</h2>
+            <div className="space-y-3">
+              {/* 기존 태그들 */}
+              {watchedTags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {watchedTags.map((tag, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-sm transition-all duration-200 hover:scale-105"
+                      onClick={() => onRemoveTag(index)}
+                      aria-label={`${tag} 태그 제거`}
+                    >
+                      <span>{tag}</span>
+                      <X className="h-3 w-3" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* 새 태그 추가 */}
+              <div className="space-y-2">
+                <form className="flex space-x-2" onSubmit={onAddTag}>
+                  <Input ref={tagInputRef} placeholder="새 태그 입력" className="flex-1" />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    variant="outline"
+                    aria-label="태그 추가"
+                    className="aspect-square h-full shrink-0"
+                  >
+                    <Plus />
+                  </Button>
+                </form>
+                <p className="text-muted-foreground text-xs">
+                  Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.
+                </p>
+              </div>
+            </div>
+            {errors.tags && <p className="text-destructive mt-1 text-xs">{errors.tags.message}</p>}
+          </div>
+
           {/* 요약 */}
           <div>
             <h2 className="text-muted-foreground mb-2 text-sm font-medium">요약</h2>
@@ -345,48 +389,6 @@ export default function CreateContent() {
               className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             />
             {errors.memo && <p className="text-destructive mt-1 text-xs">{errors.memo.message}</p>}
-          </div>
-
-          {/* 태그 */}
-          <div>
-            <h2 className="text-muted-foreground mb-2 text-sm font-medium">태그</h2>
-            <div className="space-y-3">
-              {/* 기존 태그들 */}
-              <div className="flex flex-wrap gap-2">
-                {watchedTags.map((tag, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-sm transition-all duration-200 hover:scale-105"
-                    onClick={() => onRemoveTag(index)}
-                    aria-label={`${tag} 태그 제거`}
-                  >
-                    <span>{tag}</span>
-                    <X className="h-3 w-3" />
-                  </button>
-                ))}
-              </div>
-
-              {/* 새 태그 추가 */}
-              <div className="space-y-2">
-                <form className="flex space-x-2" onSubmit={onAddTag}>
-                  <Input ref={tagInputRef} placeholder="새 태그 입력" className="flex-1" />
-                  <Button
-                    type="submit"
-                    size="sm"
-                    variant="outline"
-                    aria-label="태그 추가"
-                    className="aspect-square h-full shrink-0"
-                  >
-                    <Plus />
-                  </Button>
-                </form>
-                <p className="text-muted-foreground text-xs">
-                  Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.
-                </p>
-              </div>
-            </div>
-            {errors.tags && <p className="text-destructive mt-1 text-xs">{errors.tags.message}</p>}
           </div>
         </div>
       </div>

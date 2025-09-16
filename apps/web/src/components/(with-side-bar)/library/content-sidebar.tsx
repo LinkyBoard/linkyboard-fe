@@ -13,11 +13,12 @@ import { invalidateMany } from "@/lib/tanstack";
 import { useRemoveContentById, useUpdateContent } from "@/lib/tanstack/mutation/content";
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import { useGetContentById } from "@/lib/tanstack/query/content";
+import { useGetTags } from "@/lib/tanstack/query/tag";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
 import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
-import { errorToast } from "@/utils/toast";
+import { errorToast, infoToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
@@ -41,12 +42,19 @@ export default function ContentSidebar() {
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category");
   const [categoryId] = currentCategory?.split(",") || [];
+
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
+  const [tagFormRef] = useOutsideClick<HTMLFormElement>(() => {
+    setIsTagDropdownOpen(false);
+  });
 
   const { isOpen, onClose, selectedContentId } = useContentSidebarStore();
   const { data, isLoading, isError } = useGetContentById(selectedContentId);
   const { data: categories, isPending: isCategoriesPending } = useGetCategories();
+  const { data: tags } = useGetTags();
   const { mutateAsync: removeContent, isPending: isDeletePending } = useRemoveContentById();
   const { mutateAsync: updateContent, isPending: isUpdatePending } = useUpdateContent();
 
@@ -74,6 +82,10 @@ export default function ContentSidebar() {
   const watchedTags = watch("tags");
   const buttonDisabled = isLoading || isError || isDeletePending;
   const isYoutube = data?.type === CONTENT_TYPE.YOUTUBE;
+  const filteredTags = tags?.filter(
+    (tag) =>
+      !watchedTags.includes(tag.name) && tag.name.toLowerCase().includes(newTag.toLowerCase())
+  );
   const youtubeId = extractYoutubeId(data?.url || "");
 
   const onEdit = () => {
@@ -136,20 +148,19 @@ export default function ContentSidebar() {
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newTag = e.currentTarget.querySelector("input")?.value;
-    const trimmedTag = newTag?.trim();
-
-    if (!trimmedTag) {
-      return;
-    }
+    const trimmedTag = newTag.trim();
 
     if (watchedTags.includes(trimmedTag)) {
-      return;
+      return infoToast("이미 존재하는 태그입니다.");
     }
 
-    const newTags = [...watchedTags, trimmedTag];
+    onUpdateTag(trimmedTag);
+  };
+
+  const onUpdateTag = (tag: string) => {
+    const newTags = [...watchedTags, tag];
     setValue("tags", newTags);
-    e.currentTarget.reset();
+    setNewTag("");
   };
 
   const onRemoveTag = (index: number) => {
@@ -161,6 +172,11 @@ export default function ContentSidebar() {
   const onCategorySelect = (category: string) => {
     setValue("category", category.trim());
     setIsCategoryDropdownOpen(false);
+  };
+
+  const onFocusTagInput = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    setIsTagDropdownOpen(true);
   };
 
   useEffect(() => {
@@ -278,8 +294,19 @@ export default function ContentSidebar() {
                   )}
 
                   <div className="space-y-2">
-                    <form className="flex items-center gap-2" onSubmit={onAddTag}>
-                      <Input ref={tagInputRef} placeholder="새 태그 입력" className="h-14 flex-1" />
+                    <form
+                      ref={tagFormRef}
+                      className="relative flex items-center gap-2"
+                      onSubmit={onAddTag}
+                    >
+                      <Input
+                        ref={tagInputRef}
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                        placeholder="새 태그 입력"
+                        className="h-14 flex-1"
+                        onFocusCapture={onFocusTagInput}
+                      />
                       <Button
                         type="submit"
                         size="default"
@@ -289,6 +316,26 @@ export default function ContentSidebar() {
                       >
                         <Plus size={20} />
                       </Button>
+                      {isTagDropdownOpen && filteredTags && (
+                        <div className="absolute -bottom-2 max-h-40 w-full translate-y-full overflow-auto rounded-md border bg-white shadow-lg">
+                          {filteredTags.length === 0 ? (
+                            <p className="text-muted-foreground block w-full px-3 py-2 text-left">
+                              태그가 없어요.
+                            </p>
+                          ) : (
+                            filteredTags.map((tag) => (
+                              <button
+                                key={`${tag.id}-${tag.name}`}
+                                type="button"
+                                className="hover:bg-accent text-foreground line-clamp-1 block w-full px-3 py-2 text-left"
+                                onClick={() => onUpdateTag(tag.name)}
+                              >
+                                <span>{tag.name}</span>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      )}
                     </form>
                     <p className="text-muted-foreground text-sm">
                       Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.

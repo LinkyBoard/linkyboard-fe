@@ -13,6 +13,7 @@ import {
 } from "@/lib/tanstack/mutation/content";
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import { useGetContentById } from "@/lib/tanstack/query/content";
+import { useGetTags } from "@/lib/tanstack/query/tag";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,6 +47,8 @@ const DEFAULT_STATE: CreateContentState = {
 
 export default function CreateContent() {
   const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
+  const [isTagDropdownOpen, setIsTagDropdownOpen] = useState<boolean>(false);
+  const [newTag, setNewTag] = useState<string>("");
 
   const { state } = useLocation() as { state: CreateContentState };
   const [searchParams] = useSearchParams();
@@ -60,6 +63,10 @@ export default function CreateContent() {
     setIsCategoryOpen(false);
   });
 
+  const [tagFormRef] = useOutsideClick<HTMLFormElement>(() => {
+    setIsTagDropdownOpen(false);
+  });
+
   const {
     mutateAsync: mutateFinishDetailSaveContent,
     isPending: isPendingFinishDetailSaveContent,
@@ -72,6 +79,7 @@ export default function CreateContent() {
     useUpdateContent();
 
   const { data: userCategories } = useGetCategories();
+  const { data: allTags } = useGetTags();
 
   const isBadRequest = !id && !state;
 
@@ -117,6 +125,12 @@ export default function CreateContent() {
   const watchedTags = watch("tags");
   const watchedCategory = watch("category");
   const watchedThumbnail = watch("thumbnail");
+
+  // 필터링된 태그 계산
+  const filteredTags = allTags?.filter(
+    (tag) =>
+      !watchedTags.includes(tag.name) && tag.name.toLowerCase().includes(newTag.toLowerCase())
+  );
 
   const isYoutubeUrl = watch("url").includes("youtube.com");
   const isPending =
@@ -189,21 +203,19 @@ export default function CreateContent() {
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newTag = e.currentTarget.querySelector("input")?.value;
-
-    const trimmedTag = newTag?.trim();
-
-    if (!trimmedTag) {
-      return infoToast("태그를 입력해주세요.");
-    }
+    const trimmedTag = newTag.trim();
 
     if (watchedTags.includes(trimmedTag)) {
       return infoToast("이미 존재하는 태그입니다.");
     }
 
-    const newTags = [...watchedTags, trimmedTag];
+    onUpdateTag(trimmedTag);
+  };
+
+  const onUpdateTag = (tag: string) => {
+    const newTags = [...watchedTags, tag];
     setValue("tags", newTags);
-    e.currentTarget.reset();
+    setNewTag("");
   };
 
   const onRemoveTag = (index: number) => {
@@ -347,8 +359,19 @@ export default function CreateContent() {
 
               {/* 새 태그 추가 */}
               <div className="space-y-2">
-                <form className="flex space-x-2" onSubmit={onAddTag}>
-                  <Input ref={tagInputRef} placeholder="새 태그 입력" className="flex-1" />
+                <form
+                  ref={tagFormRef}
+                  className="relative flex items-center gap-2"
+                  onSubmit={onAddTag}
+                >
+                  <Input
+                    ref={tagInputRef}
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    placeholder="새 태그 입력"
+                    className="flex-1"
+                    onFocus={() => setIsTagDropdownOpen(true)}
+                  />
                   <Button
                     type="submit"
                     size="sm"
@@ -358,6 +381,26 @@ export default function CreateContent() {
                   >
                     <Plus />
                   </Button>
+                  {isTagDropdownOpen && (
+                    <div className="absolute -bottom-2 max-h-40 w-full translate-y-full overflow-auto rounded-md border bg-white shadow-lg">
+                      {!filteredTags || filteredTags.length === 0 ? (
+                        <p className="text-muted-foreground block w-full px-3 py-2 text-left">
+                          태그가 없어요.
+                        </p>
+                      ) : (
+                        filteredTags.map((tag) => (
+                          <button
+                            key={`${tag.id}-${tag.name}`}
+                            type="button"
+                            className="hover:bg-accent text-foreground line-clamp-1 block w-full px-3 py-2 text-left"
+                            onClick={() => onUpdateTag(tag.name)}
+                          >
+                            <span>{tag.name}</span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
                 </form>
                 <p className="text-muted-foreground text-xs">
                   Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.

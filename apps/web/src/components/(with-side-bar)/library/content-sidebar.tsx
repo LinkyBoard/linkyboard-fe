@@ -174,11 +174,6 @@ export default function ContentSidebar() {
     setIsCategoryDropdownOpen(false);
   };
 
-  const onFocusTagInput = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    setIsTagDropdownOpen(true);
-  };
-
   useEffect(() => {
     if (!isCategoriesPending) {
       const totalLibraries = categories?.reduce((acc, category) => acc + category.contentCount, 0);
@@ -305,7 +300,7 @@ export default function ContentSidebar() {
                         onChange={(e) => setNewTag(e.target.value)}
                         placeholder="새 태그 입력"
                         className="h-14 flex-1"
-                        onFocusCapture={onFocusTagInput}
+                        onFocus={() => setIsTagDropdownOpen(true)}
                       />
                       <Button
                         type="submit"
@@ -316,9 +311,9 @@ export default function ContentSidebar() {
                       >
                         <Plus size={20} />
                       </Button>
-                      {isTagDropdownOpen && filteredTags && (
+                      {isTagDropdownOpen && (
                         <div className="absolute -bottom-2 max-h-40 w-full translate-y-full overflow-auto rounded-md border bg-white shadow-lg">
-                          {filteredTags.length === 0 ? (
+                          {!filteredTags || filteredTags.length === 0 ? (
                             <p className="text-muted-foreground block w-full px-3 py-2 text-left">
                               태그가 없어요.
                             </p>

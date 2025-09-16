@@ -258,43 +258,24 @@ export default function ContentSidebar() {
               </div>
 
               <div>
-                <label className="mb-2 block text-base font-medium">요약</label>
-                <textarea
-                  {...register("summary")}
-                  placeholder="요약을 입력하세요"
-                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-                />
-                {errors.summary && (
-                  <p className="text-destructive mt-1 text-sm">{errors.summary.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="mb-2 block text-base font-medium">메모</label>
-                <textarea
-                  {...register("memo")}
-                  placeholder="메모를 입력하세요"
-                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-                />
-              </div>
-
-              <div>
                 <label className="mb-2 block text-base font-medium">태그</label>
                 <div className="space-y-3">
-                  <div className="flex flex-wrap gap-2">
-                    {watchedTags.map((tag, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-base transition-all duration-200 hover:scale-105"
-                        onClick={() => onRemoveTag(index)}
-                        aria-label={`${tag} 태그 제거`}
-                      >
-                        <span>{tag}</span>
-                        <X className="h-4 w-4" />
-                      </button>
-                    ))}
-                  </div>
+                  {watchedTags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {watchedTags.map((tag, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-base transition-all duration-200 hover:scale-105"
+                          onClick={() => onRemoveTag(index)}
+                          aria-label={`${tag} 태그 제거`}
+                        >
+                          <span>{tag}</span>
+                          <X className="h-4 w-4" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
 
                   <div className="space-y-2">
                     <form className="flex items-center gap-2" onSubmit={onAddTag}>
@@ -317,6 +298,27 @@ export default function ContentSidebar() {
                 {errors.tags && (
                   <p className="text-destructive mt-1 text-sm">{errors.tags.message}</p>
                 )}
+              </div>
+
+              <div>
+                <label className="mb-2 block text-base font-medium">요약</label>
+                <textarea
+                  {...register("summary")}
+                  placeholder="요약을 입력하세요"
+                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                />
+                {errors.summary && (
+                  <p className="text-destructive mt-1 text-sm">{errors.summary.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="mb-2 block text-base font-medium">메모</label>
+                <textarea
+                  {...register("memo")}
+                  placeholder="메모를 입력하세요"
+                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                />
               </div>
             </div>
           ) : (
@@ -358,6 +360,24 @@ export default function ContentSidebar() {
               </div>
 
               <div>
+                <h4 className="mb-2 text-lg font-medium">태그</h4>
+                <div className="flex flex-wrap gap-2">
+                  {!data || data?.tags.length === 0 ? (
+                    <p className="text-muted-foreground text-base">-</p>
+                  ) : (
+                    data?.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="bg-muted text-muted-foreground rounded px-2 py-1 text-base"
+                      >
+                        {tag}
+                      </span>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div>
                 <h4 className="mb-2 text-lg font-medium">요약</h4>
                 <p className="text-muted-foreground text-base">{data?.summary || "-"}</p>
               </div>
@@ -365,20 +385,6 @@ export default function ContentSidebar() {
               <div>
                 <h4 className="mb-2 text-lg font-medium">메모</h4>
                 <p className="text-muted-foreground text-base">{data?.memo || "-"}</p>
-              </div>
-
-              <div>
-                <h4 className="mb-2 text-lg font-medium">태그</h4>
-                <div className="flex flex-wrap gap-2">
-                  {data?.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-muted text-muted-foreground rounded px-2 py-1 text-base"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           )}

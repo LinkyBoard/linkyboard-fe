@@ -24,7 +24,10 @@ export const useGetAllTopics = () => {
       }),
 
     initialPageParam: 0,
-    select: (data) => data.pages.flatMap((page) => page.result.content),
+    select: (data) => ({
+      total: data.pages[0]?.result.totalElements,
+      data: data.pages.flatMap((page) => page.result.content),
+    }),
   });
 };
 

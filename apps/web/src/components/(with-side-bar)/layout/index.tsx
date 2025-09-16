@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import Logo from "@/assets/logo.svg";
 import SentinelSpinner from "@/components/sentinel-spinner";
 import { useGetAllTopics } from "@/lib/tanstack/query/topic";
+import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { TopicDTO } from "@/models/topic";
 import { cn } from "@repo/ui/utils/cn";
@@ -33,6 +35,7 @@ export default function Sidebar() {
   const router = useRouter();
 
   const { isOpen, close } = useMobileMenuStore();
+  const setTotalTopics = useDashboardStore((state) => state.setTotalTopics);
 
   // 현재 선택된 토픽 ID 가져오기
   const currentTopicId = Number(searchParams.get("id") || "");
@@ -43,12 +46,19 @@ export default function Sidebar() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isPending,
   } = useGetAllTopics();
 
   const onTopicClick = (topic: TopicDTO) => {
     router.push(`/topic?id=${topic.id}`);
     close(); // 모바일에서 사이드바 닫기
   };
+
+  useEffect(() => {
+    if (!isPending) {
+      setTotalTopics(recentTopics?.data?.length || 0);
+    }
+  }, [isPending]);
 
   return (
     <>
@@ -101,10 +111,10 @@ export default function Sidebar() {
             <div className="flex items-center justify-center">
               <Loader2 className="animate-spin" />
             </div>
-          ) : !recentTopics || recentTopics?.length === 0 ? (
+          ) : !recentTopics || recentTopics?.data?.length === 0 ? (
             <p className="text-muted-foreground text-sm">토픽이 없어요.</p>
           ) : (
-            recentTopics?.map((topic) => (
+            recentTopics?.data?.map((topic) => (
               <RecentTopicItem
                 key={topic.id}
                 isSelected={currentTopicId === topic.id}

@@ -13,6 +13,7 @@ import {
 } from "@/lib/tanstack/mutation/content";
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import { useGetContentById } from "@/lib/tanstack/query/content";
+import { useGetTags } from "@/lib/tanstack/query/tag";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,6 +47,8 @@ const DEFAULT_STATE: CreateContentState = {
 
 export default function CreateContent() {
   const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
+  const [isTagDropdownOpen, setIsTagDropdownOpen] = useState<boolean>(false);
+  const [newTag, setNewTag] = useState<string>("");
 
   const { state } = useLocation() as { state: CreateContentState };
   const [searchParams] = useSearchParams();
@@ -60,6 +63,10 @@ export default function CreateContent() {
     setIsCategoryOpen(false);
   });
 
+  const [tagFormRef] = useOutsideClick<HTMLFormElement>(() => {
+    setIsTagDropdownOpen(false);
+  });
+
   const {
     mutateAsync: mutateFinishDetailSaveContent,
     isPending: isPendingFinishDetailSaveContent,
@@ -72,6 +79,7 @@ export default function CreateContent() {
     useUpdateContent();
 
   const { data: userCategories } = useGetCategories();
+  const { data: allTags } = useGetTags();
 
   const isBadRequest = !id && !state;
 
@@ -117,6 +125,12 @@ export default function CreateContent() {
   const watchedTags = watch("tags");
   const watchedCategory = watch("category");
   const watchedThumbnail = watch("thumbnail");
+
+  // 필터링된 태그 계산
+  const filteredTags = allTags?.filter(
+    (tag) =>
+      !watchedTags.includes(tag.name) && tag.name.toLowerCase().includes(newTag.toLowerCase())
+  );
 
   const isYoutubeUrl = watch("url").includes("youtube.com");
   const isPending =
@@ -189,21 +203,19 @@ export default function CreateContent() {
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newTag = e.currentTarget.querySelector("input")?.value;
-
-    const trimmedTag = newTag?.trim();
-
-    if (!trimmedTag) {
-      return infoToast("태그를 입력해주세요.");
-    }
+    const trimmedTag = newTag.trim();
 
     if (watchedTags.includes(trimmedTag)) {
       return infoToast("이미 존재하는 태그입니다.");
     }
 
-    const newTags = [...watchedTags, trimmedTag];
+    onUpdateTag(trimmedTag);
+  };
+
+  const onUpdateTag = (tag: string) => {
+    const newTags = [...watchedTags, tag];
     setValue("tags", newTags);
-    e.currentTarget.reset();
+    setNewTag("");
   };
 
   const onRemoveTag = (index: number) => {
@@ -323,6 +335,81 @@ export default function CreateContent() {
             )}
           </div>
 
+          {/* 태그 */}
+          <div>
+            <h2 className="text-muted-foreground mb-2 text-sm font-medium">태그</h2>
+            <div className="space-y-3">
+              {/* 기존 태그들 */}
+              {watchedTags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {watchedTags.map((tag, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-sm transition-all duration-200 hover:scale-105"
+                      onClick={() => onRemoveTag(index)}
+                      aria-label={`${tag} 태그 제거`}
+                    >
+                      <span>{tag}</span>
+                      <X className="h-3 w-3" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* 새 태그 추가 */}
+              <div className="space-y-2">
+                <form
+                  ref={tagFormRef}
+                  className="relative flex items-center gap-2"
+                  onSubmit={onAddTag}
+                >
+                  <Input
+                    ref={tagInputRef}
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    placeholder="새 태그 입력"
+                    className="flex-1"
+                    onFocus={() => setIsTagDropdownOpen(true)}
+                  />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    variant="outline"
+                    aria-label="태그 추가"
+                    className="aspect-square h-full shrink-0"
+                  >
+                    <Plus />
+                  </Button>
+                  {isTagDropdownOpen && (
+                    <div className="absolute -bottom-2 max-h-40 w-full translate-y-full overflow-auto rounded-md border bg-white shadow-lg">
+                      {!filteredTags || filteredTags.length === 0 ? (
+                        <p className="text-muted-foreground block w-full px-3 py-2 text-left">
+                          태그가 없어요.
+                        </p>
+                      ) : (
+                        filteredTags.map((tag) => (
+                          <button
+                            key={`${tag.id}-${tag.name}`}
+                            type="button"
+                            className="hover:bg-accent text-foreground line-clamp-1 block w-full px-3 py-2 text-left"
+                            onClick={() => onUpdateTag(tag.name)}
+                          >
+                            <span>{tag.name}</span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </form>
+                <p className="text-muted-foreground text-xs">
+                  Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.
+                </p>
+              </div>
+            </div>
+            {errors.tags && <p className="text-destructive mt-1 text-xs">{errors.tags.message}</p>}
+          </div>
+
           {/* 요약 */}
           <div>
             <h2 className="text-muted-foreground mb-2 text-sm font-medium">요약</h2>
@@ -345,48 +432,6 @@ export default function CreateContent() {
               className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             />
             {errors.memo && <p className="text-destructive mt-1 text-xs">{errors.memo.message}</p>}
-          </div>
-
-          {/* 태그 */}
-          <div>
-            <h2 className="text-muted-foreground mb-2 text-sm font-medium">태그</h2>
-            <div className="space-y-3">
-              {/* 기존 태그들 */}
-              <div className="flex flex-wrap gap-2">
-                {watchedTags.map((tag, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-sm transition-all duration-200 hover:scale-105"
-                    onClick={() => onRemoveTag(index)}
-                    aria-label={`${tag} 태그 제거`}
-                  >
-                    <span>{tag}</span>
-                    <X className="h-3 w-3" />
-                  </button>
-                ))}
-              </div>
-
-              {/* 새 태그 추가 */}
-              <div className="space-y-2">
-                <form className="flex space-x-2" onSubmit={onAddTag}>
-                  <Input ref={tagInputRef} placeholder="새 태그 입력" className="flex-1" />
-                  <Button
-                    type="submit"
-                    size="sm"
-                    variant="outline"
-                    aria-label="태그 추가"
-                    className="aspect-square h-full shrink-0"
-                  >
-                    <Plus />
-                  </Button>
-                </form>
-                <p className="text-muted-foreground text-xs">
-                  Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.
-                </p>
-              </div>
-            </div>
-            {errors.tags && <p className="text-destructive mt-1 text-xs">{errors.tags.message}</p>}
           </div>
         </div>
       </div>

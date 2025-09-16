@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import Image from "@/components/image";
@@ -13,10 +13,12 @@ import { invalidateMany } from "@/lib/tanstack";
 import { useRemoveContentById, useUpdateContent } from "@/lib/tanstack/mutation/content";
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import { useGetContentById } from "@/lib/tanstack/query/content";
+import { useGetTags } from "@/lib/tanstack/query/tag";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
+import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
-import { errorToast } from "@/utils/toast";
+import { errorToast, infoToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
@@ -40,12 +42,19 @@ export default function ContentSidebar() {
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category");
   const [categoryId] = currentCategory?.split(",") || [];
+
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
+  const [tagFormRef] = useOutsideClick<HTMLFormElement>(() => {
+    setIsTagDropdownOpen(false);
+  });
 
   const { isOpen, onClose, selectedContentId } = useContentSidebarStore();
   const { data, isLoading, isError } = useGetContentById(selectedContentId);
-  const { data: categories } = useGetCategories();
+  const { data: categories, isPending: isCategoriesPending } = useGetCategories();
+  const { data: tags } = useGetTags();
   const { mutateAsync: removeContent, isPending: isDeletePending } = useRemoveContentById();
   const { mutateAsync: updateContent, isPending: isUpdatePending } = useUpdateContent();
 
@@ -55,6 +64,8 @@ export default function ContentSidebar() {
   const [dropdownRef] = useOutsideClick<HTMLDivElement>(() => {
     setIsCategoryDropdownOpen(false);
   });
+
+  const setTotalLibraries = useDashboardStore((state) => state.setTotalLibraries);
 
   const {
     register,
@@ -71,6 +82,10 @@ export default function ContentSidebar() {
   const watchedTags = watch("tags");
   const buttonDisabled = isLoading || isError || isDeletePending;
   const isYoutube = data?.type === CONTENT_TYPE.YOUTUBE;
+  const filteredTags = tags?.filter(
+    (tag) =>
+      !watchedTags.includes(tag.name) && tag.name.toLowerCase().includes(newTag.toLowerCase())
+  );
   const youtubeId = extractYoutubeId(data?.url || "");
 
   const onEdit = () => {
@@ -133,20 +148,19 @@ export default function ContentSidebar() {
   const onAddTag = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newTag = e.currentTarget.querySelector("input")?.value;
-    const trimmedTag = newTag?.trim();
-
-    if (!trimmedTag) {
-      return;
-    }
+    const trimmedTag = newTag.trim();
 
     if (watchedTags.includes(trimmedTag)) {
-      return;
+      return infoToast("이미 존재하는 태그입니다.");
     }
 
-    const newTags = [...watchedTags, trimmedTag];
+    onUpdateTag(trimmedTag);
+  };
+
+  const onUpdateTag = (tag: string) => {
+    const newTags = [...watchedTags, tag];
     setValue("tags", newTags);
-    e.currentTarget.reset();
+    setNewTag("");
   };
 
   const onRemoveTag = (index: number) => {
@@ -159,6 +173,13 @@ export default function ContentSidebar() {
     setValue("category", category.trim());
     setIsCategoryDropdownOpen(false);
   };
+
+  useEffect(() => {
+    if (!isCategoriesPending) {
+      const totalLibraries = categories?.reduce((acc, category) => acc + category.contentCount, 0);
+      setTotalLibraries(totalLibraries || 0);
+    }
+  }, [isCategoriesPending]);
 
   return (
     <Sidebar isOpen={isOpen} onClose={onSidebarClose}>
@@ -248,6 +269,80 @@ export default function ContentSidebar() {
               </div>
 
               <div>
+                <label className="mb-2 block text-base font-medium">태그</label>
+                <div className="space-y-3">
+                  {watchedTags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {watchedTags.map((tag, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-base transition-all duration-200 hover:scale-105"
+                          onClick={() => onRemoveTag(index)}
+                          aria-label={`${tag} 태그 제거`}
+                        >
+                          <span>{tag}</span>
+                          <X className="h-4 w-4" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <form
+                      ref={tagFormRef}
+                      className="relative flex items-center gap-2"
+                      onSubmit={onAddTag}
+                    >
+                      <Input
+                        ref={tagInputRef}
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                        placeholder="새 태그 입력"
+                        className="h-14 flex-1"
+                        onFocus={() => setIsTagDropdownOpen(true)}
+                      />
+                      <Button
+                        type="submit"
+                        size="default"
+                        variant="outline"
+                        aria-label="태그 추가"
+                        className="aspect-square h-14 shrink-0"
+                      >
+                        <Plus size={20} />
+                      </Button>
+                      {isTagDropdownOpen && (
+                        <div className="absolute -bottom-2 max-h-40 w-full translate-y-full overflow-auto rounded-md border bg-white shadow-lg">
+                          {!filteredTags || filteredTags.length === 0 ? (
+                            <p className="text-muted-foreground block w-full px-3 py-2 text-left">
+                              태그가 없어요.
+                            </p>
+                          ) : (
+                            filteredTags.map((tag) => (
+                              <button
+                                key={`${tag.id}-${tag.name}`}
+                                type="button"
+                                className="hover:bg-accent text-foreground line-clamp-1 block w-full px-3 py-2 text-left"
+                                onClick={() => onUpdateTag(tag.name)}
+                              >
+                                <span>{tag.name}</span>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      )}
+                    </form>
+                    <p className="text-muted-foreground text-sm">
+                      Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.
+                    </p>
+                  </div>
+                </div>
+                {errors.tags && (
+                  <p className="text-destructive mt-1 text-sm">{errors.tags.message}</p>
+                )}
+              </div>
+
+              <div>
                 <label className="mb-2 block text-base font-medium">요약</label>
                 <textarea
                   {...register("summary")}
@@ -266,47 +361,6 @@ export default function ContentSidebar() {
                   placeholder="메모를 입력하세요"
                   className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                 />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-base font-medium">태그</label>
-                <div className="space-y-3">
-                  <div className="flex flex-wrap gap-2">
-                    {watchedTags.map((tag, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        className="bg-primary/10 text-primary hover:bg-primary/20 flex items-center space-x-1 rounded-full px-3 py-1 text-base transition-all duration-200 hover:scale-105"
-                        onClick={() => onRemoveTag(index)}
-                        aria-label={`${tag} 태그 제거`}
-                      >
-                        <span>{tag}</span>
-                        <X className="h-4 w-4" />
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="space-y-2">
-                    <form className="flex items-center gap-2" onSubmit={onAddTag}>
-                      <Input ref={tagInputRef} placeholder="새 태그 입력" className="h-14 flex-1" />
-                      <Button
-                        type="submit"
-                        size="default"
-                        variant="outline"
-                        aria-label="태그 추가"
-                        className="aspect-square h-14 shrink-0"
-                      >
-                        <Plus size={20} />
-                      </Button>
-                    </form>
-                    <p className="text-muted-foreground text-sm">
-                      Enter 혹은 + 버튼을 통해 태그를 추가할 수 있어요.
-                    </p>
-                  </div>
-                </div>
-                {errors.tags && (
-                  <p className="text-destructive mt-1 text-sm">{errors.tags.message}</p>
-                )}
               </div>
             </div>
           ) : (
@@ -348,6 +402,24 @@ export default function ContentSidebar() {
               </div>
 
               <div>
+                <h4 className="mb-2 text-lg font-medium">태그</h4>
+                <div className="flex flex-wrap gap-2">
+                  {!data || data?.tags.length === 0 ? (
+                    <p className="text-muted-foreground text-base">-</p>
+                  ) : (
+                    data?.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="bg-muted text-muted-foreground rounded px-2 py-1 text-base"
+                      >
+                        {tag}
+                      </span>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div>
                 <h4 className="mb-2 text-lg font-medium">요약</h4>
                 <p className="text-muted-foreground text-base">{data?.summary || "-"}</p>
               </div>
@@ -355,20 +427,6 @@ export default function ContentSidebar() {
               <div>
                 <h4 className="mb-2 text-lg font-medium">메모</h4>
                 <p className="text-muted-foreground text-base">{data?.memo || "-"}</p>
-              </div>
-
-              <div>
-                <h4 className="mb-2 text-lg font-medium">태그</h4>
-                <div className="flex flex-wrap gap-2">
-                  {data?.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-muted text-muted-foreground rounded px-2 py-1 text-base"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           )}

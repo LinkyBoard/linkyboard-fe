@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import { CONTENT_TYPE_OPTIONS, type ContentTypeOptions } from "@/constants/content";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
 import { TopicNodeProps } from "@/types/topic";
@@ -33,6 +34,8 @@ export default function ContentList({
 }: ContentListProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
   const {
     data: contents,
     isLoading,
@@ -43,8 +46,13 @@ export default function ContentList({
   const { mutateAsync: createContent, isPending } = useCreateContent(id);
 
   const filteredContents = useMemo(() => {
-    return contents?.filter((content) => !nodes.some((node) => node.data.item.id === content.id));
-  }, [contents, nodes]);
+    const filteredBySearch = contents?.filter((content) =>
+      content.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+    );
+    return filteredBySearch?.filter(
+      (content) => !nodes.some((node) => node.data.item.id === content.id)
+    );
+  }, [contents, nodes, debouncedSearchQuery]);
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);

@@ -144,6 +144,8 @@ export default function CustomNode(props: CustomNodeProps) {
         minHeight={220}
         lineClassName="opacity-0"
         handleClassName="opacity-0"
+        lineStyle={{ borderWidth: "10px" }}
+        handleStyle={{ borderWidth: "10px" }}
       />
 
       {/* Source Handles - 연결 시작점 */}

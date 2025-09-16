@@ -12,6 +12,7 @@ import { CategoryContentDTO } from "@repo/types";
 import { Loader2, Search } from "lucide-react";
 
 import ContentItem from "../(with-side-bar)/library/content-item";
+import SentinelSpinner from "../sentinel-spinner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
@@ -32,7 +33,13 @@ export default function ContentList({
 }: ContentListProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: contents, isLoading } = useGetAllContents(type);
+  const {
+    data: contents,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetAllContents(type);
   const { mutateAsync: createContent, isPending } = useCreateContent(id);
 
   const filteredContents = useMemo(() => {
@@ -71,7 +78,7 @@ export default function ContentList({
           onChange={onSearchChange}
         />
       </div>
-      <div className="flex gap-2 px-4">
+      <div className="flex gap-2 px-4 pb-4 shadow">
         <Button
           variant={type === CONTENT_TYPE_OPTIONS.ALL ? "default" : "outline"}
           size="sm"
@@ -112,6 +119,12 @@ export default function ContentList({
           ))
         )}
       </div>
+      <SentinelSpinner
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isLoading={isLoading}
+        isFetchingNextPage={isFetchingNextPage}
+      />
     </div>
   );
 }

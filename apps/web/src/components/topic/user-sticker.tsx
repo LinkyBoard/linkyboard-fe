@@ -61,7 +61,7 @@ export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId
         <h2 className="mb-3 line-clamp-1 text-2xl leading-tight font-bold text-gray-800">
           {item.title}
         </h2>
-        <div className="prose" dangerouslySetInnerHTML={{ __html: renderContent(item.content) }} />
+        <div dangerouslySetInnerHTML={{ __html: renderContent(item.content) }} />
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ import { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { errorToast, infoToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { YouTubeEmbed } from "@next/third-parties/google";
 import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
 import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
 import { cn } from "@repo/ui/utils/cn";
@@ -388,12 +389,12 @@ export default function ContentSidebar() {
               </div>
 
               {isYoutube && (
-                <iframe
-                  className="aspect-video"
-                  src={`https://www.youtube.com/embed/${youtubeId}`}
-                  title="YouTube video player"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-                />
+                <div className="aspect-video">
+                  <YouTubeEmbed
+                    videoid={youtubeId || ""}
+                    params="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                  />
+                </div>
               )}
 
               <div>

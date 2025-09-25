@@ -3,7 +3,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { JetBrains_Mono, Merriweather, Poppins } from "next/font/google";
 
-import RootProvider from "@/components/root-provider";
+import RootProvider from "@/components/provider/root-provider";
+import ThirdPartyProvider from "@/components/provider/third-party-provider";
 import { cn } from "@repo/ui/utils/cn";
 
 const poppins = Poppins({
@@ -82,6 +83,7 @@ export default function RootLayout({
         />
       </head>
       <body className={cn(poppins.className, "antialiased")}>
+        <ThirdPartyProvider />
         <RootProvider>{children}</RootProvider>
       </body>
     </html>

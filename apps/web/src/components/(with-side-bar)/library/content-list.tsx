@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { CONTENT_TYPE_OPTIONS, ContentTypeOptions } from "@/constants/content";
@@ -31,6 +31,7 @@ const TYPE_OPTIONS = [
   },
 ];
 
+// 카테고리 내 콘텐츠를 태그/유형 필터와 함께 보여주는 리스트 컴포넌트다.
 export default function ContentList({ category }: ContentListProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<ContentTypeOptions>(CONTENT_TYPE_OPTIONS.ALL);
@@ -43,28 +44,23 @@ export default function ContentList({ category }: ContentListProps) {
   const { data, isLoading } = useGetCategoryContentById(categoryId);
   const contents: CategoryContentDTO[] = data || [];
 
-  // 모든 지식에서 태그 추출
-  const allTags = [...new Set(contents.flatMap((content) => content.tags))];
+  const allTags = useMemo(
+    () => [...new Set(contents.flatMap((content) => content.tags))],
+    [contents]
+  );
 
-  // 태그 필터링된 지식들
-  const filteredContents = (() => {
-    if (selectedTags.length === 0 && selectedType === CONTENT_TYPE_OPTIONS.ALL) return contents;
+  // 복합 필터 조건을 메모이제이션해 카드 목록 계산을 명확하게 유지한다.
+  const filteredContents = useMemo(() => {
+    return contents.filter((content) => {
+      const matchesTags =
+        selectedTags.length === 0 ||
+        selectedTags.every((tag) => content.tags.includes(tag));
+      const matchesType =
+        selectedType === CONTENT_TYPE_OPTIONS.ALL || content.type === selectedType;
 
-    if (selectedTags.length > 0) {
-      return contents.filter((content) => selectedTags.every((tag) => content.tags.includes(tag)));
-    }
-
-    if (selectedType !== CONTENT_TYPE_OPTIONS.ALL) {
-      return contents.filter((content) => content.type !== selectedType);
-    }
-
-    return contents.filter(
-      (content) =>
-        selectedTags.every((tag) => content.tags.includes(tag)) &&
-        selectedType !== CONTENT_TYPE_OPTIONS.ALL &&
-        content.type === selectedType
-    );
-  })();
+      return matchesTags && matchesType;
+    });
+  }, [contents, selectedTags, selectedType]);
 
   const isFilterApplied = selectedTags.length > 0 || selectedType !== CONTENT_TYPE_OPTIONS.ALL;
 

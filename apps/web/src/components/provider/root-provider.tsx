@@ -3,7 +3,7 @@
 import { queryClient } from "@/lib/tanstack";
 import { QueryClientProvider } from "@tanstack/react-query";
 
-import { Toaster } from "./ui/sonner";
+import { Toaster } from "../ui/sonner";
 
 interface RootProviderProps {
   children: React.ReactNode;

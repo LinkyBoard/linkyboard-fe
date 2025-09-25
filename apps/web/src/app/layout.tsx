@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     description: "브라우저 통합 지식 관리 서비스로 흩어진 정보를 연결된 인사이트로 변환하세요.",
     type: "website",
     images: "/og-image.png",
-    url: "https://nebula-ai.kr",
+    url: "https://linkyboard.com",
     siteName: "LinkyBoard",
     locale: "ko_KR",
   },
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     images: "/og-image.png",
   },
   alternates: {
-    canonical: "https://nebula-ai.kr",
+    canonical: "https://linkyboard.com",
   },
   robots: {
     index: true,

@@ -4,6 +4,9 @@
   "description": "",
   "main": "src/index.ts",
   "type": "module",
+  "scripts": {
+    "lint": "eslint --fix \"**/*.{ts,tsx,md}\""
+  },
   "devDependencies": {
     "@linkyboard/eslint-config": "workspace:*",
     "@linkyboard/typescript-config": "workspace:*",
@@ -15,6 +18,9 @@
   },
   "dependencies": {
     "@linkyboard/hooks": "workspace:*",
-    "@linkyboard/utils": "workspace:*"
+    "@linkyboard/tailwind-config": "workspace:*",
+    "@linkyboard/utils": "workspace:*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }

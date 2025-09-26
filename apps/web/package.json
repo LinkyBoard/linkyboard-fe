@@ -50,6 +50,7 @@
     "@linkyboard/eslint-config": "workspace:*",
     "@linkyboard/types": "workspace:*",
     "@linkyboard/typescript-config": "workspace:*",
+    "@linkyboard/tailwind-config": "workspace:*",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20",

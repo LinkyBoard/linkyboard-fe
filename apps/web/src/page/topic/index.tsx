@@ -16,11 +16,12 @@ import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutatio
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { infoToast } from "@/utils/toast";
-import {
-  addEdge,
+import type {
   Connection,
   Edge,
-  Node,
+  Node} from "@xyflow/react";
+import {
+  addEdge,
   ReactFlowProvider,
   useEdgesState,
   useNodesState,

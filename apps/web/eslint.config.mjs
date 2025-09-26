@@ -1,5 +1,5 @@
 import { FlatCompat } from "@eslint/eslintrc";
-import { config as baseConfig } from "@repo/eslint-config/base";
+import { config as baseConfig } from "@linkyboard/eslint-config/base";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -11,18 +11,14 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
+const config = [
   ...baseConfig,
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-call": "off",
-      "@typescript-eslint/no-unsafe-return": "off",
     },
   },
 ];
 
-export default eslintConfig;
+export default config;

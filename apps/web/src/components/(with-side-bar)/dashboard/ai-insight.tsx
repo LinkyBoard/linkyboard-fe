@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { infoToast } from "@/utils/toast";
-import { cn } from "@repo/ui/utils/cn";
+import { cn } from "@linkyboard/utils";
 
 import { FileText, Lightbulb, Link } from "lucide-react";
 

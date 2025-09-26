@@ -1,6 +1,6 @@
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
-import type { CategoryContentDTO } from "@repo/types";
-import { cn } from "@repo/ui/utils/cn";
+import type { CategoryContentDTO } from "@linkyboard/types";
+import { cn } from "@linkyboard/utils";
 
 import { Check, Edit, FileText, Globe, Youtube } from "lucide-react";
 

@@ -7,8 +7,8 @@ import { CONTENT_TYPE_OPTIONS, type ContentTypeOptions } from "@/constants/conte
 import { useDebounce } from "@/hooks/use-debounce";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
-import { TopicNodeProps } from "@/types/topic";
-import { CategoryContentDTO } from "@repo/types";
+import type { TopicNodeProps } from "@/types/topic";
+import type { CategoryContentDTO } from "@linkyboard/types";
 
 import { Loader2, Search } from "lucide-react";
 

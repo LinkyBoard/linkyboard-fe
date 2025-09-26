@@ -1,5 +1,5 @@
 {
-  "name": "@repo/types",
+  "name": "@linkyboard/types",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc"
@@ -8,6 +8,6 @@
     "types": "./dist/index.d.ts"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@linkyboard/typescript-config": "workspace:*"
   }
 }

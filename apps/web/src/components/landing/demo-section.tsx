@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { cn } from "@repo/ui/utils/cn";
+import { cn } from "@linkyboard/utils";
 
 import { FolderArchive, Link, NotebookPen } from "lucide-react";
 

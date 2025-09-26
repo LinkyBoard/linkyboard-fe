@@ -10,7 +10,7 @@ import {
   DialogContent,
   DialogTrigger,
   useDialog,
-} from "@repo/ui/components/dialog";
+} from "@linkyboard/components";
 
 import { Plus } from "lucide-react";
 

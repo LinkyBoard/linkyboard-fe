@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import { scrollToSection, useScrollSpy } from "@/hooks/use-intersection-observer";
-import { cn } from "@repo/ui/utils/cn";
+import { cn } from "@linkyboard/utils";
 
 import { Menu, X } from "lucide-react";
 

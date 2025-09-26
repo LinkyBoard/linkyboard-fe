@@ -11,7 +11,7 @@ import {
   DialogContent,
   DialogTrigger,
   useDialog,
-} from "@repo/ui/components/dialog";
+} from "@linkyboard/components";
 
 import { LogOut, Save, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";

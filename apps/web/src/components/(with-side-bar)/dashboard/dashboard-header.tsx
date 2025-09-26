@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { removeCookie } from "@/utils/cookie";
 import { infoToast } from "@/utils/toast";
-import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
+import { useOutsideClick } from "@linkyboard/hooks";
 
 import { Bell, Bot, LogOut, Menu, Search, User } from "lucide-react";
 

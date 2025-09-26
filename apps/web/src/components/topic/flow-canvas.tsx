@@ -3,14 +3,15 @@
 import { forwardRef, useMemo } from "react";
 
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
-import type { CategoryContentDTO } from "@repo/types";
-import {
-  Background,
+import type { CategoryContentDTO } from "@linkyboard/types";
+import type {
   Connection,
   Edge,
   Node,
   NodeProps,
-  NodeTypes,
+  NodeTypes} from "@xyflow/react";
+import {
+  Background,
   type OnEdgesChange,
   type OnNodesChange,
   ReactFlow,

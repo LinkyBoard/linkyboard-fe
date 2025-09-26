@@ -1,7 +1,7 @@
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { TopicDTO } from "@/models/topic";
 import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
-import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
+import { Dialog, DialogTrigger } from "@linkyboard/components";
 
 import { Edit, Sticker, Trash2 } from "lucide-react";
 

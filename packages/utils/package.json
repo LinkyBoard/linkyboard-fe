@@ -1,0 +1,10 @@
+{
+  "name": "@linkyboard/utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
+  }
+}

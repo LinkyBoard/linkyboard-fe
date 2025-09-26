@@ -5,12 +5,12 @@ import { invalidateQueries } from "@/lib/tanstack";
 import { useSummarizeTopicContent } from "@/lib/tanstack/mutation/custom-sticker";
 import { useGetAiModels } from "@/lib/tanstack/query/custom-sticker";
 import { useStickerStore } from "@/lib/zustand/sticker-store";
-import { AIModelDTO } from "@/models/custom-sticker";
+import type { AIModelDTO } from "@/models/custom-sticker";
 import { promisedToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dialog, DialogContent, DialogTrigger, useDialog } from "@repo/ui/components/dialog";
-import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
-import { cn } from "@repo/ui/utils/cn";
+import { Dialog, DialogContent, DialogTrigger, useDialog } from "@linkyboard/components";
+import { useOutsideClick } from "@linkyboard/hooks";
+import { cn } from "@linkyboard/utils";
 
 import { ChevronDown, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";

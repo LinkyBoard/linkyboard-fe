@@ -1,6 +1,6 @@
-import { AIModelDTO } from "@/models/custom-sticker";
-import { SummarizeContentDTO } from "@/models/topic";
-import { BaseResponseDTO } from "@repo/types";
+import type { AIModelDTO } from "@/models/custom-sticker";
+import type { SummarizeContentDTO } from "@/models/topic";
+import type { BaseResponseDTO } from "@linkyboard/types";
 
 import { clientApi } from ".";
 

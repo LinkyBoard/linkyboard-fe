@@ -1,5 +1,5 @@
-import { CategoryDTO } from "@/models/category";
-import { BaseResponseDTO } from "@repo/types";
+import type { CategoryDTO } from "@/models/category";
+import type { BaseResponseDTO } from "@linkyboard/types";
 
 import { clientApi } from ".";
 

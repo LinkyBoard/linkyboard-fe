@@ -3,27 +3,29 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "build:web": "turbo run build --filter=web --filter=@repo/types --filter=@repo/ui",
-    "build:extension": "turbo run build --filter=extension --filter=@repo/types --filter=@repo/ui",
+    "build:web": "turbo run build --filter=web --filter=@linkyboard/types --filter=@linkyboard/components",
+    "build:extension": "turbo run build --filter=extension --filter=@linkyboard/types --filter=@linkyboard/components",
     "dev": "turbo run dev",
     "lint": "turbo lint --filter=extension --filter=web",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "dev:extension": "turbo dev --filter=extension --filter=@repo/types --filter=@repo/ui",
-    "dev:web": "turbo dev --filter=web --filter=@repo/types --filter=@repo/ui",
+    "dev:extension": "turbo dev --filter=extension --filter=@linkyboard/types --filter=@linkyboard/components",
+    "dev:web": "turbo dev --filter=web --filter=@linkyboard/types --filter=@linkyboard/components",
     "prepare": "husky"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",
-    "add": "^2.0.6",
     "husky": "^9.1.7",
-    "pnpm": "^10.14.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4",
     "turbo": "^2.5.5",
-    "tw-animate-css": "^1.3.6",
-    "typescript": "5.8.3"
+    "tw-animate-css": "^1.3.6"
+  },
+  "resolutions": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "typescript": "~5.8.3"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {

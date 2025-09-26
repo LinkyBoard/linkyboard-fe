@@ -1,0 +1,20 @@
+{
+  "name": "@linkyboard/components",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@linkyboard/eslint-config": "workspace:*",
+    "@linkyboard/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9.31.0",
+    "typescript": "5.8.2"
+  },
+  "dependencies": {
+    "@linkyboard/hooks": "workspace:*",
+    "@linkyboard/utils": "workspace:*"
+  }
+}

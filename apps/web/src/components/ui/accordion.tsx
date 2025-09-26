@@ -1,7 +1,7 @@
 import * as React from "react";
 
+import { cn } from "@linkyboard/utils";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { cn } from "@repo/ui/utils/cn";
 
 import { ChevronDown } from "lucide-react";
 

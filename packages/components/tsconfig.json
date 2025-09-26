@@ -1,0 +1,9 @@
+{
+  "extends": "@linkyboard/typescript-config/react-library.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "module": "ESNext"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

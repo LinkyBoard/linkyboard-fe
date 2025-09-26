@@ -17,7 +17,7 @@ import { useGetTags } from "@/lib/tanstack/query/tag";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
+import { useOutsideClick } from "@linkyboard/hooks";
 
 import { ArrowLeft, ChevronDown, Plus, Save, X } from "lucide-react";
 import { useForm } from "react-hook-form";

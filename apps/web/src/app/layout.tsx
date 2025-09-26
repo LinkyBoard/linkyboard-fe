@@ -5,7 +5,7 @@ import { JetBrains_Mono, Merriweather, Poppins } from "next/font/google";
 
 import RootProvider from "@/components/provider/root-provider";
 import ThirdPartyProvider from "@/components/provider/third-party-provider";
-import { cn } from "@repo/ui/utils/cn";
+import { cn } from "@linkyboard/utils";
 
 const poppins = Poppins({
   subsets: ["latin"],

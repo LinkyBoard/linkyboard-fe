@@ -3,7 +3,7 @@ import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
 import { extractMetaContent, getHtmlText } from "@/utils/chrome";
 import { removeCookie } from "@/utils/cookie";
-import { errorToast } from "@/utils/toast";
+import { errorToast } from "@linkyboard/utils";
 import { Button } from "@linkyboard/components";
 import {
   Dialog,

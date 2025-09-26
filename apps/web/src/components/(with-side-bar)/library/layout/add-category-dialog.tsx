@@ -1,7 +1,7 @@
 import { CATEGORY } from "@/constants/category";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateCategory } from "@/lib/tanstack/mutation/category";
-import { errorToast, successToast } from "@/utils/toast";
+import { errorToast, successToast } from "@linkyboard/utils";
 import {
   Button,
   Dialog,

@@ -8,7 +8,7 @@ import {
   quickSaveYoutubeContent,
   updateContent,
 } from "@/services/content";
-import { successToast } from "@/utils/toast";
+import { successToast } from "@linkyboard/utils";
 import { useMutation } from "@tanstack/react-query";
 
 import { invalidateQueries } from "..";

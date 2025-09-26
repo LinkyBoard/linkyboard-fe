@@ -3,7 +3,7 @@
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateCustomSticker } from "@/lib/tanstack/mutation/custom-sticker";
-import { errorToast, infoToast } from "@/utils/toast";
+import { errorToast, infoToast } from "@linkyboard/utils";
 import {
   Button,
   Dialog,

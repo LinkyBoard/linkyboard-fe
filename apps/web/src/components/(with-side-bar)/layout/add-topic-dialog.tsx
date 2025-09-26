@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
-import { errorToast, infoToast } from "@/utils/toast";
+import { errorToast, infoToast } from "@linkyboard/utils";
 import {
   Button,
   Dialog,

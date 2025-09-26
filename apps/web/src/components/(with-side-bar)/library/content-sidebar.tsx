@@ -16,7 +16,7 @@ import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
 import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import type { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
-import { errorToast, infoToast } from "@/utils/toast";
+import { errorToast, infoToast } from "@linkyboard/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Dialog, DialogTrigger, Input } from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";

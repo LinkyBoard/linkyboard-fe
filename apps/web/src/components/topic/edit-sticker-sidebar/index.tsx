@@ -14,7 +14,7 @@ import { useRemoveTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
 import { revalidatePath } from "@/utils/revalidate";
-import { errorToast, successToast } from "@/utils/toast";
+import { errorToast, successToast } from "@linkyboard/utils";
 import { Button, Dialog, DialogTrigger, Input } from "@linkyboard/components";
 import CodeBlock from "@tiptap/extension-code-block";
 import Highlight from "@tiptap/extension-highlight";

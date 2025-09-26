@@ -6,7 +6,7 @@ import { useSummarizeTopicContent } from "@/lib/tanstack/mutation/custom-sticker
 import { useGetAiModels } from "@/lib/tanstack/query/custom-sticker";
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { AIModelDTO } from "@/models/custom-sticker";
-import { promisedToast } from "@/utils/toast";
+import { promisedToast } from "@linkyboard/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogTrigger, useDialog } from "@linkyboard/components";
 import { Button } from "@linkyboard/components";

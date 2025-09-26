@@ -7,7 +7,6 @@ import { invalidateQueries } from "@/lib/tanstack";
 import { useDeleteCategory } from "@/lib/tanstack/mutation/category";
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import type { CategoryDTO } from "@/models/category";
-import { successToast } from "@/utils/toast";
 import { Button } from "@linkyboard/components";
 import {
   Dialog,
@@ -16,6 +15,7 @@ import {
   DialogTrigger,
   useDialog,
 } from "@linkyboard/components";
+import { successToast } from "@linkyboard/utils";
 
 import { FileText, Loader2, Tag, Trash2 } from "lucide-react";
 

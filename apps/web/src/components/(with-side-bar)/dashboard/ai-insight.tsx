@@ -1,6 +1,6 @@
 "use client";
 
-import { infoToast } from "@/utils/toast";
+import { infoToast } from "@linkyboard/utils";
 import { Button } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 

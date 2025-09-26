@@ -1,6 +1,6 @@
-import type { BaseResponseDTO, CategoryContentDTO, PaginationDTO } from "@repo/types";
+import type { BaseResponseDTO, CategoryContentDTO, PaginationDTO } from "@linkyboard/types";
 
-import { DetailSaveContentDTO } from "../models/content";
+import type { DetailSaveContentDTO } from "../models/content";
 
 import { api } from ".";
 

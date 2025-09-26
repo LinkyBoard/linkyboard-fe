@@ -1,5 +1,5 @@
-import type { CategoryContentDTO } from "@repo/types";
-import { cn } from "@repo/ui/utils/cn";
+import type { CategoryContentDTO } from "@linkyboard/types";
+import { cn } from "@linkyboard/utils";
 
 import { FileText, Globe, Youtube } from "lucide-react";
 

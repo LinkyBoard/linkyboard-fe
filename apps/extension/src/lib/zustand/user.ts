@@ -1,4 +1,4 @@
-import type { CategoryContentDTO } from "@repo/types";
+import type { CategoryContentDTO } from "@linkyboard/types";
 
 import { create } from "zustand";
 

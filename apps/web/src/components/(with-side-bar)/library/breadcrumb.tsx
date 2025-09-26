@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { cn } from "@repo/ui/utils/cn";
+import { cn } from "@linkyboard/utils";
 
 import { ChevronRight } from "lucide-react";
 

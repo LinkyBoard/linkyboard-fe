@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { CATEGORY } from "@/constants/category";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateCategory } from "@/lib/tanstack/mutation/category";
-import { errorToast, successToast } from "@/utils/toast";
 import {
+  Button,
   Dialog,
   DialogClose,
   DialogContent,
   DialogTrigger,
+  Input,
   useDialog,
-} from "@repo/ui/components/dialog";
+} from "@linkyboard/components";
+import { errorToast, successToast } from "@linkyboard/utils";
 
 import { Plus } from "lucide-react";
 

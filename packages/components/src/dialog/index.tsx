@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
-import { cn } from "@repo/ui/utils/cn";
+import { useOutsideClick } from "@linkyboard/hooks";
+import { cn } from "@linkyboard/utils";
 
 import type { HTMLAttributes, MouseEvent, ReactNode } from "react";
 import { createPortal } from "react-dom";

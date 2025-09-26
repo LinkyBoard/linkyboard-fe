@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
 import Logo from "@/assets/logo.svg?react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { CONTENT } from "@/constants/content";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { invalidateQueries } from "@/lib/tanstack";
@@ -15,9 +13,10 @@ import { useGetCategories } from "@/lib/tanstack/query/category";
 import { useGetContentById } from "@/lib/tanstack/query/content";
 import { useGetTags } from "@/lib/tanstack/query/tag";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
-import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
+import { Button, Input } from "@linkyboard/components";
+import { useOutsideClick } from "@linkyboard/hooks";
+import { infoToast, successToast } from "@linkyboard/utils";
 
 import { ArrowLeft, ChevronDown, Plus, Save, X } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -290,7 +289,7 @@ export default function CreateContent() {
           <div>
             <h2 className="text-muted-foreground mb-2 text-sm font-medium">카테고리</h2>
             <div ref={dropdownRef} className="relative">
-              <div className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-within:ring-ring flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-none disabled:cursor-not-allowed disabled:opacity-50">
+              <div className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-within:ring-ring flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                 <input
                   type="text"
                   placeholder="카테고리를 입력하세요"
@@ -416,7 +415,7 @@ export default function CreateContent() {
             <textarea
               {...register("summary")}
               placeholder="요약을 입력하세요"
-              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
             {errors.summary && (
               <p className="text-destructive mt-1 text-xs">{errors.summary.message}</p>
@@ -429,7 +428,7 @@ export default function CreateContent() {
             <textarea
               {...register("memo")}
               placeholder="메모를 입력하세요"
-              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
             {errors.memo && <p className="text-destructive mt-1 text-xs">{errors.memo.message}</p>}
           </div>

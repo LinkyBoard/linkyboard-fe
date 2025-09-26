@@ -1,5 +1,5 @@
 import type { TopicDTO } from "@/models/topic";
-import { StickerType } from "@/types/topic";
+import type { StickerType } from "@/types/topic";
 
 import { create } from "zustand";
 

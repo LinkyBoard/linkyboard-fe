@@ -2,20 +2,20 @@
 
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
 import { CATEGORY } from "@/constants/category";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useDeleteCategory } from "@/lib/tanstack/mutation/category";
 import { useGetCategories } from "@/lib/tanstack/query/category";
-import { CategoryDTO } from "@/models/category";
-import { successToast } from "@/utils/toast";
+import type { CategoryDTO } from "@/models/category";
+import { Button } from "@linkyboard/components";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogTrigger,
   useDialog,
-} from "@repo/ui/components/dialog";
+} from "@linkyboard/components";
+import { successToast } from "@linkyboard/utils";
 
 import { FileText, Loader2, Tag, Trash2 } from "lucide-react";
 
@@ -64,7 +64,7 @@ function CategoryItem(props: CategoryDTO) {
     <div className="bg-card border-border hover:border-primary relative cursor-pointer rounded-lg border p-6 transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg">
       <Dialog>
         <DialogTrigger
-          className="absolute top-2 right-2 rounded-md p-1 text-red-500 transition-colors hover:bg-red-100 hover:text-red-700 disabled:opacity-50"
+          className="absolute right-2 top-2 rounded-md p-1 text-red-500 transition-colors hover:bg-red-100 hover:text-red-700 disabled:opacity-50"
           aria-label={`${props.name} 카테고리 삭제`}
         >
           <Trash2 size={16} />
@@ -80,11 +80,11 @@ function CategoryItem(props: CategoryDTO) {
           <div className="line-clamp-2 text-lg font-semibold">{props.name}</div>
         </div>
         <div className="border-border flex gap-4 border-t pt-4">
-          <div className="text-muted-foreground flex items-center gap-2 text-sm text-nowrap">
+          <div className="text-muted-foreground flex items-center gap-2 text-nowrap text-sm">
             <Tag size={16} />
             <span className="text-foreground font-semibold">{props.tagCount}</span> 태그
           </div>
-          <div className="text-muted-foreground flex items-center gap-2 text-sm text-nowrap">
+          <div className="text-muted-foreground flex items-center gap-2 text-nowrap text-sm">
             <FileText size={16} />
             <span className="text-foreground font-semibold">{props.contentCount}</span> 콘텐츠
           </div>

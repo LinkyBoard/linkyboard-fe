@@ -1,9 +1,8 @@
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { TopicDTO } from "@/models/topic";
+import { Button } from "@linkyboard/components";
 
 import { Edit, NotebookPen } from "lucide-react";
-
-import { Button } from "../ui/button";
 
 export default function TopicSticker({ item }: { item: TopicDTO }) {
   const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
@@ -19,7 +18,7 @@ export default function TopicSticker({ item }: { item: TopicDTO }) {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <div className="mb-6 flex items-center justify-between">
-        <div className="flex size-15 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-2xl backdrop-blur-sm">
+        <div className="size-15 flex shrink-0 items-center justify-center rounded-2xl bg-white/20 text-2xl backdrop-blur-sm">
           <NotebookPen size={24} />
         </div>
         <div className="flex gap-2">
@@ -34,7 +33,7 @@ export default function TopicSticker({ item }: { item: TopicDTO }) {
         </div>
       </div>
       <div>
-        <h2 className="mb-3 line-clamp-1 text-2xl leading-tight font-bold">{item.title}</h2>
+        <h2 className="mb-3 line-clamp-1 text-2xl font-bold leading-tight">{item.title}</h2>
         <p
           className="text-lg leading-relaxed opacity-90"
           dangerouslySetInnerHTML={{ __html: item.content }}

@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
+import { Button } from "@linkyboard/components";
 
 import { Home } from "lucide-react";
 

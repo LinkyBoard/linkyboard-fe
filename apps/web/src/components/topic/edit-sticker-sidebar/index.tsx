@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Sidebar from "@/components/sidebar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { TOPIC } from "@/constants/topic";
 import { invalidateMany, invalidateQueries } from "@/lib/tanstack";
 import {
@@ -16,8 +14,8 @@ import { useRemoveTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
 import { revalidatePath } from "@/utils/revalidate";
-import { errorToast, successToast } from "@/utils/toast";
-import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
+import { Button, Dialog, DialogTrigger, Input } from "@linkyboard/components";
+import { errorToast, successToast } from "@linkyboard/utils";
 import CodeBlock from "@tiptap/extension-code-block";
 import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";

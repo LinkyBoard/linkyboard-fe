@@ -9,10 +9,11 @@ import SentinelSpinner from "@/components/sentinel-spinner";
 import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import { TopicDTO } from "@/models/topic";
-import { cn } from "@repo/ui/utils/cn";
+import type { TopicDTO } from "@/models/topic";
+import { cn } from "@linkyboard/utils";
 
-import { Book, Grid3X3, Home, Loader2, LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Book, Grid3X3, Home, Loader2 } from "lucide-react";
 
 import RecentTopicItem from "./recent-topic-item";
 

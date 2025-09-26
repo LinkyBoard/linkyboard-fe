@@ -9,4 +9,18 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [react(), svgr(), tsconfigPaths(), tailwindcss()],
   base: "./",
+  build: {
+    rollupOptions: {
+      external: [],
+    },
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom", "react/jsx-runtime"],
+  },
+  resolve: {
+    alias: {
+      react: "react",
+      "react-dom": "react-dom",
+    },
+  },
 });

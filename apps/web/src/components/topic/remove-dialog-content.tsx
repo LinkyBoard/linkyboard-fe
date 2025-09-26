@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 
-import { errorToast } from "@/utils/toast";
-import { useDialog } from "@repo/ui/components/dialog";
-import { DialogClose, DialogContent } from "@repo/ui/components/dialog";
-
-import { Button } from "../ui/button";
+import { useDialog } from "@linkyboard/components";
+import { DialogClose, DialogContent } from "@linkyboard/components";
+import { Button } from "@linkyboard/components";
+import { errorToast } from "@linkyboard/utils";
 
 interface RemoveDialogContentProps {
   id: number | null;

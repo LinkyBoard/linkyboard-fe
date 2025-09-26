@@ -1,7 +1,7 @@
 import RemoveTopicDialog from "@/components/topic/remove-topic-dialog";
 import type { TopicDTO } from "@/models/topic";
-import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
-import { cn } from "@repo/ui/utils/cn";
+import { Dialog, DialogTrigger } from "@linkyboard/components";
+import { cn } from "@linkyboard/utils";
 
 import { Trash2 } from "lucide-react";
 

@@ -1,21 +1,20 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateCustomSticker } from "@/lib/tanstack/mutation/custom-sticker";
-import { errorToast, infoToast } from "@/utils/toast";
 import {
+  Button,
   Dialog,
   DialogClose,
   DialogContent,
   DialogTrigger,
+  Input,
   useDialog,
-} from "@repo/ui/components/dialog";
+} from "@linkyboard/components";
+import { errorToast, infoToast } from "@linkyboard/utils";
 
 import { Loader2, Plus } from "lucide-react";
-
-import { Input } from "../ui/input";
 
 interface AddStickerDialogContentProps {
   topicId: string;

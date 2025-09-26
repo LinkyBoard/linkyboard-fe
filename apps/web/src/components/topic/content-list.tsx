@@ -7,15 +7,14 @@ import { CONTENT_TYPE_OPTIONS, type ContentTypeOptions } from "@/constants/conte
 import { useDebounce } from "@/hooks/use-debounce";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { useGetAllContents } from "@/lib/tanstack/query/topic";
-import { TopicNodeProps } from "@/types/topic";
-import { CategoryContentDTO } from "@repo/types";
+import type { TopicNodeProps } from "@/types/topic";
+import { Button, Input } from "@linkyboard/components";
+import type { CategoryContentDTO } from "@linkyboard/types";
 
 import { Loader2, Search } from "lucide-react";
 
 import ContentItem from "../(with-side-bar)/library/content-item";
 import SentinelSpinner from "../sentinel-spinner";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 
 interface ContentListProps {
   contentPanelRef: React.RefObject<HTMLDivElement | null>;
@@ -75,7 +74,7 @@ export default function ContentList({
     >
       <div className="relative p-4">
         <Search
-          className="text-muted-foreground absolute top-1/2 left-8 -translate-y-1/2 transform"
+          className="text-muted-foreground absolute left-8 top-1/2 -translate-y-1/2 transform"
           size={16}
         />
         <Input

@@ -12,9 +12,10 @@ import {
 } from "@/lib/tanstack/mutation/topic-content";
 import type { TopicDTO } from "@/models/topic";
 import type { StickerType } from "@/types/topic";
-import type { CategoryContentDTO } from "@repo/types";
-import { cn } from "@repo/ui/utils/cn";
-import { Handle, NodeProps, NodeResizer, Position, useConnection } from "@xyflow/react";
+import type { CategoryContentDTO } from "@linkyboard/types";
+import { cn } from "@linkyboard/utils";
+import type { NodeProps } from "@xyflow/react";
+import { Handle, NodeResizer, Position, useConnection } from "@xyflow/react";
 
 import ContentSticker from "./content-sticker";
 import TopicSticker from "./topic-sticker";

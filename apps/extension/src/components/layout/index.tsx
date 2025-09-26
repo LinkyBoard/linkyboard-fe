@@ -1,11 +1,11 @@
 import { useDetectPath } from "@/hooks/use-detect-path";
 import { queryClient } from "@/lib/tanstack";
+import { Toaster } from "@linkyboard/components";
 import { QueryClientProvider } from "@tanstack/react-query";
 
 import { Outlet } from "react-router-dom";
 
 import CheckToken from "./check-token";
-import { Toaster } from "../ui/sonner";
 
 function Layout() {
   useDetectPath();

@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { CONTENT_TYPE_OPTIONS, ContentTypeOptions } from "@/constants/content";
+import type { ContentTypeOptions } from "@/constants/content";
+import { CONTENT_TYPE_OPTIONS } from "@/constants/content";
 import { useGetCategoryContentById } from "@/lib/tanstack/query/content";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
-import type { CategoryContentDTO } from "@repo/types";
+import { Button } from "@linkyboard/components";
+import type { CategoryContentDTO } from "@linkyboard/types";
 
 import { Filter, Loader2 } from "lucide-react";
 
@@ -53,8 +54,7 @@ export default function ContentList({ category }: ContentListProps) {
   const filteredContents = useMemo(() => {
     return contents.filter((content) => {
       const matchesTags =
-        selectedTags.length === 0 ||
-        selectedTags.every((tag) => content.tags.includes(tag));
+        selectedTags.length === 0 || selectedTags.every((tag) => content.tags.includes(tag));
       const matchesType =
         selectedType === CONTENT_TYPE_OPTIONS.ALL || content.type === selectedType;
 

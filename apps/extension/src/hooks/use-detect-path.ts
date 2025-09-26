@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
-import { ChromeTabChangeInfoProps } from "@/types/chrome";
+import type { ChromeTabChangeInfoProps } from "@/types/chrome";
 import { updateCurrentTab } from "@/utils/chrome";
 
 import { useLocation } from "react-router-dom";

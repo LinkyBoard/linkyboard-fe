@@ -1,4 +1,4 @@
-import { BaseResponseDTO, TagDTO } from "@repo/types";
+import type { BaseResponseDTO, TagDTO } from "@linkyboard/types";
 
 import { api } from ".";
 

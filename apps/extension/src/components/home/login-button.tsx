@@ -4,11 +4,10 @@ import Google from "@/assets/google.svg?react";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useUserStore } from "@/lib/zustand/user";
 import { setCookie } from "@/utils/cookie";
-import { errorToast } from "@/utils/toast";
+import { Button } from "@linkyboard/components";
+import { errorToast } from "@linkyboard/utils";
 
 import { Loader2 } from "lucide-react";
-
-import { Button } from "../ui/button";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const googleLoginPage = baseUrl + "/auth/google?redirectType=extension";

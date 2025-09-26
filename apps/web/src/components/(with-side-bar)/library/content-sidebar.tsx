@@ -5,8 +5,6 @@ import { useSearchParams } from "next/navigation";
 
 import Image from "@/components/image";
 import Sidebar from "@/components/sidebar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { CATEGORY } from "@/constants/category";
 import { CONTENT, CONTENT_TYPE } from "@/constants/content";
 import { invalidateMany } from "@/lib/tanstack";
@@ -16,15 +14,15 @@ import { useGetContentById } from "@/lib/tanstack/query/content";
 import { useGetTags } from "@/lib/tanstack/query/tag";
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
 import { useDashboardStore } from "@/lib/zustand/dashboard-store";
-import { ContentDetailDTO } from "@/models/content";
+import type { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
-import { errorToast, infoToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Dialog, DialogTrigger, Input } from "@linkyboard/components";
+import { useOutsideClick } from "@linkyboard/hooks";
+import { errorToast, infoToast } from "@linkyboard/utils";
+import { extractYoutubeId } from "@linkyboard/utils";
+import { cn } from "@linkyboard/utils";
 import { YouTubeEmbed } from "@next/third-parties/google";
-import { Dialog, DialogTrigger } from "@repo/ui/components/dialog";
-import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
-import { cn } from "@repo/ui/utils/cn";
-import { extractYoutubeId } from "@repo/ui/utils/youtube";
 
 import { AlertCircle, ChevronDown, Edit, Loader2, Plus, Save, Trash2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -222,7 +220,7 @@ export default function ContentSidebar() {
               <div>
                 <label className="mb-2 block text-base font-medium">카테고리</label>
                 <div ref={dropdownRef} className="relative">
-                  <div className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-within:ring-ring flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-base focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-none disabled:cursor-not-allowed disabled:opacity-50">
+                  <div className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-within:ring-ring flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-base focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                     <input
                       type="text"
                       placeholder="카테고리를 입력하세요"
@@ -348,7 +346,7 @@ export default function ContentSidebar() {
                 <textarea
                   {...register("summary")}
                   placeholder="요약을 입력하세요"
-                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                 />
                 {errors.summary && (
                   <p className="text-destructive mt-1 text-sm">{errors.summary.message}</p>
@@ -360,7 +358,7 @@ export default function ContentSidebar() {
                 <textarea
                   {...register("memo")}
                   placeholder="메모를 입력하세요"
-                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                 />
               </div>
             </div>

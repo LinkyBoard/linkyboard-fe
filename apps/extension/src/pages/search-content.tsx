@@ -1,17 +1,17 @@
-import { Button } from "@/components/ui/button";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
 import { extractMetaContent, getHtmlText } from "@/utils/chrome";
 import { removeCookie } from "@/utils/cookie";
-import { errorToast } from "@/utils/toast";
+import { Button } from "@linkyboard/components";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogTrigger,
   useDialog,
-} from "@repo/ui/components/dialog";
+} from "@linkyboard/components";
+import { errorToast } from "@linkyboard/utils";
 
 import { LogOut, Save, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";

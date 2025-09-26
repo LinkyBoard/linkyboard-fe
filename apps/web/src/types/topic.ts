@@ -1,5 +1,5 @@
 import type { TopicDTO } from "@/models/topic";
-import type { CategoryContentDTO } from "@repo/types";
+import type { CategoryContentDTO } from "@linkyboard/types";
 
 export type StickerType = "topic" | "content" | "custom_sticker";
 

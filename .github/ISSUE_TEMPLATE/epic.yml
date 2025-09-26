@@ -1,0 +1,50 @@
+name: "📌 Epic"
+description: "큰 단위 목표(Epic, Milestone)를 정의할 때 사용하세요"
+title: "[EPIC] "
+labels: ["epic"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: 목표 (Goal)
+      description: 이번 Epic/Milestone의 최종 목표를 작성해주세요.
+      placeholder: 예) 11월 1주 출시를 위한 크롬 확장 기능 완성
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 배경 (Background / Context)
+      description: 왜 이 Epic이 필요한지, 어떤 문제를 해결하기 위함인지 설명해주세요.
+      placeholder: 예) 베타 피드백에서 저장한 페이지 내용이 다시 표시되지 않는 문제가 반복됨
+
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: 주요 산출물 (Deliverables)
+      description: Epic 완료 시 제공해야 하는 결과물 목록
+      placeholder: |
+        - 확장 프로그램에서 저장된 페이지 정보 표시
+        - 태그 자동완성 기능 제공
+        - UI 가이드 문서 업데이트
+
+  - type: textarea
+    id: links
+    attributes:
+      label: 관련 작업 (Linked Issues)
+      description: Epic을 구성하는 하위 이슈 목록 (#123 형식으로 링크)
+      placeholder: |
+        - #123 [FEATURE] 저장된 페이지 표시
+        - #124 [FEATURE] 태그 자동완성
+        - #125 [TASK] UI 가이드 문서화
+
+  - type: textarea
+    id: success
+    attributes:
+      label: 성공 기준 (Success Criteria)
+      description: Epic 성공 조건을 정량/정성 기준으로 작성
+      placeholder: |
+        - 크롬 확장 설치 후 저장된 페이지 확인 가능
+        - 태그 자동완성 기능 정상 동작
+        - 내부 QA 테스트 90% 이상 통과

@@ -1,7 +1,7 @@
 import { type ContentTypeOptions } from "@/constants/content";
 import { TOPIC } from "@/constants/topic";
 import { getAllContents, getAllTopics, getTopicById } from "@/services/topic";
-import { calculateNextPageParam } from "@repo/ui/utils/params";
+import { calculateNextPageParam } from "@linkyboard/utils";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export const useGetTopicById = (id: string) => {

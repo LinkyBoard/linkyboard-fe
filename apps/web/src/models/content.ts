@@ -1,4 +1,4 @@
-import { type ContentType } from "@repo/types";
+import { type ContentType } from "@linkyboard/types";
 
 export interface ContentDetailDTO {
   id: number;

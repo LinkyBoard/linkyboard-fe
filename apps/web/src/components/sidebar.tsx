@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import { useOutsideClick } from "@repo/ui/hooks/use-outside-click";
-import { cn } from "@repo/ui/utils/cn";
+import { useOutsideClick } from "@linkyboard/hooks";
+import { cn } from "@linkyboard/utils";
 
 interface SidebarProps {
   isOpen: boolean;

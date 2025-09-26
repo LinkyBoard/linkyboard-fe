@@ -1,9 +1,9 @@
 "use client";
 
-import { ReactNode } from "react";
-
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
-import { cn } from "@repo/ui/utils/cn";
+import { cn } from "@linkyboard/utils";
+
+import type { ReactNode } from "react";
 
 interface AnimatedSectionProps {
   children: ReactNode;

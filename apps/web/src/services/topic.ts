@@ -1,7 +1,7 @@
 import type { ContentTypeOptions } from "@/constants/content";
 import type { TopicDetailDTO, TopicDTO } from "@/models/topic";
-import type { BaseResponseDTO, CategoryContentDTO, PaginationDTO } from "@repo/types";
-import { getParams } from "@repo/ui/utils/params";
+import type { BaseResponseDTO, CategoryContentDTO, PaginationDTO } from "@linkyboard/types";
+import { getParams } from "@linkyboard/utils";
 
 import { clientApi } from ".";
 

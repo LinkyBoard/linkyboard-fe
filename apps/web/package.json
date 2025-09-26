@@ -9,6 +9,9 @@
     "lint": "eslint --fix \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
+    "@linkyboard/hooks": "workspace:*",
+    "@linkyboard/utils": "workspace:*",
+    "@linkyboard/components": "workspace:*",
     "@hookform/resolvers": "^5.2.1",
     "@linkyboard/components": "workspace:*",
     "@linkyboard/hooks": "workspace:*",

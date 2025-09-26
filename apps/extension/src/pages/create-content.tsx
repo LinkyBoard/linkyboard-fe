@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
 import Logo from "@/assets/logo.svg?react";
-import { Input } from "@/components/ui/input";
 import { CONTENT } from "@/constants/content";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { invalidateQueries } from "@/lib/tanstack";
@@ -16,7 +15,7 @@ import { useGetTags } from "@/lib/tanstack/query/tag";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { infoToast, successToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@linkyboard/components";
+import { Button, Input } from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
 
 import { ArrowLeft, ChevronDown, Plus, Save, X } from "lucide-react";

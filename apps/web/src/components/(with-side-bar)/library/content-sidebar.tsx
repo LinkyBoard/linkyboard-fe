@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 
 import Image from "@/components/image";
 import Sidebar from "@/components/sidebar";
-import { Input } from "@/components/ui/input";
 import { CATEGORY } from "@/constants/category";
 import { CONTENT, CONTENT_TYPE } from "@/constants/content";
 import { invalidateMany } from "@/lib/tanstack";
@@ -19,8 +18,7 @@ import type { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { errorToast, infoToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@linkyboard/components";
-import { Dialog, DialogTrigger } from "@linkyboard/components";
+import { Button, Dialog, DialogTrigger, Input } from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
 import { extractYoutubeId } from "@linkyboard/utils";
 import { cn } from "@linkyboard/utils";

@@ -6,18 +6,17 @@ import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
 import { errorToast, infoToast } from "@/utils/toast";
-import { Button } from "@linkyboard/components";
 import {
+  Button,
   Dialog,
   DialogClose,
   DialogContent,
   DialogTrigger,
+  Input,
   useDialog,
 } from "@linkyboard/components";
 
 import { Loader2 } from "lucide-react";
-
-import { Input } from "../../ui/input";
 
 interface AddTopicDialogProps {
   children: React.ReactNode;

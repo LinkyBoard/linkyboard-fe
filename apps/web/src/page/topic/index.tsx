@@ -9,13 +9,12 @@ import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
 import FlowCanvas from "@/components/topic/flow-canvas";
 import RemoveContentButton from "@/components/topic/remove-content-button";
 import SummarizeDialog from "@/components/topic/summarize-dialog";
-import { Input } from "@/components/ui/input";
 import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { infoToast } from "@/utils/toast";
-import { Button } from "@linkyboard/components";
+import { Button, Input } from "@linkyboard/components";
 import type { Connection, Edge, Node } from "@xyflow/react";
 import { addEdge, ReactFlowProvider, useEdgesState, useNodesState } from "@xyflow/react";
 

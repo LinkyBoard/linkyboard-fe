@@ -1,9 +1,8 @@
 "use client";
 
 import AddCategoryDialog from "@/components/(with-side-bar)/library/layout/add-category-dialog";
-import { Input } from "@/components/ui/input";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import { Button } from "@linkyboard/components";
+import { Button, Input } from "@linkyboard/components";
 
 import { Menu, Search } from "lucide-react";
 

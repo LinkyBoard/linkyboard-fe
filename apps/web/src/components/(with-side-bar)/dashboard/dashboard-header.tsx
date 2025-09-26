@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Input } from "@/components/ui/input";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { removeCookie } from "@/utils/cookie";
 import { infoToast } from "@/utils/toast";
-import { Button } from "@linkyboard/components";
+import { Button, Input } from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
 
 import { Bell, Bot, LogOut, Menu, Search, User } from "lucide-react";

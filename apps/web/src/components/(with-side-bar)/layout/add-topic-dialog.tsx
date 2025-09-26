@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateTopic } from "@/lib/tanstack/mutation/topic";
-import { errorToast, infoToast } from "@linkyboard/utils";
 import {
   Button,
   Dialog,
@@ -15,6 +14,7 @@ import {
   Input,
   useDialog,
 } from "@linkyboard/components";
+import { errorToast, infoToast } from "@linkyboard/utils";
 
 import { Loader2 } from "lucide-react";
 

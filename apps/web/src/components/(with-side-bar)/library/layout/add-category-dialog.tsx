@@ -1,7 +1,6 @@
 import { CATEGORY } from "@/constants/category";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateCategory } from "@/lib/tanstack/mutation/category";
-import { errorToast, successToast } from "@linkyboard/utils";
 import {
   Button,
   Dialog,
@@ -11,6 +10,7 @@ import {
   Input,
   useDialog,
 } from "@linkyboard/components";
+import { errorToast, successToast } from "@linkyboard/utils";
 
 import { Plus } from "lucide-react";
 

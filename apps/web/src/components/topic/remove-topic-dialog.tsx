@@ -4,8 +4,8 @@ import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveTopic } from "@/lib/tanstack/mutation/topic";
 import { revalidatePath } from "@/utils/revalidate";
-import { errorToast, successToast } from "@linkyboard/utils";
 import { Button, DialogClose, DialogContent, useDialog } from "@linkyboard/components";
+import { errorToast, successToast } from "@linkyboard/utils";
 
 import { Loader2 } from "lucide-react";
 

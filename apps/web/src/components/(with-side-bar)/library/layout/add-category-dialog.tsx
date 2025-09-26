@@ -1,9 +1,9 @@
-import { Button } from "@linkyboard/components";
 import { Input } from "@/components/ui/input";
 import { CATEGORY } from "@/constants/category";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateCategory } from "@/lib/tanstack/mutation/category";
 import { errorToast, successToast } from "@/utils/toast";
+import { Button } from "@linkyboard/components";
 import {
   Dialog,
   DialogClose,

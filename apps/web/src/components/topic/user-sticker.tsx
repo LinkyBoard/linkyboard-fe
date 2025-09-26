@@ -2,11 +2,11 @@ import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { TopicDTO } from "@/models/topic";
 import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
 import { Dialog, DialogTrigger } from "@linkyboard/components";
+import { Button } from "@linkyboard/components";
 
 import { Edit, Sticker, Trash2 } from "lucide-react";
 
 import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
-import { Button } from "@linkyboard/components";
 
 export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId: string }) {
   const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();

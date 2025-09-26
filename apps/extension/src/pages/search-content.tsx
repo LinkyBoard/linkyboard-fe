@@ -1,10 +1,10 @@
-import { Button } from "@linkyboard/components";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
 import { extractMetaContent, getHtmlText } from "@/utils/chrome";
 import { removeCookie } from "@/utils/cookie";
 import { errorToast } from "@/utils/toast";
+import { Button } from "@linkyboard/components";
 import {
   Dialog,
   DialogClose,

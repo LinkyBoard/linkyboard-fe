@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@linkyboard/components";
 import { infoToast } from "@/utils/toast";
+import { Button } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 
 import { FileText, Lightbulb, Link } from "lucide-react";

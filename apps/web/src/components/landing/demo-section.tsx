@@ -2,11 +2,10 @@
 
 import { useRouter } from "next/navigation";
 
+import { Button } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 
 import { FolderArchive, Link, NotebookPen } from "lucide-react";
-
-import { Button } from "@linkyboard/components";
 
 const extensionVideo = "/example/extension.mp4";
 const dashboardVideo = "/example/dashboard.mp4";

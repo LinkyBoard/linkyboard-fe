@@ -1,9 +1,8 @@
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { TopicDTO } from "@/models/topic";
+import { Button } from "@linkyboard/components";
 
 import { Edit, NotebookPen } from "lucide-react";
-
-import { Button } from "@linkyboard/components";
 
 export default function TopicSticker({ item }: { item: TopicDTO }) {
   const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();

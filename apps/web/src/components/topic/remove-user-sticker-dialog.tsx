@@ -3,10 +3,9 @@ import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveCustomSticker } from "@/lib/tanstack/mutation/custom-sticker";
 import { errorToast, successToast } from "@/utils/toast";
 import { DialogClose, DialogContent, useDialog } from "@linkyboard/components";
+import { Button } from "@linkyboard/components";
 
 import { Loader2 } from "lucide-react";
-
-import { Button } from "@linkyboard/components";
 
 export default function RemoveUserStickerDialog({
   customStickerId,

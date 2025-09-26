@@ -9,6 +9,7 @@ import type { AIModelDTO } from "@/models/custom-sticker";
 import { promisedToast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogTrigger, useDialog } from "@linkyboard/components";
+import { Button } from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
 import { cn } from "@linkyboard/utils";
 
@@ -16,7 +17,6 @@ import { ChevronDown, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { summarizeSchema, type SummarizeSchemaType } from "../../schemas/summarize";
-import { Button } from "@linkyboard/components";
 
 interface SummarizeDialogProps {
   topicId: string;

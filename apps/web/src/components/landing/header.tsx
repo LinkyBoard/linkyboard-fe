@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Logo from "@/assets/logo.svg";
-import { Button } from "@linkyboard/components";
 import { scrollToSection, useScrollSpy } from "@/hooks/use-intersection-observer";
+import { Button } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 
 import { Menu, X } from "lucide-react";

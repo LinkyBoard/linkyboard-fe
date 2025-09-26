@@ -1,10 +1,9 @@
 import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
+import { Button } from "@linkyboard/components";
 import type { CategoryContentDTO } from "@linkyboard/types";
 import { cn } from "@linkyboard/utils";
 
 import { Check, Edit, FileText, Globe, Youtube } from "lucide-react";
-
-import { Button } from "@linkyboard/components";
 
 interface ContentStickerProps {
   item: CategoryContentDTO;

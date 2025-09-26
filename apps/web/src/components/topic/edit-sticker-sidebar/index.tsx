@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Sidebar from "@/components/sidebar";
-import { Button } from "@linkyboard/components";
 import { Input } from "@/components/ui/input";
 import { TOPIC } from "@/constants/topic";
 import { invalidateMany, invalidateQueries } from "@/lib/tanstack";
@@ -17,6 +16,7 @@ import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
 import { revalidatePath } from "@/utils/revalidate";
 import { errorToast, successToast } from "@/utils/toast";
+import { Button } from "@linkyboard/components";
 import { Dialog, DialogTrigger } from "@linkyboard/components";
 import CodeBlock from "@tiptap/extension-code-block";
 import Highlight from "@tiptap/extension-highlight";

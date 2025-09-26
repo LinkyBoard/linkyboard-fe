@@ -2,10 +2,9 @@ import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveTopicContentById } from "@/lib/tanstack/mutation/topic-content";
 import { errorToast } from "@/utils/toast";
+import { Button } from "@linkyboard/components";
 
 import { Trash2 } from "lucide-react";
-
-import { Button } from "@linkyboard/components";
 
 interface RemoveContentButtonProps {
   topicId: string;

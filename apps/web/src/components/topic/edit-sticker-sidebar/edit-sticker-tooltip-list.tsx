@@ -1,5 +1,10 @@
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Button } from "@linkyboard/components";
+import {
+  Button,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 import type { Editor } from "@tiptap/react";
 

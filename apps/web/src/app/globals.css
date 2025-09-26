@@ -2,15 +2,6 @@
 @import "@xyflow/react/dist/style.css";
 @plugin "@tailwindcss/typography";
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 div.customHandle {
   opacity: 0;
   transition: all 0.2s ease-in-out;

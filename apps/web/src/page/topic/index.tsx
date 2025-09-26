@@ -99,7 +99,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     setEdges((eds) => eds.filter((e) => e.id !== edge.id));
     try {
       await removeConnection(edge.id);
-      infoToast("연결이 제거되었습니다.");
     } catch (error) {
       setEdges((eds) => addEdge(edgeData, eds));
     }

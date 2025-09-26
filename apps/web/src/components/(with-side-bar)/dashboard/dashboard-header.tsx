@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@linkyboard/components";
 import { Input } from "@/components/ui/input";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { removeCookie } from "@/utils/cookie";
@@ -67,7 +67,7 @@ export default function DashboardHeader() {
         </Button>
         <div className="relative w-96">
           <Search
-            className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2 transform"
+            className="text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 transform"
             size={20}
           />
           {/* 검색 결과 네이버 검색 참고하기 */}
@@ -99,7 +99,7 @@ export default function DashboardHeader() {
             <User size={20} />
           </Button>
           {isUserMenuOpen && (
-            <div className="absolute top-full right-0 z-50 mt-2 w-48 overflow-hidden rounded-md border bg-white shadow-lg">
+            <div className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-md border bg-white shadow-lg">
               <button
                 onClick={onLogout}
                 className="hover:bg-primary/10 flex w-full items-center gap-3 px-4 py-2 text-left text-sm"

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@linkyboard/components";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@linkyboard/utils";
 import type { Editor } from "@tiptap/react";

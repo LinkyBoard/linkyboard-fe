@@ -4,7 +4,7 @@ import { cn } from "@linkyboard/utils";
 
 import { Check, Edit, FileText, Globe, Youtube } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "@linkyboard/components";
 
 interface ContentStickerProps {
   item: CategoryContentDTO;

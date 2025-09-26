@@ -309,6 +309,12 @@ importers:
       '@linkyboard/utils':
         specifier: workspace:*
         version: link:../utils
+      '@radix-ui/react-slot':
+        specifier: ^1.2.3
+        version: 1.2.3(@types/react@19.1.13)(react@19.1.0)
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
       react:
         specifier: 19.1.0
         version: 19.1.0

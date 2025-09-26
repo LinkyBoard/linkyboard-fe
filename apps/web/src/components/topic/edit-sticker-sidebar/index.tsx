@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Sidebar from "@/components/sidebar";
-import { Button } from "@/components/ui/button";
+import { Button } from "@linkyboard/components";
 import { Input } from "@/components/ui/input";
 import { TOPIC } from "@/constants/topic";
 import { invalidateMany, invalidateQueries } from "@/lib/tanstack";

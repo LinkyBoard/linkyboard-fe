@@ -1,7 +1,7 @@
 "use client";
 
 import AddCategoryDialog from "@/components/(with-side-bar)/library/layout/add-category-dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@linkyboard/components";
 import { Input } from "@/components/ui/input";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 
@@ -29,7 +29,7 @@ export default function LibraryLayout({ children }: LibraryLayoutProps) {
           </Button>
           <form className="relative w-96">
             <Search
-              className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2 transform"
+              className="text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 transform"
               size={20}
             />
             <Input

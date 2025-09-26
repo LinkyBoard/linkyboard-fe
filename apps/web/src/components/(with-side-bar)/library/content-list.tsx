@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@linkyboard/components";
 import type { ContentTypeOptions } from "@/constants/content";
 import { CONTENT_TYPE_OPTIONS } from "@/constants/content";
 import { useGetCategoryContentById } from "@/lib/tanstack/query/content";

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@linkyboard/components";
 import { Input } from "@/components/ui/input";
 import { CATEGORY } from "@/constants/category";
 import { invalidateQueries } from "@/lib/tanstack";

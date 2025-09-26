@@ -16,7 +16,7 @@ import { ChevronDown, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { summarizeSchema, type SummarizeSchemaType } from "../../schemas/summarize";
-import { Button } from "../ui/button";
+import { Button } from "@linkyboard/components";
 
 interface SummarizeDialogProps {
   topicId: string;
@@ -119,7 +119,7 @@ function SummarizeDialogContent({
               <button
                 type="button"
                 onClick={onToggleModelDropdown}
-                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-within:ring-ring flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-base focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-within:ring-ring flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-base focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <p className={cn(watchedModel ? "text-foreground" : "text-muted-foreground")}>
                   {watchedModel || "AI 모델을 선택해주세요"}
@@ -160,7 +160,7 @@ function SummarizeDialogContent({
             <textarea
               {...register("prompt")}
               placeholder="예: 선택된 콘텐츠들의 핵심 내용을 요약해주세요"
-              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full resize-none rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full resize-none rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
           <div className="mt-4 flex justify-end gap-2">

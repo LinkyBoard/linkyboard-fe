@@ -14,7 +14,7 @@ import { Loader2, Search } from "lucide-react";
 
 import ContentItem from "../(with-side-bar)/library/content-item";
 import SentinelSpinner from "../sentinel-spinner";
-import { Button } from "../ui/button";
+import { Button } from "@linkyboard/components";
 import { Input } from "../ui/input";
 
 interface ContentListProps {
@@ -75,7 +75,7 @@ export default function ContentList({
     >
       <div className="relative p-4">
         <Search
-          className="text-muted-foreground absolute top-1/2 left-8 -translate-y-1/2 transform"
+          className="text-muted-foreground absolute left-8 top-1/2 -translate-y-1/2 transform"
           size={16}
         />
         <Input

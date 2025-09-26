@@ -6,7 +6,7 @@ import { Dialog, DialogTrigger } from "@linkyboard/components";
 import { Edit, Sticker, Trash2 } from "lucide-react";
 
 import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
-import { Button } from "../ui/button";
+import { Button } from "@linkyboard/components";
 
 export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId: string }) {
   const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
@@ -30,7 +30,7 @@ export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <div className="mb-6 flex items-center justify-between">
-        <div className="flex size-15 shrink-0 items-center justify-center rounded-2xl bg-yellow-300 text-yellow-900">
+        <div className="size-15 flex shrink-0 items-center justify-center rounded-2xl bg-yellow-300 text-yellow-900">
           <Sticker size={24} />
         </div>
         <div className="flex gap-2">
@@ -58,7 +58,7 @@ export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId
         </div>
       </div>
       <div>
-        <h2 className="mb-3 line-clamp-1 text-2xl leading-tight font-bold text-gray-800">
+        <h2 className="mb-3 line-clamp-1 text-2xl font-bold leading-tight text-gray-800">
           {item.title}
         </h2>
         <div dangerouslySetInnerHTML={{ __html: renderContent(item.content) }} />

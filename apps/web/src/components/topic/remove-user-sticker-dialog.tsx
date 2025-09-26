@@ -6,7 +6,7 @@ import { DialogClose, DialogContent, useDialog } from "@linkyboard/components";
 
 import { Loader2 } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "@linkyboard/components";
 
 export default function RemoveUserStickerDialog({
   customStickerId,

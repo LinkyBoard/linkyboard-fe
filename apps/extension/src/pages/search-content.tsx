@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@linkyboard/components";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";

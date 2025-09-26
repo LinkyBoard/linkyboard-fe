@@ -4,7 +4,7 @@ import { errorToast } from "@/utils/toast";
 import { useDialog } from "@linkyboard/components";
 import { DialogClose, DialogContent } from "@linkyboard/components";
 
-import { Button } from "../ui/button";
+import { Button } from "@linkyboard/components";
 
 interface RemoveDialogContentProps {
   id: number | null;

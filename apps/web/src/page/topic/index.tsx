@@ -9,23 +9,15 @@ import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
 import FlowCanvas from "@/components/topic/flow-canvas";
 import RemoveContentButton from "@/components/topic/remove-content-button";
 import SummarizeDialog from "@/components/topic/summarize-dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@linkyboard/components";
 import { Input } from "@/components/ui/input";
 import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { infoToast } from "@/utils/toast";
-import type {
-  Connection,
-  Edge,
-  Node} from "@xyflow/react";
-import {
-  addEdge,
-  ReactFlowProvider,
-  useEdgesState,
-  useNodesState,
-} from "@xyflow/react";
+import type { Connection, Edge, Node } from "@xyflow/react";
+import { addEdge, ReactFlowProvider, useEdgesState, useNodesState } from "@xyflow/react";
 
 import { Menu, Plus, Search } from "lucide-react";
 
@@ -190,7 +182,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
           </Button>
           <div className="relative w-96">
             <Search
-              className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2 transform"
+              className="text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 transform"
               size={20}
             />
             <Input
@@ -240,7 +232,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
           className="bg-border hover:bg-primary/20 relative w-1 cursor-col-resize transition-colors"
           onMouseDown={onResizeStart}
         >
-          <div className="bg-muted-foreground/50 absolute top-1/2 left-1/2 h-6 w-0.5 -translate-x-1/2 -translate-y-1/2" />
+          <div className="bg-muted-foreground/50 absolute left-1/2 top-1/2 h-6 w-0.5 -translate-x-1/2 -translate-y-1/2" />
         </div>
 
         {/* Canvas */}

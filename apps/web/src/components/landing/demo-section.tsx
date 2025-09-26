@@ -6,7 +6,7 @@ import { cn } from "@linkyboard/utils";
 
 import { FolderArchive, Link, NotebookPen } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "@linkyboard/components";
 
 const extensionVideo = "/example/extension.mp4";
 const dashboardVideo = "/example/dashboard.mp4";
@@ -71,7 +71,7 @@ export default function DemoSection() {
                 {demo.icon}
                 <p className="font-medium">{demo.title}</p>
               </div>
-              <p className="text-2xl leading-tight font-bold sm:text-3xl lg:text-4xl">
+              <p className="text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl">
                 {demo.description}
               </p>
               <Button
@@ -83,7 +83,7 @@ export default function DemoSection() {
                 {demo.button}
               </Button>
             </div>
-            <div className="aspect-video w-full flex-2 lg:w-auto">
+            <div className="flex-2 aspect-video w-full lg:w-auto">
               <video
                 src={demo.video}
                 autoPlay

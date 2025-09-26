@@ -5,11 +5,9 @@ import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveTopic } from "@/lib/tanstack/mutation/topic";
 import { revalidatePath } from "@/utils/revalidate";
 import { errorToast, successToast } from "@/utils/toast";
-import { DialogClose, DialogContent, useDialog } from "@linkyboard/components";
+import { Button, DialogClose, DialogContent, useDialog } from "@linkyboard/components";
 
 import { Loader2 } from "lucide-react";
-
-import { Button } from "../ui/button";
 
 export default function RemoveTopicDialog({ topicId }: { topicId: number }) {
   const router = useRouter();

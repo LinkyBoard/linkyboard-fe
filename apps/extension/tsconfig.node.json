@@ -1,5 +1,5 @@
 {
-  "extends": "@linkyboard/typescript-config/react-internal.json",
+  "extends": "@linkyboard/typescript-config/react-library.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "ES2023",

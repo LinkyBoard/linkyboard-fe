@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
+  "dependencies": {
+    "react": "^19.1.0"
+  },
   "devDependencies": {
     "@linkyboard/eslint-config": "workspace:*",
     "@linkyboard/typescript-config": "workspace:*",

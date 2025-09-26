@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@linkyboard/components";
 
 import { Bot, Chrome, Lightbulb, Network, TrendingUp, Users } from "lucide-react";
 

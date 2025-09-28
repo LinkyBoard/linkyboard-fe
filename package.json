@@ -3,18 +3,17 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "build:web": "turbo run build --filter=web --filter=@linkyboard/types --filter=@linkyboard/components",
-    "build:extension": "turbo run build --filter=extension --filter=@linkyboard/types --filter=@linkyboard/components",
+    "build:web": "turbo run build --filter=web --filter=@linkyboard/types",
+    "build:extension": "turbo run build --filter=extension --filter=@linkyboard/types",
     "dev": "turbo run dev",
     "lint": "turbo lint --filter=extension --filter=web",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "dev:extension": "turbo dev --filter=extension --filter=@linkyboard/types --filter=@linkyboard/components",
-    "dev:web": "turbo dev --filter=web --filter=@linkyboard/types --filter=@linkyboard/components",
+    "dev:extension": "turbo dev --filter=extension --filter=@linkyboard/types",
+    "dev:web": "turbo dev --filter=web --filter=@linkyboard/types",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
     "husky": "^9.1.7",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",

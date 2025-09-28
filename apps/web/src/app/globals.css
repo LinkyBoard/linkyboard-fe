@@ -1,4 +1,6 @@
-@import "@linkyboard/tailwind-config/tailwind-config.css";
+@source "../../../../packages/components/src/**/*.{ts,tsx}";
+
+@import "@linkyboard/tailwind-config";
 @import "@xyflow/react/dist/style.css";
 @plugin "@tailwindcss/typography";
 

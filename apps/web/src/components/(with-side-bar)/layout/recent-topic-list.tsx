@@ -7,8 +7,6 @@ import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import type { TopicDTO } from "@/models/topic";
 
-import { Loader2 } from "lucide-react";
-
 import RecentTopicItem from "./recent-topic-item";
 
 export default function RecentTopicList() {
@@ -42,11 +40,7 @@ export default function RecentTopicList() {
 
   return (
     <>
-      {isLoading ? (
-        <div className="flex items-center justify-center">
-          <Loader2 className="animate-spin" />
-        </div>
-      ) : !recentTopics || recentTopics?.data?.length === 0 ? (
+      {!recentTopics || recentTopics?.data?.length === 0 ? (
         <p className="text-muted-foreground text-sm">토픽이 없어요.</p>
       ) : (
         recentTopics?.data?.map((topic) => (

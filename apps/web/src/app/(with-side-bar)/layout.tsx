@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 
 import Sidebar from "@/components/(with-side-bar)/layout";
-import SidebarSkeleton from "@/components/(with-side-bar)/layout/skeleton";
 import ContentSidebar from "@/components/(with-side-bar)/library/content-sidebar";
 
 import { Laptop } from "lucide-react";
@@ -14,9 +13,7 @@ export default function WithSidePanelLayout({ children }: WithSidePanelLayoutPro
   return (
     <>
       <div className="hidden min-h-screen sm:flex">
-        <Suspense fallback={<SidebarSkeleton />}>
-          <Sidebar />
-        </Suspense>
+        <Sidebar />
         <main className="flex-1 p-8">{children}</main>
         <Suspense>
           <ContentSidebar />

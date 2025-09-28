@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@linkyboard/eslint-config": "workspace:*",
+    "@linkyboard/tailwind-config": "workspace:*",
     "@linkyboard/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "@types/react": "^19",
@@ -18,7 +19,6 @@
   },
   "dependencies": {
     "@linkyboard/hooks": "workspace:*",
-    "@linkyboard/tailwind-config": "workspace:*",
     "@linkyboard/utils": "workspace:*",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.8",

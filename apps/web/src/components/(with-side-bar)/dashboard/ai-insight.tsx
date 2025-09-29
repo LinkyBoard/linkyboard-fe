@@ -1,7 +1,6 @@
 "use client";
 
-import { Button } from "@linkyboard/components";
-import { infoToast } from "@linkyboard/utils";
+import { Button, infoToast } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 
 import { FileText, Lightbulb, Link } from "lucide-react";
@@ -35,33 +34,38 @@ export default function AiInsight() {
   const onInsightClick = () => {
     infoToast("아직 준비    중 이에요.");
   };
+
   return (
     <section className="mb-8">
       <h2 className="mb-6 text-2xl font-semibold">오늘의 AI 인사이트</h2>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {aiInsights.map((insight, index) => (
-          <div
-            key={index}
-            className={cn("bg-gradient-to-br", insight.gradient, "rounded-lg p-6 text-white")}
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-white/20">
-                <insight.icon size={20} />
-              </div>
-              <div className="line-clamp-1 text-lg font-semibold">{insight.title}</div>
-            </div>
-            <p className="mb-4 line-clamp-2 leading-relaxed opacity-90">{insight.description}</p>
-            <Button
-              variant="white"
-              size="sm"
-              className="transform shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
-              onClick={onInsightClick}
+      {aiInsights.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {aiInsights.map((insight, index) => (
+            <div
+              key={index}
+              className={cn("bg-gradient-to-br", insight.gradient, "rounded-lg p-6 text-white")}
             >
-              {insight.buttonText}
-            </Button>
-          </div>
-        ))}
-      </div>
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-white/20">
+                  <insight.icon size={20} />
+                </div>
+                <div className="line-clamp-1 text-lg font-semibold">{insight.title}</div>
+              </div>
+              <p className="mb-4 line-clamp-2 leading-relaxed opacity-90">{insight.description}</p>
+              <Button
+                variant="white"
+                size="sm"
+                className="transform shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                onClick={onInsightClick}
+              >
+                {insight.buttonText}
+              </Button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="flex h-52 items-center justify-center">AI 인사이트가 없어요</p>
+      )}
     </section>
   );
 }

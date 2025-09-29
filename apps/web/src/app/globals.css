@@ -1,4 +1,4 @@
-@source "../../../../packages/components/src/**/*.{ts,tsx}";
+@source "../../../../packages/components";
 
 @import "@linkyboard/tailwind-config";
 @import "@xyflow/react/dist/style.css";

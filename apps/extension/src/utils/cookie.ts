@@ -1,4 +1,4 @@
-import { errorToast } from "@linkyboard/utils";
+import { errorToast } from "@linkyboard/components";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 

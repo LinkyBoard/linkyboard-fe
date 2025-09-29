@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { removeCookie } from "@/utils/cookie";
-import { Button, Input } from "@linkyboard/components";
+import { Button, infoToast, Input } from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
-import { infoToast } from "@linkyboard/utils";
 
 import { Bell, Bot, LogOut, Menu, Search, User } from "lucide-react";
 

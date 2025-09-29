@@ -11,10 +11,11 @@ import {
   DialogClose,
   DialogContent,
   DialogTrigger,
+  errorToast,
+  infoToast,
   Input,
   useDialog,
 } from "@linkyboard/components";
-import { errorToast, infoToast } from "@linkyboard/utils";
 
 import { Loader2 } from "lucide-react";
 

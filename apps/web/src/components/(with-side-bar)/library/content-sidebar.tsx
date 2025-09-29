@@ -17,14 +17,19 @@ import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import type { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Dialog, DialogTrigger, Input } from "@linkyboard/components";
+import {
+  Button,
+  Dialog,
+  DialogTrigger,
+  errorToast,
+  infoToast,
+  Input,
+} from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
-import { errorToast, infoToast } from "@linkyboard/utils";
-import { extractYoutubeId } from "@linkyboard/utils";
-import { cn } from "@linkyboard/utils";
+import { cn, extractYoutubeId } from "@linkyboard/utils";
 import { YouTubeEmbed } from "@next/third-parties/google";
 
-import { AlertCircle, ChevronDown, Edit, Loader2, Plus, Save, Trash2, X } from "lucide-react";
+import { AlertCircle, ChevronDown, Edit, Plus, Save, Trash2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import RemoveDialogContent from "../../topic/remove-dialog-content";
@@ -193,12 +198,7 @@ export default function ContentSidebar() {
 
         {/* 내용 */}
         <div className="flex-1 overflow-y-auto p-6">
-          {isLoading ? (
-            <div className="flex h-full flex-col items-center justify-center gap-2">
-              <Loader2 className="animate-spin" />
-              <p className="text-base">콘텐츠 정보를 가져오고 있어요</p>
-            </div>
-          ) : isError ? (
+          {isError ? (
             <div className="flex h-full flex-col items-center justify-center gap-2">
               <AlertCircle className="text-destructive size-8" />
               <p className="text-base">콘텐츠 정보를 가져오는데 실패했어요</p>

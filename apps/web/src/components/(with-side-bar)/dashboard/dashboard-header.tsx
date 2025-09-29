@@ -3,26 +3,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { removeCookie } from "@/utils/cookie";
-import { Button, infoToast, Input } from "@linkyboard/components";
+import { Button, infoToast } from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
 
-import { Bell, Bot, LogOut, Menu, Search, User } from "lucide-react";
+import { Bell, Bot, LogOut, User } from "lucide-react";
+
+import SearchHeader from "../layout/search-header";
 
 export default function DashboardHeader() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const router = useRouter();
 
-  const { toggle } = useMobileMenuStore();
   const [userMenuRef] = useOutsideClick<HTMLDivElement>(() => {
     setIsUserMenuOpen(false);
   });
-
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
 
   const onInsightClick = () => {
     infoToast("아직 준비 중 이에요.");
@@ -52,33 +47,8 @@ export default function DashboardHeader() {
 
   return (
     <header className="border-border mb-8 flex items-center justify-between border-b pb-4">
-      <div className="flex items-center gap-4">
-        {/* Mobile Menu Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="lg:hidden"
-          onClick={toggle}
-          aria-label="메뉴 토글"
-        >
-          <Menu size={24} />
-        </Button>
-        <div className="relative w-96">
-          <Search
-            className="text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 transform"
-            size={20}
-          />
-          {/* 검색 결과 네이버 검색 참고하기 */}
-          <Input
-            type="text"
-            placeholder="콘텐츠를 검색하세요"
-            className="pl-10"
-            value={searchQuery}
-            onChange={onSearchChange}
-            aria-label="콘텐츠 검색"
-          />
-        </div>
-      </div>
+      <SearchHeader placeholder="콘텐츠를 검색하세요" />
+
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={onInsightClick} aria-label="AI 어시스턴트">
           <Bot size={20} />

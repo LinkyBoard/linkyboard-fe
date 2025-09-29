@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
+import SearchHeader from "@/components/(with-side-bar)/layout/search-header";
 import AddStickerDialog from "@/components/topic/add-sticker-dialog";
 import ContentList from "@/components/topic/content-list";
 import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
@@ -12,12 +13,11 @@ import SummarizeDialog from "@/components/topic/summarize-dialog";
 import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
-import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
-import { Button, infoToast, Input } from "@linkyboard/components";
+import { infoToast } from "@linkyboard/components";
 import type { Connection, Edge, Node } from "@xyflow/react";
 import { addEdge, ReactFlowProvider, useEdgesState, useNodesState } from "@xyflow/react";
 
-import { Menu, Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 
 interface TopicBoardPageProps {
   id: string;
@@ -27,15 +27,12 @@ interface TopicBoardPageProps {
 const initialNodes: Node[] = [];
 
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
-  const [searchQuery, setSearchQuery] = useState("");
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [isResizing, setIsResizing] = useState(false);
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
 
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
-
-  const { toggle } = useMobileMenuStore();
 
   const {
     data: topic,
@@ -109,10 +106,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     e.dataTransfer.dropEffect = "copy";
   };
 
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-
   const onResizeStart = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsResizing(true);
@@ -156,6 +149,8 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   }, [isResizing]);
 
   useEffect(() => {
+    setSelectedNodeIds([]);
+
     if (id && !isLoading && topic) {
       setNodes(topic.nodes);
       setEdges(topic.edges);
@@ -166,32 +161,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     <div className="flex flex-col">
       {/* 헤더 */}
       <header className="bg-background mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={toggle}
-            aria-label="메뉴 토글"
-          >
-            <Menu size={24} />
-          </Button>
-          <div className="relative w-96">
-            <Search
-              className="text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 transform"
-              size={20}
-            />
-            <Input
-              type="text"
-              placeholder="토픽 보드에서 검색하세요"
-              className="pl-10"
-              value={searchQuery}
-              onChange={onSearchChange}
-              aria-label="토픽 보드 검색"
-            />
-          </div>
-        </div>
+        <SearchHeader placeholder="토픽 보드에서 검색하세요" />
         <div className="flex items-center gap-4">
           {selectedNodeIds.length > 0 && (
             <>

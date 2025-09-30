@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import type { ContentTypeOptions } from "@/constants/content";
 import { CONTENT_TYPE_OPTIONS } from "@/constants/content";
@@ -39,7 +40,7 @@ export default function ContentList({ category }: ContentListProps) {
   const [showFilter, setShowFilter] = useState(false);
 
   const onOpen = useContentSidebarStore((state) => state.onOpen);
-
+  const router = useRouter();
   const [categoryId, categoryName] = category?.split(",") || [];
 
   const { data, isLoading } = useGetCategoryContentById(categoryId);
@@ -79,11 +80,15 @@ export default function ContentList({ category }: ContentListProps) {
     setSelectedType(CONTENT_TYPE_OPTIONS.ALL);
   };
 
+  if (!categoryId || !categoryName) {
+    router.back();
+  }
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-semibold">
-          {`${categoryName} - 모든 지식 (${filteredContents.length}개)`}
+          {`${categoryName || "카테고리"} - 모든 지식 (${filteredContents.length}개)`}
         </h2>
         <Button
           variant="outline"
@@ -158,7 +163,7 @@ export default function ContentList({ category }: ContentListProps) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 2xl:grid-cols-4">
           {filteredContents.map((item: CategoryContentDTO) => (
             <ContentItem key={item.id} item={item} onClick={() => onContentClick(item.id)} />
           ))}

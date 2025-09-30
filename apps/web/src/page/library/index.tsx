@@ -9,21 +9,10 @@ interface LibraryPageProps {
 export default function LibraryPage({ category }: LibraryPageProps) {
   const currentLevel = category ? "tag" : "category";
 
-  const renderContent = () => {
-    switch (currentLevel) {
-      case "category":
-        return <CategoryList />;
-      case "tag":
-        return <ContentList category={category} />;
-      default:
-        return <CategoryList />;
-    }
-  };
-
   return (
     <div>
       <Breadcrumb currentLevel={currentLevel} currentCategory={category} />
-      {renderContent()}
+      {currentLevel === "category" ? <CategoryList /> : <ContentList category={category} />}
     </div>
   );
 }

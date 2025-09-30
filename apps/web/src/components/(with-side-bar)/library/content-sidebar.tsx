@@ -125,6 +125,7 @@ export default function ContentSidebar() {
 
   const onSidebarClose = () => {
     if (!isDeleteModalOpen) {
+      setIsEditing(false);
       onClose();
     }
   };

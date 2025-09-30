@@ -223,7 +223,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         </ReactFlowProvider>
       </div>
 
-      {/* Edit Topic Sidebar */}
+      {/* useSearchParams 때문에 Suspense 사용 */}
       <Suspense>
         <EditTopicSidebar />
       </Suspense>

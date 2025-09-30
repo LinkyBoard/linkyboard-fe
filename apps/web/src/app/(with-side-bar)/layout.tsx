@@ -1,9 +1,7 @@
-import { Suspense } from "react";
-
 import Sidebar from "@/components/(with-side-bar)/layout";
 import ContentSidebar from "@/components/(with-side-bar)/library/content-sidebar";
 
-import { Laptop, Loader2 } from "lucide-react";
+import { Laptop } from "lucide-react";
 
 interface WithSidePanelLayoutProps {
   children: React.ReactNode;
@@ -15,16 +13,7 @@ export default function WithSidePanelLayout({ children }: WithSidePanelLayoutPro
       <div className="hidden min-h-screen sm:flex">
         <Sidebar />
         <main className="flex-1 p-8">{children}</main>
-        <Suspense
-          fallback={
-            <div className="flex h-full flex-col items-center justify-center gap-2">
-              <Loader2 className="animate-spin" />
-              <p className="text-base">콘텐츠 정보를 가져오고 있어요</p>
-            </div>
-          }
-        >
-          <ContentSidebar />
-        </Suspense>
+        <ContentSidebar />
       </div>
 
       <div className="from-background to-muted flex min-h-screen flex-col items-center justify-center bg-gradient-to-br sm:hidden">

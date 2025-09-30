@@ -19,7 +19,7 @@ export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
   const [sidebarWidth, setSidebarWidth] = useState(448);
 
   const [sidebarRef] = useOutsideClick<HTMLDivElement>(() => {
-    if (isOpen && !isResizing) {
+    if (isOpen) {
       onClose();
     }
   });
@@ -71,7 +71,7 @@ export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
       <div
         ref={sidebarRef}
         className={cn(
-          "fixed top-0 right-0 z-50 h-full bg-white shadow-xl transition-transform duration-300 ease-out",
+          "fixed right-0 top-0 z-50 h-full bg-white shadow-xl transition-transform duration-300 ease-out",
           isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         )}
         style={{ width: `${sidebarWidth}px` }}
@@ -80,11 +80,11 @@ export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
 
         {/* Resize Handle */}
         <div
-          className="bg-border absolute top-0 left-0 h-full w-1 cursor-col-resize transition-colors"
+          className="bg-border absolute left-0 top-0 h-full w-1 cursor-col-resize transition-colors"
           onMouseDown={onMouseDown}
           aria-label="사이드바 크기 조절"
         >
-          <div className="bg-muted-foreground/50 absolute top-1/2 left-1/2 h-6 w-0.5 -translate-x-1/2 -translate-y-1/2" />
+          <div className="bg-muted-foreground/50 absolute left-1/2 top-1/2 h-6 w-0.5 -translate-x-1/2 -translate-y-1/2" />
         </div>
       </div>
     </div>

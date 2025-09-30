@@ -15,10 +15,10 @@ export const useOutsideClick = <T extends HTMLElement>(callback: () => void) => 
   );
 
   useEffect(() => {
-    document.addEventListener("click", onClick);
+    document.addEventListener("mousedown", onClick);
 
     return () => {
-      document.removeEventListener("click", onClick);
+      document.removeEventListener("mousedown", onClick);
     };
   });
 

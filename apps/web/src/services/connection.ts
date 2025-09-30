@@ -8,9 +8,9 @@ export const createConnection = async (props: {
   targetHandle: string;
   topicId: string;
 }) => {
-  return clientApi.post("connections", props);
+  return clientApi.post("connections", { json: props }).json();
 };
 
 export const removeConnection = async (edgeId: string) => {
-  return clientApi.delete(`connections/${edgeId}`);
+  return clientApi.delete(`connections/${edgeId}`).json();
 };

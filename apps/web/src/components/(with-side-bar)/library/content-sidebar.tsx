@@ -17,11 +17,16 @@ import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import type { ContentDetailDTO } from "@/models/content";
 import { contentSchema, type ContentSchemaType } from "@/schemas/content";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Dialog, DialogTrigger, Input } from "@linkyboard/components";
+import {
+  Button,
+  Dialog,
+  DialogTrigger,
+  errorToast,
+  infoToast,
+  Input,
+} from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
-import { errorToast, infoToast } from "@linkyboard/utils";
-import { extractYoutubeId } from "@linkyboard/utils";
-import { cn } from "@linkyboard/utils";
+import { cn, extractYoutubeId } from "@linkyboard/utils";
 import { YouTubeEmbed } from "@next/third-parties/google";
 
 import { AlertCircle, ChevronDown, Edit, Loader2, Plus, Save, Trash2, X } from "lucide-react";
@@ -120,6 +125,7 @@ export default function ContentSidebar() {
 
   const onSidebarClose = () => {
     if (!isDeleteModalOpen) {
+      setIsEditing(false);
       onClose();
     }
   };

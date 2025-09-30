@@ -1,3 +1,5 @@
+"use client";
+
 import { CATEGORY } from "@/constants/category";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useCreateCategory } from "@/lib/tanstack/mutation/category";
@@ -7,10 +9,11 @@ import {
   DialogClose,
   DialogContent,
   DialogTrigger,
+  errorToast,
   Input,
+  successToast,
   useDialog,
 } from "@linkyboard/components";
-import { errorToast, successToast } from "@linkyboard/utils";
 
 import { Plus } from "lucide-react";
 

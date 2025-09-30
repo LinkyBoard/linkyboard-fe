@@ -1,5 +1,5 @@
 import { removeCookie } from "@/utils/cookie";
-import { infoToast } from "@linkyboard/utils";
+import { infoToast } from "@linkyboard/components";
 
 import ky, { type KyRequest, type KyResponse } from "ky";
 

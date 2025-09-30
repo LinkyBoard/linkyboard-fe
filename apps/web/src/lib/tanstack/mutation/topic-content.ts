@@ -5,7 +5,7 @@ import {
   updateContentPosition,
   updateContentSize,
 } from "@/services/topic-content";
-import { infoToast } from "@linkyboard/utils";
+import { infoToast } from "@linkyboard/components";
 import { useMutation } from "@tanstack/react-query";
 
 import { invalidateQueries } from "..";

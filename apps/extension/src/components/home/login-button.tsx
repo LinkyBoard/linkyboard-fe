@@ -4,8 +4,7 @@ import Google from "@/assets/google.svg?react";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
 import { useUserStore } from "@/lib/zustand/user";
 import { setCookie } from "@/utils/cookie";
-import { Button } from "@linkyboard/components";
-import { errorToast } from "@linkyboard/utils";
+import { Button, errorToast } from "@linkyboard/components";
 
 import { Loader2 } from "lucide-react";
 

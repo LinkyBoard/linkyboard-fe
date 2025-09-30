@@ -7,10 +7,15 @@ import { useGetAiModels } from "@/lib/tanstack/query/custom-sticker";
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { AIModelDTO } from "@/models/custom-sticker";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dialog, DialogContent, DialogTrigger, useDialog } from "@linkyboard/components";
-import { Button } from "@linkyboard/components";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  promisedToast,
+  useDialog,
+} from "@linkyboard/components";
 import { useOutsideClick } from "@linkyboard/hooks";
-import { promisedToast } from "@linkyboard/utils";
 import { cn } from "@linkyboard/utils";
 
 import { ChevronDown, Sparkles } from "lucide-react";

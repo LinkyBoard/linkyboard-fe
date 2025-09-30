@@ -5,7 +5,7 @@ import type { BaseResponseDTO } from "@linkyboard/types";
 import { clientApi } from ".";
 
 export const getAiModels = async (): Promise<BaseResponseDTO<AIModelDTO[]>> => {
-  return clientApi.get("custom-stickers/models");
+  return clientApi.get("custom-stickers/models").json();
 };
 
 export const summarizeTopicContent = async (props: {
@@ -14,7 +14,7 @@ export const summarizeTopicContent = async (props: {
   requirements: string;
   modelAlias: string;
 }): Promise<BaseResponseDTO<SummarizeContentDTO>> => {
-  return clientApi.post(`custom-stickers/summarize`, props);
+  return clientApi.post(`custom-stickers/summarize`, { json: props }).json();
 };
 
 export const updateCustomStickerPosition = async (props: {
@@ -23,7 +23,7 @@ export const updateCustomStickerPosition = async (props: {
   posY: number;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { customStickerId, ...restProps } = props;
-  return clientApi.put(`custom-stickers/${customStickerId}/position`, restProps);
+  return clientApi.put(`custom-stickers/${customStickerId}/position`, { json: restProps }).json();
 };
 
 export const updateCustomStickerSize = async (props: {
@@ -32,13 +32,13 @@ export const updateCustomStickerSize = async (props: {
   height: number;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { customStickerId, ...restProps } = props;
-  return clientApi.put(`custom-stickers/${customStickerId}/resize`, restProps);
+  return clientApi.put(`custom-stickers/${customStickerId}/resize`, { json: restProps }).json();
 };
 
 export const removeCustomSticker = async (
   customStickerId: number
 ): Promise<BaseResponseDTO<unknown>> => {
-  return clientApi.delete(`custom-stickers/${customStickerId}`);
+  return clientApi.delete(`custom-stickers/${customStickerId}`).json();
 };
 
 export const createCustomSticker = async (props: {
@@ -46,7 +46,7 @@ export const createCustomSticker = async (props: {
   title: string;
   content: string;
 }): Promise<BaseResponseDTO<unknown>> => {
-  return clientApi.post(`custom-stickers`, props);
+  return clientApi.post(`custom-stickers`, { json: props }).json();
 };
 
 export const updateCustomSticker = async (props: {
@@ -56,5 +56,5 @@ export const updateCustomSticker = async (props: {
   content: string;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { customStickerId, ...restProps } = props;
-  return clientApi.put(`custom-stickers/${customStickerId}`, restProps);
+  return clientApi.put(`custom-stickers/${customStickerId}`, { json: restProps }).json();
 };

@@ -9,7 +9,7 @@ import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
 import { cn } from "@linkyboard/utils";
 
 import type { LucideIcon } from "lucide-react";
-import { Book, Grid3X3, Home, Loader2 } from "lucide-react";
+import { Book, Grid3X3, Home } from "lucide-react";
 
 import RecentTopicList from "./recent-topic-list";
 
@@ -75,13 +75,7 @@ export default function Sidebar() {
           <div className="text-muted-foreground mb-4 text-sm font-semibold uppercase tracking-wider">
             나의 토픽
           </div>
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center">
-                <Loader2 className="animate-spin" />
-              </div>
-            }
-          >
+          <Suspense>
             <RecentTopicList />
           </Suspense>
         </div>

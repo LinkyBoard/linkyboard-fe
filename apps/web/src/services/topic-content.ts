@@ -9,7 +9,7 @@ export const updateContentPosition = async (props: {
   posY: number;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { topicId, ...restProps } = props;
-  return clientApi.put(`topic-contents/topics/${topicId}/position`, restProps);
+  return clientApi.put(`topic-contents/topics/${topicId}/position`, { json: restProps }).json();
 };
 
 export const updateContentSize = async (props: {
@@ -19,7 +19,7 @@ export const updateContentSize = async (props: {
   height: number;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { topicId, ...restProps } = props;
-  return clientApi.put(`topic-contents/topics/${topicId}/resize`, restProps);
+  return clientApi.put(`topic-contents/topics/${topicId}/resize`, { json: restProps }).json();
 };
 
 export const createContent = async (props: {
@@ -33,16 +33,18 @@ export const createContent = async (props: {
     width: 350,
     height: 220,
   };
-  return clientApi.post("topic-contents", body);
+  return clientApi.post("topic-contents", { json: body }).json();
 };
 
 export const removeTopicContentById = async (props: {
   topicId: string;
   contentIds: number[];
 }): Promise<BaseResponseDTO<unknown>> => {
-  return clientApi.delete(`topic-contents/topics/${props.topicId}/contents`, {
-    json: {
-      contentIds: props.contentIds,
-    },
-  });
+  return clientApi
+    .delete(`topic-contents/topics/${props.topicId}/contents`, {
+      json: {
+        contentIds: props.contentIds,
+      },
+    })
+    .json();
 };

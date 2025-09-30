@@ -6,7 +6,7 @@ import { getParams } from "@linkyboard/utils";
 import { clientApi } from ".";
 
 export const getTopicById = async (id: string): Promise<BaseResponseDTO<TopicDetailDTO>> => {
-  return clientApi.get(`topics/${id}`);
+  return clientApi.get(`topics/${id}`).json();
 };
 
 export const updateTopicById = async (props: {
@@ -15,23 +15,23 @@ export const updateTopicById = async (props: {
   content: string;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { id, ...restProps } = props;
-  return clientApi.put(`topics/${id}`, restProps);
+  return clientApi.put(`topics/${id}`, { json: restProps }).json();
 };
 
 export const removeTopicById = async (id: number): Promise<BaseResponseDTO<unknown>> => {
-  return clientApi.delete(`topics/${id}`);
+  return clientApi.delete(`topics/${id}`).json();
 };
 
 export const getAllTopics = async (page: number): Promise<PaginationDTO<TopicDTO[]>> => {
   const params = getParams({ page }, { size: 10 });
-  return clientApi.get(`topics?${params}`);
+  return clientApi.get(`topics?${params}`).json();
 };
 
 export const createTopic = async (props: {
   title: string;
   content: string;
 }): Promise<BaseResponseDTO<number>> => {
-  return clientApi.post("topics", props);
+  return clientApi.post("topics", { json: props }).json();
 };
 
 export const getAllContents = async (props: {
@@ -40,7 +40,7 @@ export const getAllContents = async (props: {
 }): Promise<PaginationDTO<CategoryContentDTO[]>> => {
   const { page, type } = props;
   const params = getParams({ page, type: type.toLowerCase() }, { size: 10 });
-  return clientApi.get(`contents?${params}`);
+  return clientApi.get(`contents?${params}`).json();
 };
 
 export const updateTopicPosition = async (props: {
@@ -49,7 +49,7 @@ export const updateTopicPosition = async (props: {
   posY: number;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { topicId, ...restProps } = props;
-  return clientApi.put(`topics/${topicId}/position`, restProps);
+  return clientApi.put(`topics/${topicId}/position`, { json: restProps }).json();
 };
 
 export const updateTopicSize = async (props: {
@@ -58,5 +58,5 @@ export const updateTopicSize = async (props: {
   height: number;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { topicId, ...restProps } = props;
-  return clientApi.put(`topics/${topicId}/resize`, restProps);
+  return clientApi.put(`topics/${topicId}/resize`, { json: restProps }).json();
 };

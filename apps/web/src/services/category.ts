@@ -4,13 +4,13 @@ import type { BaseResponseDTO } from "@linkyboard/types";
 import { clientApi } from ".";
 
 export const createCategory = async (name: string) => {
-  return clientApi.post("categories", { name });
+  return clientApi.post("categories", { json: { name } }).json();
 };
 
 export const getCategories = async (): Promise<BaseResponseDTO<CategoryDTO[]>> => {
-  return clientApi.get("categories");
+  return clientApi.get("categories").json();
 };
 
 export const removeCategory = async (id: number) => {
-  return clientApi.delete(`categories/${id}`);
+  return clientApi.delete(`categories/${id}`).json();
 };

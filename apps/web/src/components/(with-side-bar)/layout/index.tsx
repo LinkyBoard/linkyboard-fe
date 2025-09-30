@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -74,7 +75,9 @@ export default function Sidebar() {
           <div className="text-muted-foreground mb-4 text-sm font-semibold uppercase tracking-wider">
             나의 토픽
           </div>
-          <RecentTopicList />
+          <Suspense>
+            <RecentTopicList />
+          </Suspense>
         </div>
       </aside>
 

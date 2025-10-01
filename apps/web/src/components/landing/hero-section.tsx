@@ -36,7 +36,7 @@ export default function HeroSection() {
           <Button
             size="lg"
             className="flex items-center gap-2"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/login")}
             aria-label="무료로 시작하기"
           >
             무료로 시작하기

@@ -55,7 +55,7 @@ export default function HowItWorksSection() {
       <Button
         size="lg"
         className="mx-auto flex items-center gap-2"
-        onClick={() => router.push("/dashboard")}
+        onClick={() => router.push("/login")}
         aria-label="무료로 시작하기"
       >
         무료로 시작하기

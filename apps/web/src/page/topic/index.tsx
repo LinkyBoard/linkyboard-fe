@@ -27,20 +27,17 @@ interface TopicBoardPageProps {
 
 const initialNodes: Node[] = [];
 
+const MIN_WIDTH = 300;
+const MAX_WIDTH = 600;
+
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
 
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
-  const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 
-  const {
-    data: topic,
-    isLoading,
-    isError: isTopicError,
-    error,
-    isRefetching,
-  } = useGetTopicById(id);
+  const { data, isLoading, isError, error, isRefetching } = useGetTopicById(id);
+
   const { mutateAsync: createConnection } = useCreateConnection();
   const { mutateAsync: removeConnection } = useRemoveConnection();
 
@@ -113,10 +110,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     const containerRect = container.getBoundingClientRect();
     const newWidth = e.clientX - containerRect.left;
 
-    const minWidth = 300;
-    const maxWidth = 600;
-
-    if (newWidth >= minWidth && newWidth <= maxWidth) {
+    if (newWidth >= MIN_WIDTH && newWidth <= MAX_WIDTH) {
       setContentPanelWidth(newWidth);
     }
   };
@@ -124,15 +118,20 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   useEffect(() => {
     setSelectedNodeIds([]);
 
-    if (id && !isLoading && topic) {
-      setNodes(topic.nodes);
-      setEdges(topic.edges);
+    if (isLoading) {
+      setNodes([]);
+      setEdges([]);
+      return;
+    }
+
+    if (id && !isLoading && data) {
+      setNodes(data.nodes);
+      setEdges(data.edges);
     }
   }, [id, isLoading, isRefetching]);
 
   return (
     <div className="flex flex-col">
-      {/* 헤더 */}
       <header className="bg-background mb-6 flex items-center justify-between">
         <SearchHeader placeholder="토픽 보드에서 검색하세요" />
         <div className="flex items-center gap-4">
@@ -157,24 +156,22 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         </div>
       </header>
 
-      {/* Content Panel */}
       <div className="flex h-[calc(100vh-200px)] gap-0">
         <ContentList
           contentPanelRef={contentPanelRef}
           contentPanelWidth={contentPanelWidth}
-          nodes={topic?.nodes || []}
+          isTopicLoading={isLoading}
+          nodes={data?.nodes || []}
           id={id}
           type={type}
         />
 
-        <ResizeBar className="relative" onMouseMove={onMouseMove} />
+        <ResizeBar onMouseMove={onMouseMove} />
 
-        {/* Canvas */}
         <ReactFlowProvider>
           <FlowCanvas
-            ref={reactFlowWrapper}
             isLoading={isLoading}
-            isTopicError={isTopicError}
+            isTopicError={isError}
             isNotFoundError={isNotFoundError || false}
             id={id}
             nodes={nodes}

@@ -45,7 +45,7 @@ export default function ResizeBar({ className, onMouseMove, onMouseUp }: ResizeB
 
   return (
     <div
-      className={cn("bg-border w-1 cursor-col-resize transition-colors", className)}
+      className={cn("bg-border relative w-1 cursor-col-resize transition-colors", className)}
       onMouseDown={onMouseDown}
       aria-label="사이드바 크기 조절"
     >

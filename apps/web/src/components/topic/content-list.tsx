@@ -21,6 +21,7 @@ interface ContentListProps {
   contentPanelWidth: number;
   type: ContentTypeOptions;
   id: string;
+  isTopicLoading: boolean;
   nodes: TopicNodeProps[];
 }
 
@@ -29,6 +30,7 @@ export default function ContentList({
   contentPanelWidth,
   type,
   id,
+  isTopicLoading,
   nodes,
 }: ContentListProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -109,7 +111,7 @@ export default function ContentList({
         </Button>
       </div>
       <div className="flex h-[calc(100%-120px)] flex-col gap-3 overflow-y-auto p-4">
-        {isLoading ? (
+        {isLoading || isTopicLoading ? (
           <div className="flex justify-center">
             <Loader2 className="text-muted-foreground animate-spin" />
           </div>

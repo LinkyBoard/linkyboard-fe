@@ -43,7 +43,9 @@ export default function SentinelSpinner({
 
   return (
     <>
-      {!isLoading && isFetchingNextPage && <Loader2 className={cn("animate-spin", className)} />}
+      {!isLoading && isFetchingNextPage && (
+        <Loader2 className={cn("mx-auto animate-spin", className)} />
+      )}
       <div ref={sentinelRef} />
     </>
   );

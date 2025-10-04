@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { useDebounce } from "@/hooks/use-debounce";
 import {
@@ -41,6 +41,9 @@ const stickerStyle = {
 export default function CustomNode(props: CustomNodeProps) {
   const nodeData = props.data as unknown as NodeData;
 
+  const previousPositionRef = useRef<{ posX: number; posY: number } | null>(null);
+  const previousSizeRef = useRef<{ width: number; height: number } | null>(null);
+
   const connection = useConnection();
 
   // 콘텐츠 위치, 크기 변경 시 호출
@@ -64,11 +67,32 @@ export default function CustomNode(props: CustomNodeProps) {
 
   // 위치 변경 시 updateContentPosition 호출
   useEffect(() => {
-    const body = {
-      topicId: props.topicId,
+    const currentPosition = {
       posX: debouncedProps.positionAbsoluteX,
       posY: debouncedProps.positionAbsoluteY,
     };
+
+    // 초기 마운트 시에는 이전 위치를 저장하고 API 호출하지 않음
+    if (previousPositionRef.current === null) {
+      previousPositionRef.current = currentPosition;
+      return;
+    }
+
+    // 위치가 실제로 변경되지 않았으면 API 호출하지 않음
+    if (
+      previousPositionRef.current.posX === currentPosition.posX &&
+      previousPositionRef.current.posY === currentPosition.posY
+    ) {
+      return;
+    }
+
+    previousPositionRef.current = currentPosition;
+
+    const body = {
+      topicId: props.topicId,
+      ...currentPosition,
+    };
+
     const updatePosition = async () => {
       switch (nodeData.nodeContent) {
         case "topic":
@@ -90,16 +114,40 @@ export default function CustomNode(props: CustomNodeProps) {
           return;
       }
     };
+
     updatePosition();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedProps.positionAbsoluteX, debouncedProps.positionAbsoluteY]);
 
   // 크기 변경 시 updateContentSize 호출
   useEffect(() => {
-    const body = {
-      topicId: props.topicId,
+    const currentSize = {
       width: debouncedProps.width ?? 350,
       height: debouncedProps.height ?? 220,
     };
+
+    // 초기 마운트 시에는 이전 크기를 저장하고 API 호출하지 않음
+    if (previousSizeRef.current === null) {
+      previousSizeRef.current = currentSize;
+      return;
+    }
+
+    // 크기가 실제로 변경되지 않았으면 API 호출하지 않음
+    if (
+      previousSizeRef.current.width === currentSize.width &&
+      previousSizeRef.current.height === currentSize.height
+    ) {
+      return;
+    }
+
+    previousSizeRef.current = currentSize;
+
+    const body = {
+      topicId: props.topicId,
+      ...currentSize,
+    };
+
     const updateSize = async () => {
       switch (nodeData.nodeContent) {
         case "topic":
@@ -121,7 +169,10 @@ export default function CustomNode(props: CustomNodeProps) {
           return;
       }
     };
+
     updateSize();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedProps.width, debouncedProps.height]);
 
   return (

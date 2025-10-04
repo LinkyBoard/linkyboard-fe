@@ -1,6 +1,7 @@
 import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { TopicDTO } from "@/models/topic";
-import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
+import { containsMarkdown } from "@/utils/markdown";
+import { markdownToHTML } from "@blocknote/core";
 import { Dialog, DialogTrigger } from "@linkyboard/components";
 import { Button } from "@linkyboard/components";
 
@@ -22,7 +23,7 @@ export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId
   // 마크다운이 포함되어 있으면 HTML로 변환
   const renderContent = (content: string) => {
     if (content && containsMarkdown(content)) {
-      return markdownToHtml(content);
+      return markdownToHTML(content);
     }
     return content;
   };

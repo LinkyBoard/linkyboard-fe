@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
 import SearchHeader from "@/components/(with-side-bar)/layout/search-header";
+import ResizeBar from "@/components/resize-bar";
 import AddStickerDialog from "@/components/topic/add-sticker-dialog";
 import ContentList from "@/components/topic/content-list";
 import EditTopicSidebar from "@/components/topic/edit-sticker-sidebar";
@@ -28,7 +29,6 @@ const initialNodes: Node[] = [];
 
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
-  const [isResizing, setIsResizing] = useState(false);
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
 
   const contentPanelRef = useRef<HTMLDivElement | null>(null);
@@ -106,14 +106,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     e.dataTransfer.dropEffect = "copy";
   };
 
-  const onResizeStart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizing(true);
-  };
-
   const onMouseMove = (e: MouseEvent) => {
-    if (!isResizing) return;
-
     const container = contentPanelRef.current;
     if (!container) return;
 
@@ -127,26 +120,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       setContentPanelWidth(newWidth);
     }
   };
-
-  const onMouseUp = () => {
-    setIsResizing(false);
-  };
-
-  useEffect(() => {
-    if (isResizing) {
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
-
-      return () => {
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-        document.body.style.cursor = "default";
-        document.body.style.userSelect = "auto";
-      };
-    }
-  }, [isResizing]);
 
   useEffect(() => {
     setSelectedNodeIds([]);
@@ -194,13 +167,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
           type={type}
         />
 
-        {/* Resize Bar */}
-        <div
-          className="bg-border hover:bg-primary/20 relative w-1 cursor-col-resize transition-colors"
-          onMouseDown={onResizeStart}
-        >
-          <div className="bg-muted-foreground/50 absolute left-1/2 top-1/2 h-6 w-0.5 -translate-x-1/2 -translate-y-1/2" />
-        </div>
+        <ResizeBar className="relative" onMouseMove={onMouseMove} />
 
         {/* Canvas */}
         <ReactFlowProvider>

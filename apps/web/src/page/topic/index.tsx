@@ -97,12 +97,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     }
   };
 
-  // 드래그 앤 드롭 핸들러
-  const onDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "copy";
-  };
-
   const onMouseMove = (e: MouseEvent) => {
     const container = contentPanelRef.current;
     if (!container) return;
@@ -180,7 +174,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onEdgeClick={onEdgeClick}
-            onDragOver={onDragOver}
             selectedNodeIds={selectedNodeIds}
             onNodeSelect={onNodeSelect}
           />

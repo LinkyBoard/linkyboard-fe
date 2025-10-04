@@ -29,7 +29,6 @@ interface FlowCanvasProps {
   onEdgesChange: OnEdgesChange<Edge>;
   onConnect: (params: Connection) => void;
   onEdgeClick: (e: React.MouseEvent, edge: Edge) => void;
-  onDragOver: (e: React.DragEvent) => void;
   selectedNodeIds: string[];
   onNodeSelect: (nodeId: string) => void;
 }
@@ -56,7 +55,6 @@ const FlowCanvas = ({
   onEdgesChange,
   onConnect,
   onEdgeClick,
-  onDragOver,
   selectedNodeIds,
   onNodeSelect,
 }: FlowCanvasProps) => {
@@ -77,6 +75,12 @@ const FlowCanvas = ({
     }),
     [selectedNodeIds, id]
   );
+
+  // 드래그 앤 드롭 핸들러
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  };
 
   const onDrop = async (e: React.DragEvent) => {
     e.preventDefault();

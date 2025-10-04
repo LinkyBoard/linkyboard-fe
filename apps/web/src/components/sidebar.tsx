@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useOutsideClick } from "@linkyboard/hooks";
 import { cn } from "@linkyboard/utils";
+
+import ResizeBar from "./resize-bar";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -15,7 +17,6 @@ const MIN_WIDTH = 448;
 const MAX_WIDTH = 576;
 
 export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
-  const [isResizing, setIsResizing] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(448);
 
   const [sidebarRef] = useOutsideClick<HTMLDivElement>(() => {
@@ -24,41 +25,13 @@ export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
     }
   });
 
-  const onMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizing(true);
-  };
-
   const onMouseMove = (e: MouseEvent) => {
-    if (!isResizing) return;
-
     const newWidth = window.innerWidth - e.clientX;
 
     if (newWidth >= MIN_WIDTH && newWidth <= MAX_WIDTH) {
       setSidebarWidth(newWidth);
     }
   };
-
-  const onMouseUp = () => {
-    setIsResizing(false);
-  };
-
-  // 마우스 이벤트 리스너 등록
-  useEffect(() => {
-    if (isResizing) {
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
-
-      return () => {
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-        document.body.style.cursor = "default";
-        document.body.style.userSelect = "auto";
-      };
-    }
-  }, [isResizing]);
 
   return (
     <div
@@ -78,14 +51,7 @@ export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
       >
         {children}
 
-        {/* Resize Handle */}
-        <div
-          className="bg-border absolute left-0 top-0 h-full w-1 cursor-col-resize transition-colors"
-          onMouseDown={onMouseDown}
-          aria-label="사이드바 크기 조절"
-        >
-          <div className="bg-muted-foreground/50 absolute left-1/2 top-1/2 h-6 w-0.5 -translate-x-1/2 -translate-y-1/2" />
-        </div>
+        <ResizeBar className="absolute left-0 top-0 h-full" onMouseMove={onMouseMove} />
       </div>
     </div>
   );

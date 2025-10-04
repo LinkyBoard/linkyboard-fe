@@ -100,7 +100,7 @@ export default function ContentSticker({
       {shouldShowMemo && (
         <div className="mt-4 flex-1 rounded-lg bg-blue-50 p-3">
           <h4 className="mb-2 text-sm font-semibold text-blue-900">메모</h4>
-          <p className="text-sm leading-relaxed text-blue-800">{item.memo}</p>
+          <p className="text-sm leading-relaxed text-blue-800">{item.memo || "-"}</p>
         </div>
       )}
     </div>

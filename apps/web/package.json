@@ -9,10 +9,13 @@
     "lint": "eslint --fix \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
+    "@blocknote/core": "^0.40.0",
+    "@blocknote/react": "^0.40.0",
+    "@blocknote/shadcn": "^0.40.0",
+    "@hookform/resolvers": "^5.2.1",
+    "@linkyboard/components": "workspace:*",
     "@linkyboard/hooks": "workspace:*",
     "@linkyboard/utils": "workspace:*",
-    "@linkyboard/components": "workspace:*",
-    "@hookform/resolvers": "^5.2.1",
     "@next/third-parties": "^15.5.4",
     "@tanstack/react-query": "^5.84.1",
     "@tiptap/extension-code-block": "^3.1.0",
@@ -27,7 +30,6 @@
     "@xyflow/react": "^12.8.2",
     "ky": "^1.8.2",
     "lucide-react": "^0.536.0",
-    "marked": "^16.2.0",
     "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",

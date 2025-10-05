@@ -34,6 +34,7 @@ import {
 
 import { Loader2, Save, Trash2 } from "lucide-react";
 
+import ToggleBlock from "./toggle-block";
 import RemoveDialogContent from "../remove-dialog-content";
 
 interface BlockNoteProps {
@@ -51,6 +52,7 @@ const blockNoteSchema = BlockNoteSchema.create({
     codeBlock: defaultBlockSpecs.codeBlock,
     table: defaultBlockSpecs.table,
     image: defaultBlockSpecs.image,
+    toggleListItem: ToggleBlock(),
   },
 });
 
@@ -92,7 +94,6 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
 
     try {
       const content = editor.blocksToHTMLLossy();
-      // TODO: editingSticker.type에 따라 API 요청 다르게
       if (editingSticker.type === "topic") {
         await updateTopic(
           {

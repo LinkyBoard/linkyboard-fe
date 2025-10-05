@@ -38,3 +38,14 @@ div.customHandle {
   background-color: var(--background) !important;
   color: var(--foreground) !important;
 }
+
+.bn-toggle-button,
+.bn-toggle-add-block-button {
+  &:hover {
+    background-color: var(--secondary) !important;
+  }
+}
+
+.node-toggleListItem:has(+ .bn-block-group) svg {
+  fill: var(--foreground);
+}

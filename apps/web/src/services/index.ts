@@ -1,9 +1,9 @@
 import { removeCookie } from "@/utils/cookie";
+import { API_BASE_URL } from "@/utils/env";
 
 import ky from "ky";
 
 // API 기본 설정
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 const API_TIMEOUT = 30000; // 30초
 
 // 토큰 재발급 함수

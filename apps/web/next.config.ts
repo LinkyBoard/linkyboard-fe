@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { S3_BASE_URL } from "@/utils/env";
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -12,6 +14,14 @@ const nextConfig: NextConfig = {
         hostname: "**",
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/s3/:path*",
+        destination: `${S3_BASE_URL}/:path*`,
+      },
+    ];
   },
   turbopack: {
     rules: {

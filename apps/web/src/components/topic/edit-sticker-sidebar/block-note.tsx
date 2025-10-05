@@ -5,7 +5,6 @@ import "@blocknote/shadcn/style.css";
 import "@blocknote/core/fonts/inter.css";
 
 import { useEffect, useState } from "react";
-import { revalidatePath } from "next/cache";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
@@ -20,6 +19,7 @@ import { useStickerStore } from "@/lib/zustand/sticker-store";
 import { clientApi } from "@/services";
 import { convertImageToWebP } from "@/utils/image";
 import { containsMarkdown } from "@/utils/markdown";
+import { revalidatePath } from "@/utils/revalidate";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
 import { ko } from "@blocknote/core/locales";
 import { useCreateBlockNote } from "@blocknote/react";

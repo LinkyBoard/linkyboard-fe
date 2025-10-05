@@ -43,19 +43,10 @@ export default function RecentTopicItem({ isSelected, topic, onTopicClick }: Rec
       onClick={onTopicClick}
     >
       <div className={cn("h-2 w-2 rounded-full", color)} />
-      <div className="flex-1">
-        <div
-          className={cn("text-sm font-medium", isSelected ? "text-sidebar-primary-foreground" : "")}
-        >
-          {topic.title}
-        </div>
-        <div
-          className={cn(
-            "line-clamp-1 text-xs",
-            isSelected ? "text-sidebar-primary-foreground/80" : "text-muted-foreground"
-          )}
-          dangerouslySetInnerHTML={{ __html: topic.content }}
-        />
+      <div
+        className={cn("text-sm font-medium", isSelected ? "text-sidebar-primary-foreground" : "")}
+      >
+        {topic.title}
       </div>
       <Dialog>
         <DialogTrigger

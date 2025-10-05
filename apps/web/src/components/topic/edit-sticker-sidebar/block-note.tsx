@@ -16,8 +16,7 @@ import {
 } from "@/lib/tanstack/mutation/custom-sticker";
 import { useRemoveTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
 import { useStickerStore } from "@/lib/zustand/sticker-store";
-import { clientApi } from "@/services";
-import { convertImageToWebP } from "@/utils/image";
+import { uploadImage } from "@/services/image";
 import { containsMarkdown } from "@/utils/markdown";
 import { revalidatePath } from "@/utils/revalidate";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
@@ -32,56 +31,13 @@ import {
   Input,
   successToast,
 } from "@linkyboard/components";
-import type { BaseResponseDTO } from "@linkyboard/types";
 
-import ky from "ky";
 import { Loader2, Save, Trash2 } from "lucide-react";
 
 import RemoveDialogContent from "../remove-dialog-content";
 
 interface BlockNoteProps {
   setIsDeleteModalOpen: (isDeleteModalOpen: boolean) => void;
-}
-
-async function uploadFile(file: File) {
-  const ext = file.type;
-  if (!ext.includes("image")) {
-    errorToast("이미지 파일만 업로드 가능해요.");
-    return "";
-  }
-
-  try {
-    const webpFile = await convertImageToWebP(file);
-    console.log("webpFile", webpFile);
-
-    const {
-      result: { preSignedUrl },
-    } = await clientApi
-      .get<BaseResponseDTO<{ preSignedUrl: string }>>("generate-presigned-url", {
-        searchParams: { fileName: webpFile.name },
-      })
-      .json();
-    console.log("presignedUrl", preSignedUrl);
-
-    const uploadResponse = await ky
-      .put(preSignedUrl, {
-        body: webpFile,
-        headers: {
-          "Content-Type": "image/webp",
-        },
-        retry: 0,
-      })
-      .json();
-    console.log("uploadResponse", uploadResponse);
-    successToast("이미지 업로드에 성공했어요.");
-
-    const url = preSignedUrl.split("?")[0] || "";
-    return url;
-  } catch (err) {
-    console.error(err);
-    errorToast("이미지 업로드에 실패했어요.");
-    return "";
-  }
 }
 
 const blockNoteSchema = BlockNoteSchema.create({
@@ -118,11 +74,10 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
   const editor = useCreateBlockNote({
     schema: blockNoteSchema,
     dictionary: ko,
-    uploadFile,
+    uploadFile: uploadImage,
   });
 
-  const { setEditingSticker, setShowEditStickerSidebar, editingSticker, showEditStickerSidebar } =
-    useStickerStore();
+  const { setEditingSticker, setShowEditStickerSidebar, editingSticker } = useStickerStore();
 
   const currentType = editingSticker?.type === "custom_sticker" ? "스티커" : "토픽";
 
@@ -220,17 +175,15 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
 
       const loadContent = async () => {
         try {
-          if (editingSticker.content) {
-            if (containsMarkdown(editingSticker.content)) {
-              const blocks = await editor.tryParseMarkdownToBlocks(editingSticker.content);
-              if (blocks) {
-                editor.replaceBlocks(editor.document, blocks);
-              }
-            } else {
-              const blocks = editor.tryParseHTMLToBlocks(editingSticker.content);
-              if (blocks) {
-                editor.replaceBlocks(editor.document, blocks);
-              }
+          if (containsMarkdown(editingSticker.content)) {
+            const blocks = await editor.tryParseMarkdownToBlocks(editingSticker.content);
+            if (blocks) {
+              editor.replaceBlocks(editor.document, blocks);
+            }
+          } else {
+            const blocks = editor.tryParseHTMLToBlocks(editingSticker.content);
+            if (blocks) {
+              editor.replaceBlocks(editor.document, blocks);
             }
           }
         } catch (error) {
@@ -242,12 +195,6 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
       loadContent();
     }
   }, [editingSticker, editor]);
-
-  useEffect(() => {
-    if (!showEditStickerSidebar) {
-      editor.replaceBlocks(editor.document, []);
-    }
-  }, [showEditStickerSidebar]);
 
   return (
     <>

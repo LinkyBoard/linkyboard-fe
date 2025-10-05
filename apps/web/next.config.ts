@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { S3_BASE_URL } from "@/utils/env";
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -13,6 +15,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/s3/:path*",
+        destination: `${S3_BASE_URL}/:path*`,
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.svg": {
@@ -22,6 +32,7 @@ const nextConfig: NextConfig = {
     },
   },
   devIndicators: false,
+  reactStrictMode: false,
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find(

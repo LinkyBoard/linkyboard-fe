@@ -7,17 +7,24 @@ import { useOutsideClick } from "@linkyboard/hooks";
 import { MoveDiagonal2, X } from "lucide-react";
 import { createPortal } from "react-dom";
 
-interface ModalProps {
+interface TopicStickerDetailModalProps {
   children: React.ReactNode;
   id: string;
+  type: string;
 }
 
-export default function Modal({ children, id }: ModalProps) {
+export default function TopicStickerDetailModal({
+  children,
+  id,
+  type,
+}: TopicStickerDetailModalProps) {
   const router = useRouter();
 
   const [modalRef] = useOutsideClick<HTMLDivElement>(() => {
     router.back();
   });
+
+  const queryString = type ? `?type=${type}` : "";
 
   return createPortal(
     <div
@@ -37,7 +44,7 @@ export default function Modal({ children, id }: ModalProps) {
       <div ref={modalRef} className="bg-background size-4/5 rounded-2xl p-8">
         <div className="mb-4 flex items-center justify-between">
           {/* assign 외에 다른 방안 생각해보기 */}
-          <button onClick={() => window.location.assign(`/topic/${id}`)}>
+          <button onClick={() => window.location.assign(`/topic/${id}/sticker${queryString}`)}>
             <MoveDiagonal2 size={20} />
           </button>
           <button onClick={() => router.back()}>

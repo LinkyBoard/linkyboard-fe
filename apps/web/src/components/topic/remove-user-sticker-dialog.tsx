@@ -1,14 +1,7 @@
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveCustomSticker } from "@/lib/tanstack/mutation/custom-sticker";
-import {
-  Button,
-  DialogClose,
-  DialogContent,
-  errorToast,
-  successToast,
-  useDialog,
-} from "@linkyboard/components";
+import { Button, DialogClose, DialogContent, errorToast, useDialog } from "@linkyboard/components";
 
 import { Loader2 } from "lucide-react";
 
@@ -25,7 +18,6 @@ export default function RemoveUserStickerDialog({
   const onRemoveTopic = async () => {
     await mutateAsync(customStickerId, {
       onSuccess: () => {
-        successToast("스티커가 삭제되었어요.");
         invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
         close();
       },

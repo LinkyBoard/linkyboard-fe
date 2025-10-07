@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
 import { useSummarizeTopicContent } from "@/lib/tanstack/mutation/custom-sticker";
 import { useGetAiModels } from "@/lib/tanstack/query/custom-sticker";
-import { useStickerStore } from "@/lib/zustand/sticker-store";
 import type { AIModelDTO } from "@/models/custom-sticker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -42,7 +42,7 @@ function SummarizeDialogContent({
 }: SummarizeDialogProps) {
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
 
-  const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
+  const router = useRouter();
 
   const [dropdownRef] = useOutsideClick<HTMLDivElement>(() => {
     setIsModelDropdownOpen(false);
@@ -89,12 +89,7 @@ function SummarizeDialogContent({
       {
         onSuccess: (data) => {
           invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
-          setEditingSticker({
-            ...data.result,
-            content: data.result.draftMd,
-            type: "custom_sticker",
-          });
-          setShowEditStickerSidebar(true);
+          router.push(`/topic/${data.result.id}/sticker?type=custom`);
           reset();
           setSelectedNodeIds([]);
         },

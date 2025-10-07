@@ -1,3 +1,9 @@
+"use client";
+
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/shadcn/style.css";
+import "@blocknote/core/fonts/inter.css";
+
 import { uploadImage } from "@/services/image";
 import { defaultBlockSpecs } from "@blocknote/core";
 import { BlockNoteSchema } from "@blocknote/core";
@@ -5,7 +11,7 @@ import { ko } from "@blocknote/core/locales";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 
-import ToggleBlock from "./topic/edit-sticker-sidebar/toggle-block";
+import ToggleBlock from "./toggle-block";
 
 const blockNoteSchema = BlockNoteSchema.create({
   blockSpecs: {

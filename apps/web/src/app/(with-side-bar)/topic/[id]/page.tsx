@@ -1,13 +1,20 @@
-import TopicDetailPage from "@/page/topic/[id]";
+import { redirect, RedirectType } from "next/navigation";
 
-interface TopicDetailProps {
-  params: Promise<{
-    id: string;
-  }>;
+import type { ContentTypeOptions } from "@/constants/content";
+import TopicBoardPage from "@/page/topic/[id]";
+
+interface TopicBoardProps {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ type?: ContentTypeOptions }>;
 }
 
-export default async function TopicDetail({ params }: TopicDetailProps) {
+export default async function TopicBoard({ params, searchParams }: TopicBoardProps) {
   const { id } = await params;
+  const { type } = await searchParams;
 
-  return <TopicDetailPage id={id} />;
+  if (!id) {
+    return redirect("/topic", RedirectType.replace);
+  }
+
+  return <TopicBoardPage id={id} type={type || "ALL"} />;
 }

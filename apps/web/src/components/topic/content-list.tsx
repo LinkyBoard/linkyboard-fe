@@ -93,21 +93,21 @@ export default function ContentList({
           size="sm"
           asChild
         >
-          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE_OPTIONS.ALL}`}>모두</Link>
+          <Link href={`/topic/${id}?type=${CONTENT_TYPE_OPTIONS.ALL}`}>모두</Link>
         </Button>
         <Button
           variant={type === CONTENT_TYPE_OPTIONS.WEB ? "default" : "outline"}
           size="sm"
           asChild
         >
-          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE_OPTIONS.WEB}`}>웹</Link>
+          <Link href={`/topic/${id}?type=${CONTENT_TYPE_OPTIONS.WEB}`}>웹</Link>
         </Button>
         <Button
           variant={type === CONTENT_TYPE_OPTIONS.YOUTUBE ? "default" : "outline"}
           size="sm"
           asChild
         >
-          <Link href={`/topic?id=${id}&type=${CONTENT_TYPE_OPTIONS.YOUTUBE}`}>유튜브</Link>
+          <Link href={`/topic/${id}?type=${CONTENT_TYPE_OPTIONS.YOUTUBE}`}>유튜브</Link>
         </Button>
       </div>
       <div className="flex h-[calc(100%-120px)] flex-col gap-3 overflow-y-auto p-4">

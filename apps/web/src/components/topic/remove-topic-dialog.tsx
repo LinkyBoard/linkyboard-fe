@@ -26,7 +26,7 @@ export default function RemoveTopicDialog({ topicId }: { topicId: number }) {
       onSuccess: () => {
         successToast("토픽이 삭제되었어요.");
         invalidateQueries([TOPIC.GET_ALL_TOPICS]);
-        revalidatePath(`/topic?id=${topicId}`);
+        revalidatePath(`/topic/${topicId}`);
         router.back();
         close();
       },

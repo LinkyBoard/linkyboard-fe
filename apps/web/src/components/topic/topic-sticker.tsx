@@ -1,18 +1,15 @@
-import { useStickerStore } from "@/lib/zustand/sticker-store";
+import { useRouter } from "next/navigation";
+
 import type { TopicDTO } from "@/models/topic";
 import { Button } from "@linkyboard/components";
 
 import { Edit, NotebookPen } from "lucide-react";
 
 export default function TopicSticker({ item }: { item: TopicDTO }) {
-  const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
+  const router = useRouter();
 
   const onEditTopic = () => {
-    setEditingSticker({
-      ...item,
-      type: "topic",
-    });
-    setShowEditStickerSidebar(true);
+    router.push(`/topic/${item.id}/sticker`);
   };
 
   return (

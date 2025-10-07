@@ -1,9 +1,12 @@
-interface TopicLayoutProps {
+interface TopicStickerDetailLayoutProps {
   children: React.ReactNode;
   modal: React.ReactNode;
 }
 
-export default function TopicLayout({ children, modal }: TopicLayoutProps) {
+export default function TopicStickerDetailLayout({
+  children,
+  modal,
+}: TopicStickerDetailLayoutProps) {
   return (
     <>
       {children}

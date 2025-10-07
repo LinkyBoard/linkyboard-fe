@@ -1,4 +1,5 @@
-import { useStickerStore } from "@/lib/zustand/sticker-store";
+import { useRouter } from "next/navigation";
+
 import type { TopicDTO } from "@/models/topic";
 import { containsMarkdown } from "@/utils/markdown";
 import { markdownToHTML } from "@blocknote/core";
@@ -10,14 +11,10 @@ import { Edit, Sticker, Trash2 } from "lucide-react";
 import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
 
 export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId: string }) {
-  const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
+  const router = useRouter();
 
   const onEditTopic = () => {
-    setEditingSticker({
-      ...item,
-      type: "custom_sticker",
-    });
-    setShowEditStickerSidebar(true);
+    router.push(`/topic/${item.id}/sticker?type=custom`);
   };
 
   // 마크다운이 포함되어 있으면 HTML로 변환

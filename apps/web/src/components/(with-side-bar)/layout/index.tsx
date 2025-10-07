@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -58,7 +57,7 @@ export default function Sidebar() {
               href={item.href}
               className={cn(
                 "mb-2 flex items-center gap-3 rounded-md px-4 py-3 transition-all duration-300",
-                pathname === item.href
+                pathname.startsWith(item.href)
                   ? "bg-sidebar-primary text-sidebar-primary-foreground"
                   : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               )}
@@ -75,9 +74,7 @@ export default function Sidebar() {
           <div className="text-muted-foreground mb-4 text-sm font-semibold uppercase tracking-wider">
             나의 토픽
           </div>
-          <Suspense>
-            <RecentTopicList />
-          </Suspense>
+          <RecentTopicList />
         </div>
       </aside>
 

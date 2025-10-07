@@ -1,15 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
-import SearchHeader from "@/components/(with-side-bar)/layout/search-header";
-import ResizeBar from "@/components/resize-bar";
-import AddStickerDialog from "@/components/topic/add-sticker-dialog";
-import ContentList from "@/components/topic/content-list";
-import FlowCanvas from "@/components/topic/flow-canvas";
-import RemoveContentButton from "@/components/topic/remove-content-button";
-import SummarizeDialog from "@/components/topic/summarize-dialog";
+import AddContentList from "@/components/(with-side-bar)/topic/add-content-list";
+import AddStickerDialog from "@/components/(with-side-bar)/topic/add-sticker-dialog";
+import AddTopicDialog from "@/components/(with-side-bar)/topic/add-topic-dialog";
+import FlowCanvas from "@/components/(with-side-bar)/topic/flow-canvas";
+import RemoveContentButton from "@/components/(with-side-bar)/topic/remove-content-button";
+import SummarizeDialog from "@/components/(with-side-bar)/topic/summarize-dialog";
+import SearchHeader from "@/components/common/search-header";
 import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
@@ -26,14 +25,8 @@ interface TopicBoardPageProps {
 
 const initialNodes: Node[] = [];
 
-const MIN_WIDTH = 300;
-const MAX_WIDTH = 600;
-
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
-  const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
-
-  const contentPanelRef = useRef<HTMLDivElement | null>(null);
 
   const { data, isLoading, isError, error, isRefetching } = useGetTopicById(id);
 
@@ -96,18 +89,6 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     }
   };
 
-  const onMouseMove = (e: MouseEvent) => {
-    const container = contentPanelRef.current;
-    if (!container) return;
-
-    const containerRect = container.getBoundingClientRect();
-    const newWidth = e.clientX - containerRect.left;
-
-    if (newWidth >= MIN_WIDTH && newWidth <= MAX_WIDTH) {
-      setContentPanelWidth(newWidth);
-    }
-  };
-
   useEffect(() => {
     setSelectedNodeIds([]);
 
@@ -150,16 +131,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       </header>
 
       <div className="flex h-[calc(100vh-200px)] gap-0">
-        <ContentList
-          contentPanelRef={contentPanelRef}
-          contentPanelWidth={contentPanelWidth}
-          isTopicLoading={isLoading}
-          nodes={data?.nodes || []}
-          id={id}
-          type={type}
-        />
-
-        <ResizeBar onMouseMove={onMouseMove} />
+        <AddContentList isTopicLoading={isLoading} nodes={data?.nodes || []} id={id} type={type} />
 
         <ReactFlowProvider>
           <FlowCanvas

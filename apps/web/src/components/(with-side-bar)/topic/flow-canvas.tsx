@@ -15,7 +15,7 @@ import {
 
 import { AlertTriangle, Loader2 } from "lucide-react";
 
-import CustomNode from "./custom-node";
+import Sticker from "./sticker";
 
 interface FlowCanvasProps {
   isLoading: boolean;
@@ -63,7 +63,7 @@ const FlowCanvas = ({
   const nodeTypes: NodeTypes = useMemo(
     () => ({
       custom: (props: NodeProps) => (
-        <CustomNode
+        <Sticker
           {...props}
           key={`topic-nodes-${id}`}
           topicId={id}

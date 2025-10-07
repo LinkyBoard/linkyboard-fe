@@ -14,7 +14,7 @@ export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId
   const router = useRouter();
 
   const onEditTopic = () => {
-    router.push(`/topic/${item.id}/sticker?type=custom`);
+    router.push(`/topic/${topicId}/sticker?stickerId=${item.id}`);
   };
 
   // 마크다운이 포함되어 있으면 HTML로 변환

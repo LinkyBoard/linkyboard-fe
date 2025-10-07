@@ -10,13 +10,13 @@ import { createPortal } from "react-dom";
 interface TopicStickerDetailModalProps {
   children: React.ReactNode;
   id: string;
-  type: string;
+  stickerId: string;
 }
 
 export default function TopicStickerDetailModal({
   children,
   id,
-  type,
+  stickerId,
 }: TopicStickerDetailModalProps) {
   const router = useRouter();
 
@@ -24,7 +24,7 @@ export default function TopicStickerDetailModal({
     router.back();
   });
 
-  const queryString = type ? `?type=${type}` : "";
+  const queryString = stickerId ? `?stickerId=${stickerId}` : "";
 
   return createPortal(
     <div

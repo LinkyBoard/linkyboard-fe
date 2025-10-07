@@ -1,4 +1,4 @@
-import RemoveTopicDialog from "@/components/topic/remove-topic-dialog";
+import RemoveTopicDialog from "@/components/(with-side-bar)/topic/remove-topic-dialog";
 import type { TopicDTO } from "@/models/topic";
 import { Dialog, DialogTrigger } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";

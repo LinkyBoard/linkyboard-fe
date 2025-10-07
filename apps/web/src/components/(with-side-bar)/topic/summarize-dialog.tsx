@@ -21,7 +21,7 @@ import { cn } from "@linkyboard/utils";
 import { ChevronDown, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 
-import { summarizeSchema, type SummarizeSchemaType } from "../../schemas/summarize";
+import { summarizeSchema, type SummarizeSchemaType } from "../../../schemas/summarize";
 
 interface SummarizeDialogProps {
   topicId: string;
@@ -89,7 +89,7 @@ function SummarizeDialogContent({
       {
         onSuccess: (data) => {
           invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
-          router.push(`/topic/${data.result.id}/sticker?type=custom`);
+          router.push(`/topic/${topicId}/sticker?stickerId=${data.result.id}`);
           reset();
           setSelectedNodeIds([]);
         },

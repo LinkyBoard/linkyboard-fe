@@ -1,7 +1,7 @@
 "use client";
 
-import AddTopicDialog from "@/components/(with-side-bar)/layout/add-topic-dialog";
-import SearchHeader from "@/components/(with-side-bar)/layout/search-header";
+import SearchHeader from "@/components/common/search-header";
+import AddTopicDialog from "@/components/(with-side-bar)/topic/add-topic-dialog";
 
 import { Lightbulb, Plus } from "lucide-react";
 

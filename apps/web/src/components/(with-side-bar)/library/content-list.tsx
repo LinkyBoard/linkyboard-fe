@@ -33,7 +33,6 @@ const TYPE_OPTIONS = [
   },
 ];
 
-// 카테고리 내 콘텐츠를 태그/유형 필터와 함께 보여주는 리스트 컴포넌트다.
 export default function ContentList({ category }: ContentListProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<ContentTypeOptions>(CONTENT_TYPE_OPTIONS.ALL);

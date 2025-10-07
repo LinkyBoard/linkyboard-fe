@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
-import SentinelSpinner from "@/components/sentinel-spinner";
+import SentinelSpinner from "@/components/common/sentinel-spinner";
 import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import type { TopicDTO } from "@/models/topic";

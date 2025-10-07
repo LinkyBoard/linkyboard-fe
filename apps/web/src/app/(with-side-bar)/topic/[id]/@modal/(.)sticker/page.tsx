@@ -1,4 +1,4 @@
-import TopicStickerDetailModal from "@/components/topic/topic-sticker-detail-modal";
+import TopicStickerDetailModal from "@/components/(with-side-bar)/topic/sticker/topic-sticker-detail-modal";
 
 import TopicStickerDetail from "../../sticker/page";
 
@@ -7,16 +7,16 @@ interface InterceptedTopicDetailProps {
     id: string;
   }>;
   searchParams: Promise<{
-    type: string;
+    stickerId: string;
   }>;
 }
 
 export default async function InterceptedTopicDetail(props: InterceptedTopicDetailProps) {
   const { id } = await props.params;
-  const { type } = await props.searchParams;
+  const { stickerId } = await props.searchParams;
 
   return (
-    <TopicStickerDetailModal id={id} type={type}>
+    <TopicStickerDetailModal id={id} stickerId={stickerId}>
       <TopicStickerDetail {...props} />
     </TopicStickerDetailModal>
   );

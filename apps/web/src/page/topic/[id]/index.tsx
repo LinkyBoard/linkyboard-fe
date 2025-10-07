@@ -11,7 +11,7 @@ import SummarizeDialog from "@/components/(with-side-bar)/topic/summarize-dialog
 import SearchHeader from "@/components/common/search-header";
 import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
-import { useGetTopicById } from "@/lib/tanstack/query/topic";
+import { useGetTopicBoardById } from "@/lib/tanstack/query/topic";
 import { infoToast } from "@linkyboard/components";
 import type { Connection, Edge, Node } from "@xyflow/react";
 import { addEdge, ReactFlowProvider, useEdgesState, useNodesState } from "@xyflow/react";
@@ -28,7 +28,7 @@ const initialNodes: Node[] = [];
 export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
 
-  const { data, isLoading, isError, error, isRefetching } = useGetTopicById(id);
+  const { data, isLoading, isError, error, isRefetching } = useGetTopicBoardById(id);
 
   const { mutateAsync: createConnection } = useCreateConnection();
   const { mutateAsync: removeConnection } = useRemoveConnection();

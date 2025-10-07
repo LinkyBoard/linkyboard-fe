@@ -28,7 +28,7 @@ export default function RemoveContentButton({
       },
       {
         onSuccess: () => {
-          invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
+          invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
           setSelectedNodeIds([]);
         },
         onError: () => {

@@ -5,12 +5,12 @@ import { getParams } from "@linkyboard/utils";
 
 import { clientApi } from ".";
 
-export const getTopicById = async (id: string): Promise<BaseResponseDTO<TopicDetailDTO>> => {
-  return clientApi.get(`topics/${id}`).json();
+export const getTopicBoardById = async (id: string): Promise<BaseResponseDTO<TopicDetailDTO>> => {
+  return clientApi.get(`topics/${id}/board`).json();
 };
 
 export const updateTopicById = async (props: {
-  id: number;
+  id: string;
   title: string;
   content: string;
 }): Promise<BaseResponseDTO<unknown>> => {
@@ -18,7 +18,7 @@ export const updateTopicById = async (props: {
   return clientApi.put(`topics/${id}`, { json: restProps }).json();
 };
 
-export const removeTopicById = async (id: number): Promise<BaseResponseDTO<unknown>> => {
+export const removeTopicById = async (id: string): Promise<BaseResponseDTO<unknown>> => {
   return clientApi.delete(`topics/${id}`).json();
 };
 
@@ -59,4 +59,8 @@ export const updateTopicSize = async (props: {
 }): Promise<BaseResponseDTO<unknown>> => {
   const { topicId, ...restProps } = props;
   return clientApi.put(`topics/${topicId}/resize`, { json: restProps }).json();
+};
+
+export const getTopicById = async (id: string): Promise<BaseResponseDTO<TopicDTO>> => {
+  return clientApi.get(`topics/${id}`).json();
 };

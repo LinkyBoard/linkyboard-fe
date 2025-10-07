@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 
+import { Loader2 } from "lucide-react";
+
 interface TopicStickerDetailPageProps {
   id: string;
   stickerId: string;
@@ -9,18 +11,17 @@ interface TopicStickerDetailPageProps {
 
 const BlockNote = dynamic(() => import("@/components/(with-side-bar)/topic/sticker/block-note"), {
   ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center">
+      <Loader2 size={24} className="animate-spin" />
+    </div>
+  ),
 });
 
 export default function TopicStickerDetailPage({ id, stickerId }: TopicStickerDetailPageProps) {
-  // stickerId가 있다면 커스텀 스티커(노란색) 조회
-
   return (
     <main className="flex h-full flex-col gap-4">
-      <input
-        className="border-border w-full border-b pb-3 text-3xl font-bold outline-none"
-        placeholder="제목을 입력해주세요"
-      />
-      <BlockNote />
+      <BlockNote topicId={id} stickerId={stickerId} />
     </main>
   );
 }

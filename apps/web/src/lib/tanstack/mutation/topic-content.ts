@@ -32,7 +32,7 @@ export const useCreateContent = (id: string) => {
   return useMutation({
     mutationFn: createContent,
     onSuccess: () => {
-      invalidateQueries([TOPIC.GET_TOPIC_BY_ID, id]);
+      invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, id]);
     },
     onError: (error) => {
       const isDuplicate = error.message.includes("409");

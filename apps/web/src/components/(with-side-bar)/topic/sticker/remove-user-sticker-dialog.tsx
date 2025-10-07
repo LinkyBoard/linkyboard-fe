@@ -18,7 +18,7 @@ export default function RemoveUserStickerDialog({
   const onRemoveTopic = async () => {
     await mutateAsync(customStickerId, {
       onSuccess: () => {
-        invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
+        invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
         close();
       },
       onError: () => {

@@ -88,7 +88,7 @@ function SummarizeDialogContent({
       },
       {
         onSuccess: (data) => {
-          invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
+          invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
           router.push(`/topic/${topicId}/sticker?stickerId=${data.result.id}`);
           reset();
           setSelectedNodeIds([]);

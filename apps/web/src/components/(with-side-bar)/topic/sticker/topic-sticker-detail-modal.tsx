@@ -2,8 +2,6 @@
 
 import { useRouter } from "next/navigation";
 
-import { useOutsideClick } from "@linkyboard/hooks";
-
 import { MoveDiagonal2, X } from "lucide-react";
 import { createPortal } from "react-dom";
 
@@ -20,9 +18,11 @@ export default function TopicStickerDetailModal({
 }: TopicStickerDetailModalProps) {
   const router = useRouter();
 
-  const [modalRef] = useOutsideClick<HTMLDivElement>(() => {
-    router.back();
-  });
+  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.currentTarget === e.target) {
+      router.back();
+    }
+  };
 
   const queryString = stickerId ? `?stickerId=${stickerId}` : "";
 
@@ -40,8 +40,9 @@ export default function TopicStickerDetailModal({
         zIndex: 99999,
         backgroundColor: "rgba(0, 0, 0, 0.5)",
       }}
+      onMouseDown={onMouseDown}
     >
-      <div ref={modalRef} className="bg-background size-4/5 rounded-2xl p-8">
+      <div className="bg-background size-4/5 rounded-2xl p-8">
         <div className="mb-4 flex items-center justify-between">
           {/* assign 외에 다른 방안 생각해보기 */}
           <button onClick={() => window.location.assign(`/topic/${id}/sticker${queryString}`)}>

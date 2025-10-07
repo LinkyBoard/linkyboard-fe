@@ -1,6 +1,8 @@
-import { useStickerStore } from "@/lib/zustand/sticker-store";
+import { useRouter } from "next/navigation";
+
 import type { TopicDTO } from "@/models/topic";
-import { containsMarkdown, markdownToHtml } from "@/utils/markdown";
+import { containsMarkdown } from "@/utils/markdown";
+import { markdownToHTML } from "@blocknote/core";
 import { Dialog, DialogTrigger } from "@linkyboard/components";
 import { Button } from "@linkyboard/components";
 
@@ -9,20 +11,16 @@ import { Edit, Sticker, Trash2 } from "lucide-react";
 import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
 
 export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId: string }) {
-  const { setEditingSticker, setShowEditStickerSidebar } = useStickerStore();
+  const router = useRouter();
 
   const onEditTopic = () => {
-    setEditingSticker({
-      ...item,
-      type: "custom_sticker",
-    });
-    setShowEditStickerSidebar(true);
+    router.push(`/topic/${topicId}/sticker?stickerId=${item.id}`);
   };
 
   // 마크다운이 포함되어 있으면 HTML로 변환
   const renderContent = (content: string) => {
     if (content && containsMarkdown(content)) {
-      return markdownToHtml(content);
+      return markdownToHTML(content);
     }
     return content;
   };

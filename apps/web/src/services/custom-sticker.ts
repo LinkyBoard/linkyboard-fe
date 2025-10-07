@@ -1,5 +1,5 @@
 import type { AIModelDTO } from "@/models/custom-sticker";
-import type { SummarizeContentDTO } from "@/models/topic";
+import type { SummarizeContentDTO, TopicDTO } from "@/models/topic";
 import type { BaseResponseDTO } from "@linkyboard/types";
 
 import { clientApi } from ".";
@@ -36,7 +36,7 @@ export const updateCustomStickerSize = async (props: {
 };
 
 export const removeCustomSticker = async (
-  customStickerId: number
+  customStickerId: string
 ): Promise<BaseResponseDTO<unknown>> => {
   return clientApi.delete(`custom-stickers/${customStickerId}`).json();
 };
@@ -50,11 +50,17 @@ export const createCustomSticker = async (props: {
 };
 
 export const updateCustomSticker = async (props: {
-  customStickerId: number;
+  customStickerId: string;
   topicId: string;
   title: string;
   content: string;
 }): Promise<BaseResponseDTO<unknown>> => {
   const { customStickerId, ...restProps } = props;
   return clientApi.put(`custom-stickers/${customStickerId}`, { json: restProps }).json();
+};
+
+export const getCustomStickerById = async (
+  id: string
+): Promise<BaseResponseDTO<Omit<TopicDTO, "id">>> => {
+  return clientApi.get(`custom-stickers/${id}`).json();
 };

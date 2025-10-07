@@ -9,7 +9,7 @@ import { useOutsideClick } from "@linkyboard/hooks";
 
 import { Bell, Bot, LogOut, User } from "lucide-react";
 
-import SearchHeader from "../layout/search-header";
+import SearchHeader from "../../common/search-header";
 
 export default function DashboardHeader() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);

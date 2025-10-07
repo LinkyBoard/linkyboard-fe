@@ -42,7 +42,7 @@ function AddTopicDialogContent() {
 
     await createTopic(body, {
       onSuccess: (data) => {
-        router.push(`/topic?id=${data.result}`);
+        router.push(`/topic/${data.result}`);
         invalidateQueries([TOPIC.GET_ALL_TOPICS]);
         close();
       },

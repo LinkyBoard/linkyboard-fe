@@ -1,4 +1,4 @@
-import RemoveTopicDialog from "@/components/topic/remove-topic-dialog";
+import RemoveTopicDialog from "@/components/(with-side-bar)/topic/remove-topic-dialog";
 import type { TopicDTO } from "@/models/topic";
 import { Dialog, DialogTrigger } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
@@ -37,32 +37,23 @@ export default function RecentTopicItem({ isSelected, topic, onTopicClick }: Rec
   return (
     <div
       className={cn(
-        "group mb-2 flex cursor-pointer items-center gap-3 rounded-md p-2 transition-all duration-300",
+        "group mb-2 flex cursor-pointer items-center justify-between gap-3 rounded-md p-2 transition-all duration-300",
         isSelected ? "bg-sidebar-primary text-sidebar-primary-foreground" : "hover:bg-accent"
       )}
       onClick={onTopicClick}
     >
-      <div className={cn("h-2 w-2 rounded-full", color)} />
-      <div className="flex-1">
+      <div className="flex items-center gap-2">
+        <div className={cn("h-2 w-2 rounded-full", color)} />
         <div
           className={cn("text-sm font-medium", isSelected ? "text-sidebar-primary-foreground" : "")}
         >
           {topic.title}
         </div>
-        <div
-          className={cn(
-            "line-clamp-1 text-xs",
-            isSelected ? "text-sidebar-primary-foreground/80" : "text-muted-foreground"
-          )}
-          dangerouslySetInnerHTML={{ __html: topic.content }}
-        />
       </div>
       <Dialog>
         <DialogTrigger
           className={cn(
-            "opacity-0 transition-opacity group-hover:opacity-100",
-            "hover:bg-destructive/10 hover:text-destructive rounded p-1",
-            "disabled:opacity-50",
+            "hover:bg-destructive/10 hover:text-destructive rounded p-1 opacity-0 transition-opacity disabled:opacity-50 group-hover:opacity-100",
             isSelected && "text-sidebar-primary-foreground/60 hover:text-sidebar-primary-foreground"
           )}
           aria-label="토픽 삭제"

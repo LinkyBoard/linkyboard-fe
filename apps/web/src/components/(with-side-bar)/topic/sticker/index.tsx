@@ -21,7 +21,7 @@ import ContentSticker from "./content-sticker";
 import TopicSticker from "./topic-sticker";
 import UserSticker from "./user-sticker";
 
-interface CustomNodeProps extends NodeProps {
+interface StickerProps extends NodeProps {
   topicId: string;
   isSelected: boolean;
   onSelect: (nodeId: string) => void;
@@ -38,7 +38,7 @@ const stickerStyle = {
   custom_sticker: "bg-yellow-50 border-yellow-300 border hover:border-yellow-400",
 };
 
-export default function CustomNode(props: CustomNodeProps) {
+export default function Sticker(props: StickerProps) {
   const nodeData = props.data as unknown as NodeData;
 
   const previousPositionRef = useRef<{ posX: number; posY: number } | null>(null);

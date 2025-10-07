@@ -1,9 +1,11 @@
 @source "../../../../packages/components";
+@source "../../node_modules/@blocknote/shadcn";
 
 @import "@linkyboard/tailwind-config";
 @import "@xyflow/react/dist/style.css";
 @plugin "@tailwindcss/typography";
 
+/* 스티커 연결점 */
 div.customHandle {
   opacity: 0;
   transition: all 0.2s ease-in-out;
@@ -21,261 +23,30 @@ div.customHandle {
   opacity: 1;
 }
 
-/* @uiw/react-md-editor 스타일 */
-.w-md-editor {
-  background-color: white !important;
-  border: none !important;
-  border-radius: 0.375rem !important;
-}
-
-.w-md-editor-toolbar {
-  background-color: #f9fafb !important;
-  border-bottom: 1px solid #e5e7eb !important;
-  border-radius: 0.375rem 0.375rem 0 0 !important;
-}
-
-.w-md-editor-toolbar-divider {
-  background-color: #d1d5db !important;
-}
-
-.w-md-editor-toolbar ul li button {
-  color: #374151 !important;
-}
-
-.w-md-editor-toolbar ul li button:hover {
-  background-color: #e5e7eb !important;
-}
-
-.w-md-editor-toolbar ul li button.active {
-  background-color: #d1d5db !important;
-}
-
-.w-md-editor-input {
-  background-color: white !important;
-  color: #374151 !important;
-  font-size: 14px !important;
-  line-height: 1.5 !important;
-}
-
-.w-md-editor-preview {
-  background-color: white !important;
-  color: #374151 !important;
-  font-size: 14px !important;
-  line-height: 1.5 !important;
-}
-
-.w-md-editor-preview h1,
-.w-md-editor-preview h2,
-.w-md-editor-preview h3,
-.w-md-editor-preview h4,
-.w-md-editor-preview h5,
-.w-md-editor-preview h6 {
-  color: #111827 !important;
-  font-weight: 600 !important;
-  margin-top: 1.5em !important;
-  margin-bottom: 0.5em !important;
-}
-
-.w-md-editor-preview h1 {
-  font-size: 1.875rem !important;
-}
-
-.w-md-editor-preview h2 {
-  font-size: 1.5rem !important;
-}
-
-.w-md-editor-preview h3 {
-  font-size: 1.25rem !important;
-}
-
-.w-md-editor-preview p {
-  margin-bottom: 1em !important;
-}
-
-.w-md-editor-preview ul,
-.w-md-editor-preview ol {
-  margin-bottom: 1em !important;
-  padding-left: 1.5em !important;
-}
-
-.w-md-editor-preview li {
-  margin-bottom: 0.25em !important;
-}
-
-.w-md-editor-preview code {
-  background-color: #f3f4f6 !important;
-  color: #dc2626 !important;
-  padding: 0.125rem 0.25rem !important;
-  border-radius: 0.25rem !important;
-  font-size: 0.875em !important;
-}
-
-.w-md-editor-preview pre {
-  background-color: #f3f4f6 !important;
-  border-radius: 0.375rem !important;
-  padding: 1rem !important;
-  margin-bottom: 1em !important;
-  overflow-x: auto !important;
-}
-
-.w-md-editor-preview pre code {
-  background-color: transparent !important;
-  color: #374151 !important;
-  padding: 0 !important;
-}
-
-.w-md-editor-preview blockquote {
-  border-left: 4px solid #d1d5db !important;
-  padding-left: 1rem !important;
-  margin-bottom: 1em !important;
-  font-style: italic !important;
-  color: #6b7280 !important;
-}
-
-.w-md-editor-preview a {
-  color: #2563eb !important;
-  text-decoration: underline !important;
-}
-
-.w-md-editor-preview a:hover {
-  color: #1d4ed8 !important;
-}
-
-.w-md-editor-preview strong {
-  font-weight: 600 !important;
-}
-
-.w-md-editor-preview em {
-  font-style: italic !important;
-}
-
-.w-md-editor-preview del {
-  text-decoration: line-through !important;
-}
-
-/* Tiptap 에디터 스타일 */
+/* Tiptap 에디터 */
 .ProseMirror {
-  outline: none;
-  min-height: 400px;
-  padding: 1rem;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #374151;
+  height: 100%;
 }
 
-.ProseMirror p {
-  margin-bottom: 0.5em;
-}
-
-.ProseMirror h1 {
-  font-size: 2em;
-  font-weight: 600;
-  margin: 0.5em 0 0.25em 0;
-  color: #111827;
-}
-
-.ProseMirror h2 {
-  font-size: 1.5em;
-  font-weight: 600;
-  margin: 0.5em 0 0.25em 0;
-  color: #111827;
-}
-
-.ProseMirror h3 {
-  font-size: 1.17em;
-  font-weight: 600;
-  margin: 0.5em 0 0.25em 0;
-  color: #111827;
-}
-
-.ProseMirror ul {
-  margin-bottom: 0.5em;
-  padding-left: 1.5em;
-  list-style-type: disc;
-}
-
-.ProseMirror ol {
-  margin-bottom: 0.5em;
-  padding-left: 1.5em;
-  list-style-type: decimal;
-}
-
-.ProseMirror li {
-  margin-bottom: 0.125em;
-  display: list-item;
-}
-
-.ProseMirror blockquote {
-  border-left: 4px solid #d1d5db;
-  padding-left: 1rem;
-  margin-bottom: 0.5em;
-  font-style: italic;
-  color: #6b7280;
-}
-
-.ProseMirror code {
-  background-color: #f3f4f6;
-  color: #dc2626;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-size: 0.875em;
-  font-family:
-    ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
-}
-
-.ProseMirror pre {
-  background-color: #f3f4f6;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  margin-bottom: 1em;
-  overflow-x: auto;
-}
-
-.ProseMirror pre code {
-  background-color: transparent;
-  color: #374151;
+.tiptap {
   padding: 0;
 }
 
-.ProseMirror a {
-  color: #2563eb;
-  text-decoration: underline;
+/* BlockNote 에디터 */
+.bn-editor {
+  padding: 12px 16px !important;
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  outline: none !important;
+}
 
+.bn-toggle-button,
+.bn-toggle-add-block-button {
   &:hover {
-    cursor: pointer;
-    color: #1d4ed8;
+    background-color: var(--secondary) !important;
   }
 }
 
-.ProseMirror strong {
-  font-weight: 600;
-}
-
-.ProseMirror em {
-  font-style: italic;
-}
-
-.ProseMirror s {
-  text-decoration: line-through;
-}
-
-.ProseMirror mark {
-  background-color: #fef3c7;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-}
-
-.ProseMirror img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.375rem;
-  margin: 1em 0;
-}
-
-.ProseMirror .is-editor-empty:first-child::before {
-  color: #adb5bd;
-  content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  pointer-events: none;
+.node-toggleListItem:has(+ .bn-block-group) svg {
+  fill: var(--foreground);
 }

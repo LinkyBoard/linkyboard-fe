@@ -4,7 +4,7 @@ import { Button, DialogClose, DialogContent, errorToast, useDialog } from "@link
 
 interface RemoveDialogContentProps {
   id: number | null;
-  setIsDeleteModalOpen: (isOpen: boolean) => void;
+  setIsDeleteModalOpen?: (isOpen: boolean) => void;
   onDelete: (id: number) => Promise<void>;
 }
 
@@ -23,7 +23,7 @@ export default function RemoveDialogContent({
   };
 
   useEffect(() => {
-    setIsDeleteModalOpen(isOpen);
+    setIsDeleteModalOpen?.(isOpen);
   }, [isOpen]);
 
   return (

@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import Google from "@/assets/google.svg";
+import { API_BASE_URL } from "@/utils/env";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-const href = baseUrl + "/auth/google?redirectType=web";
+const href = API_BASE_URL + "/auth/google?redirectType=web";
 
 export default function LoginPage() {
   return (

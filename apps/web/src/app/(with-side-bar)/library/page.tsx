@@ -1,5 +1,5 @@
-import SearchHeader from "@/components/(with-side-bar)/layout/search-header";
 import AddCategoryDialog from "@/components/(with-side-bar)/library/layout/add-category-dialog";
+import SearchHeader from "@/components/common/search-header";
 import LibraryPage from "@/page/library";
 
 interface LibraryPageProps {

@@ -28,7 +28,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "LinkyBoard - 지식을 연결하는 스마트 지식 관리 서비스",
   description:
-    "브라우저 통합 지식 관리 서비스로 흩어진 정보를 연결된 인사이트로 변환하세요. AI 요약, 시각화, 개인 지식 보드를 통해 효율적인 학습과 창의적 사고를 경험하세요.",
+    "흩어진 정보를 하나로 연결하는 지식 관리 플랫폼. 웹 콘텐츠를 수집하고 시각화하여 나만의 지식 보드를 만들어 보세요.",
   keywords: [
     "LinkyBoard",
     "링키보드",

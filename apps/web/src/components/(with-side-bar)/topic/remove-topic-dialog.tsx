@@ -22,7 +22,7 @@ export default function RemoveTopicDialog({ topicId }: { topicId: number }) {
   const { close } = useDialog();
 
   const onRemoveTopic = async () => {
-    await mutateAsync(topicId, {
+    await mutateAsync(topicId.toString(), {
       onSuccess: () => {
         successToast("토픽이 삭제되었어요.");
         invalidateQueries([TOPIC.GET_ALL_TOPICS]);

@@ -1,5 +1,6 @@
 import { removeCookie } from "@/utils/cookie";
 import { API_BASE_URL } from "@/utils/env";
+import type { BaseResponseDTO } from "@linkyboard/types";
 
 import ky from "ky";
 
@@ -9,11 +10,12 @@ const API_TIMEOUT = 30000; // 30초
 // 토큰 재발급 함수
 const reissueToken = async (): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/reissue`, {
-      method: "POST",
-      credentials: "include",
-    });
-    return response.ok;
+    const response = await ky
+      .post<BaseResponseDTO<string>>(`${API_BASE_URL}/auth/reissue`, {
+        credentials: "include",
+      })
+      .json();
+    return response.isSuccess;
   } catch (error) {
     console.error("토큰 재발급 실패:", error);
     return false;

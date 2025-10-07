@@ -1,13 +1,13 @@
 import { type ContentTypeOptions } from "@/constants/content";
 import { TOPIC } from "@/constants/topic";
-import { getAllContents, getAllTopics, getTopicById } from "@/services/topic";
+import { getAllContents, getAllTopics, getTopicBoardById, getTopicById } from "@/services/topic";
 import { calculateNextPageParam } from "@linkyboard/utils";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
-export const useGetTopicById = (id: string) => {
+export const useGetTopicBoardById = (id: string) => {
   return useQuery({
-    queryKey: [TOPIC.GET_TOPIC_BY_ID, id],
-    queryFn: async () => await getTopicById(id),
+    queryKey: [TOPIC.GET_TOPIC_BOARD_BY_ID, id],
+    queryFn: async () => await getTopicBoardById(id),
     enabled: !!id,
     select: (data) => data.result,
   });
@@ -43,5 +43,20 @@ export const useGetAllContents = (type: ContentTypeOptions) => {
 
     initialPageParam: 0,
     select: (data) => data.pages.flatMap((page) => page.result.content),
+  });
+};
+
+export const useGetTopicById = ({
+  id,
+  stickerId,
+}: {
+  id: string;
+  stickerId: string | undefined;
+}) => {
+  return useQuery({
+    queryKey: [TOPIC.GET_TOPIC_BY_ID, id],
+    queryFn: async () => await getTopicById(id),
+    enabled: !stickerId,
+    select: (data) => data.result,
   });
 };

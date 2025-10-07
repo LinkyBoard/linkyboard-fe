@@ -37,6 +37,7 @@ div.customHandle {
   padding: 12px 16px !important;
   background-color: var(--background) !important;
   color: var(--foreground) !important;
+  outline: none !important;
 }
 
 .bn-toggle-button,

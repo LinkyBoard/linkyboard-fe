@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
-import SentinelSpinner from "@/components/sentinel-spinner";
+import SentinelSpinner from "@/components/common/sentinel-spinner";
 import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useDashboardStore } from "@/lib/zustand/dashboard-store";
 import type { TopicDTO } from "@/models/topic";
@@ -12,13 +12,11 @@ import { Loader2 } from "lucide-react";
 import RecentTopicItem from "./recent-topic-item";
 
 export default function RecentTopicList() {
-  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const router = useRouter();
 
   const setTotalTopics = useDashboardStore((state) => state.setTotalTopics);
-
-  // 현재 선택된 토픽 ID 가져오기
-  const currentTopicId = Number(searchParams.get("id") || "");
 
   const {
     data: recentTopics,
@@ -30,9 +28,12 @@ export default function RecentTopicList() {
   } = useGetAllTopics();
 
   const onTopicClick = (topic: TopicDTO) => {
-    router.push(`/topic?id=${topic.id}`);
+    router.push(`/topic/${topic.id}`);
     close(); // 모바일에서 사이드바 닫기
   };
+
+  const isSelected = (topicId: number) =>
+    pathname.includes("topic") && pathname.includes(topicId.toString());
 
   useEffect(() => {
     if (!isPending) {
@@ -52,7 +53,7 @@ export default function RecentTopicList() {
         recentTopics?.data?.map((topic) => (
           <RecentTopicItem
             key={topic.id}
-            isSelected={currentTopicId === topic.id}
+            isSelected={isSelected(topic.id)}
             topic={topic}
             onTopicClick={() => onTopicClick(topic)}
           />

@@ -5,9 +5,9 @@ import "@blocknote/shadcn/style.css";
 import "@blocknote/core/fonts/inter.css";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
+import { CUSTOM_STICKER } from "@/constants/custom-sticker";
 import { TOPIC } from "@/constants/topic";
 import { invalidateMany, invalidateQueries } from "@/lib/tanstack";
 import {
@@ -15,22 +15,17 @@ import {
   useUpdateCustomSticker,
 } from "@/lib/tanstack/mutation/custom-sticker";
 import { useRemoveTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
-import { useStickerStore } from "@/lib/zustand/sticker-store";
+import { useGetCustomStickerById } from "@/lib/tanstack/query/custom-sticker";
+import { useGetTopicById } from "@/lib/tanstack/query/topic";
 import { uploadImage } from "@/services/image";
 import { containsMarkdown } from "@/utils/markdown";
 import { revalidatePath } from "@/utils/revalidate";
-import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
+import { defaultBlockSpecs } from "@blocknote/core";
+import { BlockNoteSchema } from "@blocknote/core";
 import { ko } from "@blocknote/core/locales";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
-import {
-  Button,
-  Dialog,
-  DialogTrigger,
-  errorToast,
-  Input,
-  successToast,
-} from "@linkyboard/components";
+import { Button, Dialog, DialogTrigger, errorToast, successToast } from "@linkyboard/components";
 
 import { Loader2, Save, Trash2 } from "lucide-react";
 
@@ -38,7 +33,8 @@ import ToggleBlock from "./toggle-block";
 import RemoveDialogContent from "../remove-dialog-content";
 
 interface BlockNoteProps {
-  setIsDeleteModalOpen: (isDeleteModalOpen: boolean) => void;
+  topicId: string;
+  stickerId: string;
 }
 
 const blockNoteSchema = BlockNoteSchema.create({
@@ -56,12 +52,21 @@ const blockNoteSchema = BlockNoteSchema.create({
   },
 });
 
-export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const topicId = searchParams.get("id");
+export default function BlockNote({ topicId, stickerId }: BlockNoteProps) {
+  // stickerId가 있다면 커스텀 스티커(노란색) 조회
+  const { data: topic, isLoading: isTopicLoading } = useGetTopicById({ id: topicId, stickerId });
+  const { data: customSticker, isLoading: isCustomStickerLoading } =
+    useGetCustomStickerById(stickerId);
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(topic?.title || customSticker?.title || "");
+
+  const editor = useCreateBlockNote({
+    schema: blockNoteSchema,
+    dictionary: ko,
+    uploadFile: uploadImage,
+  });
+
+  const router = useRouter();
 
   // 토픽 관련 hook
   const { mutateAsync: updateTopic, isPending: isUpdatePending } = useUpdateTopic();
@@ -73,16 +78,7 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
   const { mutateAsync: removeCustomSticker, isPending: isDeleteCustomStickerPending } =
     useRemoveCustomSticker();
 
-  const editor = useCreateBlockNote({
-    schema: blockNoteSchema,
-    dictionary: ko,
-    uploadFile: uploadImage,
-  });
-
-  const { setEditingSticker, setShowEditStickerSidebar, editingSticker } = useStickerStore();
-
-  const currentType = editingSticker?.type === "custom_sticker" ? "스티커" : "토픽";
-
+  const isCustomSticker = !!stickerId;
   const buttonDisabled =
     isUpdatePending ||
     isDeletePending ||
@@ -90,29 +86,30 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
     isDeleteCustomStickerPending;
 
   const onSave = async () => {
-    if (!editingSticker || !editor) return errorToast(`${currentType} 정보가 없어요.`);
-
     try {
       const content = editor.blocksToHTMLLossy();
-      if (editingSticker.type === "topic") {
+      if (!isCustomSticker) {
         await updateTopic(
           {
-            id: editingSticker.id,
+            id: topicId,
             title,
             content,
           },
           {
             onSuccess: async () => {
               successToast("토픽이 성공적으로 수정되었어요.");
-              await invalidateMany([[TOPIC.GET_ALL_TOPICS], [TOPIC.GET_TOPIC_BY_ID, topicId]]);
-              onClose();
+              await invalidateMany([
+                [TOPIC.GET_ALL_TOPICS],
+                [TOPIC.GET_TOPIC_BOARD_BY_ID, topicId],
+              ]);
+              router.back();
             },
           }
         );
-      } else if (editingSticker.type === "custom_sticker" && topicId) {
+      } else {
         await updateCustomSticker(
           {
-            customStickerId: editingSticker.id,
+            customStickerId: stickerId,
             topicId,
             title,
             content,
@@ -120,8 +117,11 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
           {
             onSuccess: async () => {
               successToast("스티커가 성공적으로 수정되었어요.");
-              invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
-              onClose();
+              await invalidateMany([
+                [TOPIC.GET_TOPIC_BOARD_BY_ID, topicId],
+                [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, stickerId],
+              ]);
+              router.back();
             },
           }
         );
@@ -131,37 +131,28 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
     }
   };
 
-  const onClose = () => {
-    setEditingSticker(null);
-    setShowEditStickerSidebar(false);
-  };
-
-  const onCloseSidebar = () => {
-    setEditingSticker(null);
-    setShowEditStickerSidebar(false);
-    onClose();
-  };
-
-  const onDelete = async (id: number) => {
-    if (editingSticker?.type === "topic") {
-      await removeTopic(id, {
+  const onDelete = async () => {
+    if (!isCustomSticker) {
+      await removeTopic(topicId, {
         onSuccess: () => {
           successToast("토픽이 성공적으로 삭제되었어요.");
-          onCloseSidebar();
           invalidateQueries([TOPIC.GET_ALL_TOPICS]);
-          revalidatePath(`/topic?id=${id}`);
-          router.back();
+          revalidatePath(`/topic/${topicId}`);
+          router.push("/topic");
         },
         onError: () => {
           errorToast("토픽 삭제에 실패했어요.");
         },
       });
-    } else if (editingSticker?.type === "custom_sticker") {
-      await removeCustomSticker(id, {
+    } else {
+      await removeCustomSticker(stickerId, {
         onSuccess: () => {
           successToast("스티커가 성공적으로 삭제되었어요.");
-          onCloseSidebar();
-          invalidateQueries([TOPIC.GET_ALL_TOPICS]);
+          invalidateMany([
+            [TOPIC.GET_TOPIC_BOARD_BY_ID, topicId],
+            [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, stickerId],
+          ]);
+          router.back();
         },
         onError: () => {
           errorToast("스티커 삭제에 실패했어요.");
@@ -171,18 +162,20 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
   };
 
   useEffect(() => {
-    if (editingSticker && editor) {
-      setTitle(editingSticker.title);
+    setTitle(topic?.title || customSticker?.title || "");
+
+    if (editor) {
+      const content = topic?.content || customSticker?.content || "";
 
       const loadContent = async () => {
         try {
-          if (containsMarkdown(editingSticker.content)) {
-            const blocks = await editor.tryParseMarkdownToBlocks(editingSticker.content);
+          if (containsMarkdown(content)) {
+            const blocks = await editor.tryParseMarkdownToBlocks(content);
             if (blocks) {
               editor.replaceBlocks(editor.document, blocks);
             }
           } else {
-            const blocks = editor.tryParseHTMLToBlocks(editingSticker.content);
+            const blocks = editor.tryParseHTMLToBlocks(content);
             if (blocks) {
               editor.replaceBlocks(editor.document, blocks);
             }
@@ -195,64 +188,57 @@ export default function BlockNote({ setIsDeleteModalOpen }: BlockNoteProps) {
 
       loadContent();
     }
-  }, [editingSticker, editor]);
+  }, [editor, topic, customSticker]);
 
   return (
-    <>
-      <div className="flex-1 space-y-6 overflow-y-auto p-6">
-        {/* 제목 입력 */}
-        <div>
-          <label className="mb-2 block font-medium">제목</label>
-          <Input
+    <div className="h-full">
+      {isTopicLoading || isCustomStickerLoading ? (
+        <div className="flex h-full items-center justify-center">
+          <Loader2 size={24} className="animate-spin" />
+        </div>
+      ) : (
+        <>
+          <input
+            className="border-border w-full border-b pb-3 text-3xl font-bold outline-none"
+            placeholder="제목을 입력해주세요"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder={`${currentType} 제목을 입력하세요`}
-            className="text-base"
           />
-        </div>
-
-        <div className="h-full">
-          <label className="mb-2 block font-medium">내용</label>
-          <BlockNoteView className="border-border h-full rounded-md border" editor={editor} />
-        </div>
-      </div>
-
-      {/* 액션 버튼 */}
-      <div className="border-t p-6">
-        <div className="flex gap-2">
-          <Button
-            onClick={onSave}
-            className="h-12 flex-1 text-base"
-            disabled={buttonDisabled || !title.trim()}
-          >
-            {isUpdatePending ? (
-              <Loader2 size={18} className="mr-2 animate-spin" />
-            ) : (
-              <>
-                <Save size={18} className="mr-2" />
-                저장
-              </>
-            )}
-          </Button>
-          <Dialog>
+          <BlockNoteView className="h-[calc(100%-8rem)]" editor={editor} />
+          <div className="flex gap-3">
             <Button
-              className="h-12 bg-red-400 text-base hover:bg-red-500"
-              asChild
-              disabled={buttonDisabled}
+              onClick={onSave}
+              className="h-12 flex-1 text-base"
+              disabled={buttonDisabled || !title.trim()}
             >
-              <DialogTrigger>
-                <Trash2 size={18} className="mr-2" />
-                삭제
-              </DialogTrigger>
+              {isUpdatePending ? (
+                <Loader2 size={18} className="mr-2 animate-spin" />
+              ) : (
+                <>
+                  <Save size={18} className="mr-2" />
+                  저장
+                </>
+              )}
             </Button>
-            <RemoveDialogContent
-              id={editingSticker?.id || null}
-              setIsDeleteModalOpen={setIsDeleteModalOpen}
-              onDelete={onDelete}
-            />
-          </Dialog>
-        </div>
-      </div>
-    </>
+            <Dialog>
+              <Button
+                className="h-12 bg-red-400 text-base hover:bg-red-500"
+                asChild
+                disabled={buttonDisabled}
+              >
+                <DialogTrigger>
+                  <Trash2 size={18} className="mr-2" />
+                  삭제
+                </DialogTrigger>
+              </Button>
+              <RemoveDialogContent
+                id={Number(isCustomSticker ? stickerId : topicId)}
+                onDelete={onDelete}
+              />
+            </Dialog>
+          </div>
+        </>
+      )}
+    </div>
   );
 }

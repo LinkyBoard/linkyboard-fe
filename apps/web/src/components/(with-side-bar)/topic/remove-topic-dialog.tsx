@@ -1,6 +1,9 @@
+import { useRouter } from "next/navigation";
+
 import { TOPIC } from "@/constants/topic";
 import { invalidateQueries } from "@/lib/tanstack";
-import { useRemoveCustomSticker } from "@/lib/tanstack/mutation/custom-sticker";
+import { useRemoveTopic } from "@/lib/tanstack/mutation/topic";
+import { revalidatePath } from "@/utils/revalidate";
 import {
   Button,
   DialogClose,
@@ -12,25 +15,23 @@ import {
 
 import { Loader2 } from "lucide-react";
 
-export default function RemoveUserStickerDialog({
-  customStickerId,
-  topicId,
-}: {
-  customStickerId: number;
-  topicId: string;
-}) {
-  const { mutateAsync, isPending } = useRemoveCustomSticker();
+export default function RemoveTopicDialog({ topicId }: { topicId: number }) {
+  const router = useRouter();
+
+  const { mutateAsync, isPending } = useRemoveTopic();
   const { close } = useDialog();
 
   const onRemoveTopic = async () => {
-    await mutateAsync(customStickerId, {
+    await mutateAsync(topicId.toString(), {
       onSuccess: () => {
-        successToast("스티커가 삭제되었어요.");
-        invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId]);
+        successToast("토픽이 삭제되었어요.");
+        invalidateQueries([TOPIC.GET_ALL_TOPICS]);
+        revalidatePath(`/topic/${topicId}`);
+        router.back();
         close();
       },
       onError: () => {
-        errorToast("스티커 삭제에 실패했어요.");
+        errorToast("토픽 삭제에 실패했어요.");
       },
     });
   };
@@ -40,7 +41,7 @@ export default function RemoveUserStickerDialog({
       <div className="space-y-4">
         <div>
           <h2 className="text-foreground text-lg font-semibold">삭제</h2>
-          <p className="text-muted-foreground text-sm">스티커를 삭제 하시겠습니까?</p>
+          <p className="text-muted-foreground text-sm">토픽을 삭제 하시겠습니까?</p>
         </div>
         <div className="flex justify-end gap-2">
           <Button variant="outline" asChild disabled={isPending}>

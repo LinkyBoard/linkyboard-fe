@@ -74,10 +74,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={cn(poppins.variable, merriweather.variable, jetbrainsMono.variable)}>
-      <meta name="google-site-verification" content="QCEJjFcIzUi4_pR-QJw5g8OdYabndorX1YORsRauKnw" />
       <head>
+        <meta
+          name="google-site-verification"
+          content="QCEJjFcIzUi4_pR-QJw5g8OdYabndorX1YORsRauKnw"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
       </head>
       <body className={cn(poppins.className, "antialiased")}>
         <ThirdPartyProvider />

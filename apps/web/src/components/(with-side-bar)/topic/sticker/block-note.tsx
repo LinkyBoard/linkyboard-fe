@@ -197,14 +197,14 @@ export default function BlockNote({ topicId, stickerId }: BlockNoteProps) {
           <Loader2 size={24} className="animate-spin" />
         </div>
       ) : (
-        <>
+        <div className="h-full space-y-2">
           <input
             className="border-border w-full border-b pb-3 text-3xl font-bold outline-none"
             placeholder="제목을 입력해주세요"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <BlockNoteView className="h-[calc(100%-8rem)]" editor={editor} />
+          <BlockNoteView className="h-[calc(100%-9.25rem)]" editor={editor} />
           <div className="flex gap-3">
             <Button
               onClick={onSave}
@@ -237,7 +237,7 @@ export default function BlockNote({ topicId, stickerId }: BlockNoteProps) {
               />
             </Dialog>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

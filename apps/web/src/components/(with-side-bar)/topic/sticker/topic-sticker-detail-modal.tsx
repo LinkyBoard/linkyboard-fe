@@ -42,8 +42,8 @@ export default function TopicStickerDetailModal({
       }}
       onMouseDown={onMouseDown}
     >
-      <div className="bg-background size-4/5 rounded-2xl p-8">
-        <div className="mb-4 flex items-center justify-between">
+      <div className="bg-background size-4/5 space-y-4 rounded-2xl p-8">
+        <div className="flex items-center justify-between">
           {/* assign 외에 다른 방안 생각해보기 */}
           <button onClick={() => window.location.assign(`/topic/${id}/sticker${queryString}`)}>
             <MoveDiagonal2 size={20} />

@@ -147,6 +147,7 @@ export default function BlockNote({ topicId, stickerId }: BlockNoteProps) {
           successToast("토픽이 성공적으로 삭제되었어요.");
           invalidateQueries([TOPIC.GET_ALL_TOPICS]);
           revalidatePath(`/topic/${topicId}`);
+          revalidatePath(`/topic/${topicId}/sticker`);
           router.push("/topic");
           topicStore.reset();
         },

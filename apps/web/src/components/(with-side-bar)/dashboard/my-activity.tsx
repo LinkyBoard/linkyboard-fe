@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { useDashboardStore } from "@/lib/zustand/dashboard-store";
+import { useDashboardStore } from "@/lib/zustand/dashboard";
 import { cn } from "@linkyboard/utils";
 
 import { Bookmark, Lightbulb, Star } from "lucide-react";

@@ -1,4 +1,4 @@
-import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
+import { useContentSidebarStore } from "@/lib/zustand/content-sidebar";
 import { Button } from "@linkyboard/components";
 import type { CategoryContentDTO } from "@linkyboard/types";
 import { cn } from "@linkyboard/utils";

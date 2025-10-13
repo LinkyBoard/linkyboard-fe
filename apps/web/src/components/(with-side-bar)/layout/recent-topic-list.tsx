@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import SentinelSpinner from "@/components/common/sentinel-spinner";
 import { useGetAllTopics } from "@/lib/tanstack/query/topic";
-import { useDashboardStore } from "@/lib/zustand/dashboard-store";
+import { useDashboardStore } from "@/lib/zustand/dashboard";
 import type { TopicDTO } from "@/models/topic";
 
 import { Loader2 } from "lucide-react";

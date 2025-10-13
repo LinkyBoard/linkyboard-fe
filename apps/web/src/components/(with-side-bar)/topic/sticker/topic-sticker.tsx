@@ -1,15 +1,27 @@
-import { useRouter } from "next/navigation";
-
+import { TOPIC } from "@/constants/topic";
+import { queryClient } from "@/lib/tanstack";
+import { useTopicStore } from "@/lib/zustand/topic";
 import type { TopicDTO } from "@/models/topic";
+import { getTopicById } from "@/services/topic";
 import { Button } from "@linkyboard/components";
 
 import { Edit, NotebookPen } from "lucide-react";
 
 export default function TopicSticker({ item }: { item: TopicDTO }) {
-  const router = useRouter();
+  const topicStore = useTopicStore();
 
   const onEditTopic = () => {
-    router.push(`/topic/${item.id}/sticker`);
+    topicStore.setIsOpen(true);
+    topicStore.setTopicId(item.id.toString());
+    topicStore.setStickerId(null);
+  };
+
+  const onMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: [TOPIC.GET_TOPIC_BY_ID, item.id.toString(), null],
+      queryFn: () => getTopicById(item.id.toString()),
+      staleTime: 1000 * 60,
+    });
   };
 
   return (
@@ -24,6 +36,7 @@ export default function TopicSticker({ item }: { item: TopicDTO }) {
             size="icon"
             className="size-9 bg-white/20 text-white hover:bg-white/30"
             onClick={onEditTopic}
+            onMouseEnter={onMouseEnter}
           >
             <Edit size={16} />
           </Button>

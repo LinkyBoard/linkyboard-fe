@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import Logo from "@/assets/logo.svg";
-import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
+import { useMobileMenuStore } from "@/lib/zustand/mobile-menu";
 import { cn } from "@linkyboard/utils";
 
 import type { LucideIcon } from "lucide-react";

@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
 
 interface TopicStickerDetailPageProps {
-  id: string;
-  stickerId: string;
+  id: string | null;
+  stickerId: string | null;
 }
 
 const BlockNote = dynamic(() => import("@/components/(with-side-bar)/topic/sticker/block-note"), {

@@ -1,17 +1,14 @@
+import TopicStickerDetailModal from "@/components/(with-side-bar)/topic/sticker/topic-sticker-detail-modal";
+
 interface TopicStickerDetailLayoutProps {
   children: React.ReactNode;
-  modal: React.ReactNode;
 }
 
-export default function TopicStickerDetailLayout({
-  children,
-  modal,
-}: TopicStickerDetailLayoutProps) {
+export default function TopicStickerDetailLayout({ children }: TopicStickerDetailLayoutProps) {
   return (
     <>
       {children}
-      {modal}
-      <div id="modal-root" />
+      <TopicStickerDetailModal />
     </>
   );
 }

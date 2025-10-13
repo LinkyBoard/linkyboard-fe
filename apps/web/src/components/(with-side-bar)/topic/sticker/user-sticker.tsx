@@ -1,6 +1,8 @@
-import { useRouter } from "next/navigation";
-
+import { CUSTOM_STICKER } from "@/constants/custom-sticker";
+import { queryClient } from "@/lib/tanstack";
+import { useTopicStore } from "@/lib/zustand/topic";
 import type { TopicDTO } from "@/models/topic";
+import { getCustomStickerById } from "@/services/custom-sticker";
 import { containsMarkdown } from "@/utils/markdown";
 import { markdownToHTML } from "@blocknote/core";
 import { Dialog, DialogTrigger } from "@linkyboard/components";
@@ -11,10 +13,20 @@ import { Edit, Sticker, Trash2 } from "lucide-react";
 import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
 
 export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId: string }) {
-  const router = useRouter();
+  const topicStore = useTopicStore();
 
   const onEditTopic = () => {
-    router.push(`/topic/${topicId}/sticker?stickerId=${item.id}`);
+    topicStore.setIsOpen(true);
+    topicStore.setTopicId(topicId);
+    topicStore.setStickerId(item.id.toString());
+  };
+
+  const onMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, item.id.toString()],
+      queryFn: () => getCustomStickerById(item.id.toString()),
+      staleTime: 1000 * 60,
+    });
   };
 
   // 마크다운이 포함되어 있으면 HTML로 변환
@@ -37,6 +49,7 @@ export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId
             size="icon"
             className="size-9 bg-yellow-300/50 text-yellow-900 hover:bg-yellow-300/90"
             onClick={onEditTopic}
+            onMouseEnter={onMouseEnter}
           >
             <Edit size={16} />
           </Button>

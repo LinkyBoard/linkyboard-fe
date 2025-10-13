@@ -1,6 +1,6 @@
 "use client";
 
-import { useMobileMenuStore } from "@/lib/zustand/mobile-menu-store";
+import { useMobileMenuStore } from "@/lib/zustand/mobile-menu";
 import { Button, Input } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 

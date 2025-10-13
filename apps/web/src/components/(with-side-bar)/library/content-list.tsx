@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import type { ContentTypeOptions } from "@/constants/content";
 import { CONTENT_TYPE_OPTIONS } from "@/constants/content";
 import { useGetCategoryContentById } from "@/lib/tanstack/query/content";
-import { useContentSidebarStore } from "@/lib/zustand/content-sidebar-store";
+import { useContentSidebarStore } from "@/lib/zustand/content-sidebar";
 import { Button } from "@linkyboard/components";
 import type { CategoryContentDTO } from "@linkyboard/types";
 

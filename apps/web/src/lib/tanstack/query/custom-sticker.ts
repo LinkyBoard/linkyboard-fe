@@ -10,11 +10,12 @@ export const useGetAiModels = () => {
   });
 };
 
-export const useGetCustomStickerById = (id: string | undefined) => {
+export const useGetCustomStickerById = (id: string | null) => {
   return useQuery({
     queryKey: [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, id],
     queryFn: () => getCustomStickerById(id as string),
     enabled: !!id,
     select: (data) => data.result,
+    staleTime: 1000 * 60,
   });
 };

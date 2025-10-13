@@ -130,7 +130,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         </div>
       </header>
 
-      <div className="flex h-[calc(100vh-200px)] gap-0">
+      <div className="flex h-[calc(100vh-130px)] gap-0">
         <AddContentList isTopicLoading={isLoading} nodes={data?.nodes || []} id={id} type={type} />
 
         <ReactFlowProvider>

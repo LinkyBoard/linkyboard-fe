@@ -50,13 +50,14 @@ export const useGetTopicById = ({
   id,
   stickerId,
 }: {
-  id: string;
-  stickerId: string | undefined;
+  id: string | null;
+  stickerId: string | null;
 }) => {
   return useQuery({
-    queryKey: [TOPIC.GET_TOPIC_BY_ID, id],
-    queryFn: async () => await getTopicById(id),
+    queryKey: [TOPIC.GET_TOPIC_BY_ID, id, stickerId],
+    queryFn: async () => await getTopicById(id as string),
     enabled: !stickerId,
     select: (data) => data.result,
+    staleTime: 1000 * 60,
   });
 };

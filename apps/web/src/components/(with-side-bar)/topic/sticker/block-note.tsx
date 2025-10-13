@@ -17,6 +17,7 @@ import {
 import { useRemoveTopic, useUpdateTopic } from "@/lib/tanstack/mutation/topic";
 import { useGetCustomStickerById } from "@/lib/tanstack/query/custom-sticker";
 import { useGetTopicById } from "@/lib/tanstack/query/topic";
+import { useTopicStore } from "@/lib/zustand/topic";
 import { uploadImage } from "@/services/image";
 import { containsMarkdown } from "@/utils/markdown";
 import { revalidatePath } from "@/utils/revalidate";
@@ -33,8 +34,8 @@ import ToggleBlock from "./toggle-block";
 import RemoveDialogContent from "../remove-dialog-content";
 
 interface BlockNoteProps {
-  topicId: string;
-  stickerId: string;
+  topicId: string | null;
+  stickerId: string | null;
 }
 
 const blockNoteSchema = BlockNoteSchema.create({
@@ -57,6 +58,8 @@ export default function BlockNote({ topicId, stickerId }: BlockNoteProps) {
   const { data: topic, isLoading: isTopicLoading } = useGetTopicById({ id: topicId, stickerId });
   const { data: customSticker, isLoading: isCustomStickerLoading } =
     useGetCustomStickerById(stickerId);
+
+  const topicStore = useTopicStore();
 
   const [title, setTitle] = useState(topic?.title || customSticker?.title || "");
 
@@ -86,6 +89,7 @@ export default function BlockNote({ topicId, stickerId }: BlockNoteProps) {
     isDeleteCustomStickerPending;
 
   const onSave = async () => {
+    if (!topicId) return;
     try {
       const content = editor.blocksToHTMLLossy();
       if (!isCustomSticker) {
@@ -98,67 +102,77 @@ export default function BlockNote({ topicId, stickerId }: BlockNoteProps) {
           {
             onSuccess: async () => {
               successToast("토픽이 성공적으로 수정되었어요.");
-              await invalidateMany([
-                [TOPIC.GET_ALL_TOPICS],
-                [TOPIC.GET_TOPIC_BOARD_BY_ID, topicId],
-              ]);
-              router.back();
+              invalidateQueries([TOPIC.GET_ALL_TOPICS]);
+              invalidateQueries([TOPIC.GET_TOPIC_BY_ID, topicId, stickerId]);
+              invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
+
+              if (!topicStore.isOpen) {
+                router.back();
+              }
+              topicStore.reset();
             },
           }
         );
-      } else {
-        await updateCustomSticker(
-          {
-            customStickerId: stickerId,
-            topicId,
-            title,
-            content,
-          },
-          {
-            onSuccess: async () => {
-              successToast("스티커가 성공적으로 수정되었어요.");
-              await invalidateMany([
-                [TOPIC.GET_TOPIC_BOARD_BY_ID, topicId],
-                [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, stickerId],
-              ]);
-              router.back();
-            },
-          }
-        );
+        return;
       }
+      if (!stickerId) return;
+      await updateCustomSticker(
+        {
+          customStickerId: stickerId,
+          topicId,
+          title,
+          content,
+        },
+        {
+          onSuccess: async () => {
+            successToast("스티커가 성공적으로 수정되었어요.");
+            invalidateQueries([CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, stickerId]);
+            invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
+            if (!topicStore.isOpen) {
+              router.back();
+            }
+            topicStore.reset();
+          },
+        }
+      );
     } catch {
       errorToast("토픽 수정에 실패했어요.");
     }
   };
 
   const onDelete = async () => {
-    if (!isCustomSticker) {
+    if (!isCustomSticker && topicId) {
       await removeTopic(topicId, {
         onSuccess: () => {
           successToast("토픽이 성공적으로 삭제되었어요.");
           invalidateQueries([TOPIC.GET_ALL_TOPICS]);
           revalidatePath(`/topic/${topicId}`);
           router.push("/topic");
+          topicStore.reset();
         },
         onError: () => {
           errorToast("토픽 삭제에 실패했어요.");
         },
       });
-    } else {
-      await removeCustomSticker(stickerId, {
-        onSuccess: () => {
-          successToast("스티커가 성공적으로 삭제되었어요.");
-          invalidateMany([
-            [TOPIC.GET_TOPIC_BOARD_BY_ID, topicId],
-            [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, stickerId],
-          ]);
-          router.back();
-        },
-        onError: () => {
-          errorToast("스티커 삭제에 실패했어요.");
-        },
-      });
+      return;
     }
+    if (!stickerId) return;
+    await removeCustomSticker(stickerId, {
+      onSuccess: () => {
+        successToast("스티커가 성공적으로 삭제되었어요.");
+        invalidateMany([
+          [TOPIC.GET_TOPIC_BOARD_BY_ID, topicId],
+          [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, stickerId],
+        ]);
+        if (!topicStore.isOpen) {
+          router.back();
+        }
+        topicStore.reset();
+      },
+      onError: () => {
+        errorToast("스티커 삭제에 실패했어요.");
+      },
+    });
   };
 
   useEffect(() => {

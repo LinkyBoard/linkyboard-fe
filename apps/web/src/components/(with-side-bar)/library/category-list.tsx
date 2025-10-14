@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { CATEGORY } from "@/constants/category";
 import { CONTENT } from "@/constants/content";
+import { MINUTE } from "@/constants/time";
 import { invalidateQueries, queryClient } from "@/lib/tanstack";
 import { useDeleteCategory } from "@/lib/tanstack/mutation/category";
 import { useGetCategories } from "@/lib/tanstack/query/category";
@@ -66,7 +67,7 @@ function CategoryItem(props: CategoryDTO) {
     queryClient.prefetchQuery({
       queryKey: [CONTENT.GET_CATEGORY_CONTENT_BY_ID, props.id.toString()],
       queryFn: async () => getCategoryContentById(props.id.toString()),
-      staleTime: 1000 * 60,
+      staleTime: MINUTE,
     });
   };
 

@@ -1,4 +1,5 @@
 import { CONTENT } from "@/constants/content";
+import { MINUTE } from "@/constants/time";
 import { queryClient } from "@/lib/tanstack";
 import { getContentById } from "@/services/content";
 import type { CategoryContentDTO } from "@linkyboard/types";
@@ -47,7 +48,7 @@ export default function ContentItem({ item, draggable = false, ...props }: Conte
     queryClient.prefetchQuery({
       queryKey: [CONTENT.GET_CONTENT_BY_ID, item.id],
       queryFn: async () => getContentById(item.id),
-      staleTime: 1000 * 60,
+      staleTime: MINUTE,
     });
   };
 

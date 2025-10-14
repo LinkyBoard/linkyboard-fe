@@ -1,3 +1,4 @@
+import { MINUTE } from "@/constants/time";
 import { TOPIC } from "@/constants/topic";
 import { queryClient } from "@/lib/tanstack";
 import { useTopicStore } from "@/lib/zustand/topic";
@@ -20,7 +21,7 @@ export default function TopicSticker({ item }: { item: TopicDTO }) {
     queryClient.prefetchQuery({
       queryKey: [TOPIC.GET_TOPIC_BY_ID, item.id.toString(), null],
       queryFn: () => getTopicById(item.id.toString()),
-      staleTime: 1000 * 60,
+      staleTime: MINUTE,
     });
   };
 

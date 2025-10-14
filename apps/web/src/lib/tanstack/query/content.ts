@@ -1,4 +1,5 @@
 import { CONTENT } from "@/constants/content";
+import { MINUTE } from "@/constants/time";
 import { getCategoryContentById, getContentById } from "@/services/content";
 import { useQuery } from "@tanstack/react-query";
 
@@ -8,7 +9,7 @@ export const useGetCategoryContentById = (id: string | undefined) => {
     queryFn: async () => getCategoryContentById(id!),
     select: (data) => data.result,
     enabled: !!id,
-    staleTime: 1000 * 60,
+    staleTime: MINUTE,
   });
 };
 
@@ -18,6 +19,6 @@ export const useGetContentById = (id: number | null) => {
     queryFn: async () => getContentById(id!),
     select: (data) => data.result,
     enabled: !!id,
-    staleTime: 1000 * 60,
+    staleTime: MINUTE,
   });
 };

@@ -4,7 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import Logo from "@/assets/logo.svg";
+import { CATEGORY } from "@/constants/category";
+import { queryClient } from "@/lib/tanstack";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu";
+import { getCategories } from "@/services/category";
 import { cn } from "@linkyboard/utils";
 
 import type { LucideIcon } from "lucide-react";
@@ -29,6 +32,16 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const { isOpen, close } = useMobileMenuStore();
+
+  const onMouseEnter = (href: string) => {
+    if (href === "/library") {
+      queryClient.prefetchQuery({
+        queryKey: [CATEGORY.GET_CATEGORIES],
+        queryFn: getCategories,
+        staleTime: 1000 * 60,
+      });
+    }
+  };
 
   return (
     <>
@@ -55,6 +68,7 @@ export default function Sidebar() {
             <Link
               key={item.label}
               href={item.href}
+              onMouseEnter={() => onMouseEnter(item.href)}
               className={cn(
                 "mb-2 flex items-center gap-3 rounded-md px-4 py-3 transition-all duration-300",
                 pathname.startsWith(item.href)

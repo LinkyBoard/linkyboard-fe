@@ -8,6 +8,7 @@ export const useGetCategoryContentById = (id: string | undefined) => {
     queryFn: async () => getCategoryContentById(id!),
     select: (data) => data.result,
     enabled: !!id,
+    staleTime: 1000 * 60,
   });
 };
 

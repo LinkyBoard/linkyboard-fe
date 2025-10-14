@@ -5,6 +5,7 @@ import { FileText, Globe, Youtube } from "lucide-react";
 
 interface ContentItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   item: CategoryContentDTO;
+  draggable?: boolean;
 }
 
 const contentType = {
@@ -22,7 +23,7 @@ const contentType = {
   },
 };
 
-export default function ContentItem({ item, ...props }: ContentItemProps) {
+export default function ContentItem({ item, draggable = false, ...props }: ContentItemProps) {
   const { className, ...restProps } = props;
 
   const onDragStart = (e: React.DragEvent<HTMLButtonElement>) => {
@@ -44,7 +45,7 @@ export default function ContentItem({ item, ...props }: ContentItemProps) {
         className
       )}
       aria-label={`${item.title} 콘텐츠 상세보기`}
-      draggable
+      draggable={draggable}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       {...restProps}

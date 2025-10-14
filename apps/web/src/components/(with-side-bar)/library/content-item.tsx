@@ -1,3 +1,6 @@
+import { CONTENT } from "@/constants/content";
+import { queryClient } from "@/lib/tanstack";
+import { getContentById } from "@/services/content";
 import type { CategoryContentDTO } from "@linkyboard/types";
 import { cn } from "@linkyboard/utils";
 
@@ -38,6 +41,16 @@ export default function ContentItem({ item, draggable = false, ...props }: Conte
     e.currentTarget.style.opacity = "1";
   };
 
+  const onMouseEnter = () => {
+    if (draggable) return;
+
+    queryClient.prefetchQuery({
+      queryKey: [CONTENT.GET_CONTENT_BY_ID, item.id],
+      queryFn: async () => getContentById(item.id),
+      staleTime: 1000 * 60,
+    });
+  };
+
   return (
     <button
       className={cn(
@@ -48,6 +61,7 @@ export default function ContentItem({ item, draggable = false, ...props }: Conte
       draggable={draggable}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onMouseEnter={onMouseEnter}
       {...restProps}
     >
       <div className="mb-4 flex items-center gap-4">

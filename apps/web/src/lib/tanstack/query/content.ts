@@ -18,5 +18,6 @@ export const useGetContentById = (id: number | null) => {
     queryFn: async () => getContentById(id!),
     select: (data) => data.result,
     enabled: !!id,
+    staleTime: 1000 * 60,
   });
 };

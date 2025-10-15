@@ -13,7 +13,7 @@
   "background": {
     "service_worker": "service-worker.js"
   },
-  "host_permissions": ["https://api.linkyboard.com/*", "http://localhost:3000/*"],
+  "host_permissions": ["https://api.linkyboard.com/*"],
   "icons": {
     "128": "public/icon128.png"
   }

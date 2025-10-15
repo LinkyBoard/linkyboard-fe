@@ -26,6 +26,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.linkyboard.com"),
   title: "LinkyBoard - 지식을 연결하는 스마트 지식 관리 서비스",
   description:
     "흩어진 정보를 하나로 연결하는 지식 관리 플랫폼. 웹 콘텐츠를 수집하고 시각화하여 나만의 지식 보드를 만들어 보세요.",

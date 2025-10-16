@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import Logo from "@/assets/logo.svg";
 import { CATEGORY } from "@/constants/category";
+import { MINUTE } from "@/constants/time";
 import { queryClient } from "@/lib/tanstack";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu";
 import { getCategories } from "@/services/category";
@@ -38,7 +39,7 @@ export default function Sidebar() {
       queryClient.prefetchQuery({
         queryKey: [CATEGORY.GET_CATEGORIES],
         queryFn: getCategories,
-        staleTime: 1000 * 60,
+        staleTime: MINUTE,
       });
     }
   };

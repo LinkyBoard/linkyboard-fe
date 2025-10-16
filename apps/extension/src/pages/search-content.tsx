@@ -1,6 +1,11 @@
+import { CATEGORY } from "@/constants/category";
+import { TAG } from "@/constants/tag";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
+import { queryClient } from "@/lib/tanstack";
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
+import { getCategories } from "@/services/category";
+import { getTags } from "@/services/tag";
 import { extractMetaContent, getHtmlText } from "@/utils/chrome";
 import { removeCookie } from "@/utils/cookie";
 import {
@@ -141,49 +146,82 @@ export default function SearchContent() {
 
   const onSaveWithSummary = async () => {
     if (isYoutubeUrl) {
-      const res = await mutateDetailSaveYoutubeContent({
-        url: currentTab.url,
-      });
-      navigate("/create-content", {
-        state: {
-          ...res.result,
-          ...currentTab,
-          thumbnail: "",
-          transcript: "",
-        },
-      });
-    } else {
-      const payload = await getHtmlPayload();
-      if (!payload) return;
-
-      const { htmlFile, thumbnail } = payload;
-      const formData = new FormData();
-      formData.append("htmlFile", htmlFile);
-
-      const promise = mutateDetailSaveContent(
+      const promise = mutateDetailSaveYoutubeContent(
         {
           url: currentTab.url,
-          formData,
         },
         {
           onSuccess: (data) => {
+            queryClient.prefetchQuery({
+              queryKey: [TAG.GET_TAGS],
+              queryFn: getTags,
+              staleTime: 1000 * 60,
+            });
+            queryClient.prefetchQuery({
+              queryKey: [CATEGORY.GET_CATEGORIES],
+              queryFn: getCategories,
+              staleTime: 1000 * 60,
+            });
             navigate("/create-content", {
               state: {
                 ...data.result,
                 ...currentTab,
-                thumbnail,
-                htmlFile,
+                thumbnail: "",
+                transcript: "",
               },
             });
           },
         }
       );
+
       promisedToast(promise, {
-        loading: "페이지 요약 중...",
+        loading: "유튜브 요약 중...",
         success: "요약에 성공했어요.",
         error: "요약에 실패했어요.",
       });
+      return;
     }
+
+    const payload = await getHtmlPayload();
+    if (!payload) return;
+
+    const { htmlFile, thumbnail } = payload;
+    const formData = new FormData();
+    formData.append("htmlFile", htmlFile);
+
+    const promise = mutateDetailSaveContent(
+      {
+        url: currentTab.url,
+        formData,
+      },
+      {
+        onSuccess: (data) => {
+          queryClient.prefetchQuery({
+            queryKey: [TAG.GET_TAGS],
+            queryFn: getTags,
+            staleTime: 1000 * 60,
+          });
+          queryClient.prefetchQuery({
+            queryKey: [CATEGORY.GET_CATEGORIES],
+            queryFn: getCategories,
+            staleTime: 1000 * 60,
+          });
+          navigate("/create-content", {
+            state: {
+              ...data.result,
+              ...currentTab,
+              thumbnail,
+              htmlFile,
+            },
+          });
+        },
+      }
+    );
+    promisedToast(promise, {
+      loading: "페이지 요약 중...",
+      success: "요약에 성공했어요.",
+      error: "요약에 실패했어요.",
+    });
   };
 
   return (

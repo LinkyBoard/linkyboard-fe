@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogTrigger,
   errorToast,
+  promisedToast,
   useDialog,
 } from "@linkyboard/components";
 
@@ -129,7 +130,12 @@ export default function SearchContent() {
       formData.append("url", currentTab.url);
       formData.append("thumbnail", thumbnail);
 
-      await mutateQuickSaveContent(formData);
+      const promise = mutateQuickSaveContent(formData);
+      promisedToast(promise, {
+        loading: "저장 중...",
+        success: "저장에 성공했어요.",
+        error: "저장에 실패했어요.",
+      });
     }
   };
 
@@ -154,17 +160,28 @@ export default function SearchContent() {
       const formData = new FormData();
       formData.append("htmlFile", htmlFile);
 
-      const res = await mutateDetailSaveContent({
-        url: currentTab.url,
-        formData,
-      });
-      navigate("/create-content", {
-        state: {
-          ...res.result,
-          ...currentTab,
-          thumbnail,
-          htmlFile,
+      const promise = mutateDetailSaveContent(
+        {
+          url: currentTab.url,
+          formData,
         },
+        {
+          onSuccess: (data) => {
+            navigate("/create-content", {
+              state: {
+                ...data.result,
+                ...currentTab,
+                thumbnail,
+                htmlFile,
+              },
+            });
+          },
+        }
+      );
+      promisedToast(promise, {
+        loading: "페이지 요약 중...",
+        success: "요약에 성공했어요.",
+        error: "요약에 실패했어요.",
       });
     }
   };
@@ -247,7 +264,7 @@ export default function SearchContent() {
               <Sparkles className="size-5" />
               <div className="text-left">
                 <p className="font-medium">
-                  {isPendingDetailSaveContent ? "저장 중..." : "상세 저장"}
+                  {isPendingDetailSaveContent ? "페이지 요약 중..." : "상세 저장"}
                 </p>
                 <p className="text-primary-foreground/80 text-xs">메모와 함께 저장합니다</p>
               </div>

@@ -1,3 +1,7 @@
+import { CONTENT } from "@/constants/content";
+import { MINUTE } from "@/constants/time";
+import { queryClient } from "@/lib/tanstack";
+import { getContentById } from "@/services/content";
 import type { CategoryContentDTO } from "@linkyboard/types";
 import { cn } from "@linkyboard/utils";
 
@@ -5,6 +9,7 @@ import { FileText, Globe, Youtube } from "lucide-react";
 
 interface ContentItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   item: CategoryContentDTO;
+  draggable?: boolean;
 }
 
 const contentType = {
@@ -22,7 +27,7 @@ const contentType = {
   },
 };
 
-export default function ContentItem({ item, ...props }: ContentItemProps) {
+export default function ContentItem({ item, draggable = false, ...props }: ContentItemProps) {
   const { className, ...restProps } = props;
 
   const onDragStart = (e: React.DragEvent<HTMLButtonElement>) => {
@@ -37,6 +42,16 @@ export default function ContentItem({ item, ...props }: ContentItemProps) {
     e.currentTarget.style.opacity = "1";
   };
 
+  const onMouseEnter = () => {
+    if (draggable) return;
+
+    queryClient.prefetchQuery({
+      queryKey: [CONTENT.GET_CONTENT_BY_ID, item.id],
+      queryFn: async () => getContentById(item.id),
+      staleTime: MINUTE,
+    });
+  };
+
   return (
     <button
       className={cn(
@@ -44,9 +59,10 @@ export default function ContentItem({ item, ...props }: ContentItemProps) {
         className
       )}
       aria-label={`${item.title} 콘텐츠 상세보기`}
-      draggable
+      draggable={draggable}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onMouseEnter={onMouseEnter}
       {...restProps}
     >
       <div className="mb-4 flex items-center gap-4">

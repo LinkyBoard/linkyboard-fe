@@ -1,4 +1,5 @@
 import { CUSTOM_STICKER } from "@/constants/custom-sticker";
+import { MINUTE } from "@/constants/time";
 import { queryClient } from "@/lib/tanstack";
 import { useTopicStore } from "@/lib/zustand/topic";
 import type { TopicDTO } from "@/models/topic";
@@ -25,7 +26,7 @@ export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId
     queryClient.prefetchQuery({
       queryKey: [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, item.id.toString()],
       queryFn: () => getCustomStickerById(item.id.toString()),
-      staleTime: 1000 * 60,
+      staleTime: MINUTE,
     });
   };
 

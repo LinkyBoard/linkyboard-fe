@@ -130,6 +130,7 @@ export default function AddContentList({ type, id, isTopicLoading, nodes }: AddC
           ) : (
             filteredContents?.map((item) => (
               <ContentItem
+                draggable
                 key={`${item.id}-content-item`}
                 item={item}
                 onClick={() => onAddContent(item)}

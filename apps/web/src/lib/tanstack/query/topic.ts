@@ -11,6 +11,7 @@ export const useGetTopicBoardById = (id: string) => {
     queryFn: async () => await getTopicBoardById(id),
     enabled: !!id,
     select: (data) => data.result,
+    staleTime: MINUTE,
   });
 };
 

@@ -14,7 +14,7 @@ import {
   useDialog,
 } from "@linkyboard/components";
 
-import { LogOut, Save, Sparkles } from "lucide-react";
+import { Globe, LogOut, Save, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -191,20 +191,31 @@ export default function SearchContent() {
       {/* 헤더 */}
       <header className="bg-background sticky top-0 z-10 flex items-center justify-between p-6 shadow">
         <h1 className="text-foreground text-xl font-bold">북마크 저장</h1>
-        <Dialog>
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
             className="text-muted-foreground hover:text-foreground"
-            aria-label="로그아웃"
-            asChild
+            aria-label="웹 페이지로 이동"
+            onClick={() => window.open("https://www.linkyboard.com", "_blank")}
           >
-            <DialogTrigger>
-              <LogOut className="h-4 w-4" />
-            </DialogTrigger>
+            <Globe className="h-4 w-4" />
           </Button>
-          <LogoutDialogContent />
-        </Dialog>
+          <Dialog>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground"
+              aria-label="로그아웃"
+              asChild
+            >
+              <DialogTrigger>
+                <LogOut className="h-4 w-4" />
+              </DialogTrigger>
+            </Button>
+            <LogoutDialogContent />
+          </Dialog>
+        </div>
       </header>
       <div className="bg-background p-6">
         {/* 현재 탭 정보 */}

@@ -48,7 +48,7 @@ export default function TopicStickerDetailModal() {
             <button onClick={onRouteToDetail}>
               <MoveDiagonal2 size={20} />
             </button>
-            <button onClick={() => router.back()}>
+            <button onClick={() => topicStore.reset()}>
               <X size={20} />
             </button>
           </div>

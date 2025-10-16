@@ -7,5 +7,6 @@ export const useGetTags = () => {
     queryKey: [TAG.GET_TAGS],
     queryFn: getTags,
     select: (data) => data.result,
+    staleTime: 1000 * 60,
   });
 };

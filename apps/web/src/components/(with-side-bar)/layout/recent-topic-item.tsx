@@ -1,5 +1,9 @@
 import RemoveTopicDialog from "@/components/(with-side-bar)/topic/remove-topic-dialog";
+import { MINUTE } from "@/constants/time";
+import { TOPIC } from "@/constants/topic";
+import { queryClient } from "@/lib/tanstack";
 import type { TopicDTO } from "@/models/topic";
+import { getTopicBoardById } from "@/services/topic";
 import { Dialog, DialogTrigger } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 
@@ -34,6 +38,14 @@ const getTopicColor = (topicId: number) => {
 export default function RecentTopicItem({ isSelected, topic, onTopicClick }: RecentTopicItemProps) {
   const color = getTopicColor(topic.id);
 
+  const onMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: [TOPIC.GET_TOPIC_BOARD_BY_ID, topic.id.toString()],
+      queryFn: async () => await getTopicBoardById(topic.id.toString()),
+      staleTime: MINUTE,
+    });
+  };
+
   return (
     <div
       className={cn(
@@ -41,6 +53,7 @@ export default function RecentTopicItem({ isSelected, topic, onTopicClick }: Rec
         isSelected ? "bg-sidebar-primary text-sidebar-primary-foreground" : "hover:bg-accent"
       )}
       onClick={onTopicClick}
+      onMouseEnter={onMouseEnter}
     >
       <div className="flex items-center gap-2">
         <div className={cn("h-2 w-2 rounded-full", color)} />

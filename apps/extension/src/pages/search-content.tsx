@@ -1,6 +1,11 @@
+import { CATEGORY } from "@/constants/category";
+import { TAG } from "@/constants/tag";
 import { useReplaceNavigate } from "@/hooks/use-replace-navigate";
+import { queryClient } from "@/lib/tanstack";
 import { useTabStore } from "@/lib/zustand/tab";
 import { useUserStore } from "@/lib/zustand/user";
+import { getCategories } from "@/services/category";
+import { getTags } from "@/services/tag";
 import { extractMetaContent, getHtmlText } from "@/utils/chrome";
 import { removeCookie } from "@/utils/cookie";
 import {
@@ -10,10 +15,11 @@ import {
   DialogContent,
   DialogTrigger,
   errorToast,
+  promisedToast,
   useDialog,
 } from "@linkyboard/components";
 
-import { LogOut, Save, Sparkles } from "lucide-react";
+import { Globe, LogOut, Save, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -129,44 +135,93 @@ export default function SearchContent() {
       formData.append("url", currentTab.url);
       formData.append("thumbnail", thumbnail);
 
-      await mutateQuickSaveContent(formData);
+      const promise = mutateQuickSaveContent(formData);
+      promisedToast(promise, {
+        loading: "저장 중...",
+        success: "저장에 성공했어요.",
+        error: "저장에 실패했어요.",
+      });
     }
   };
 
   const onSaveWithSummary = async () => {
     if (isYoutubeUrl) {
-      const res = await mutateDetailSaveYoutubeContent({
-        url: currentTab.url,
-      });
-      navigate("/create-content", {
-        state: {
-          ...res.result,
-          ...currentTab,
-          thumbnail: "",
-          transcript: "",
+      const promise = mutateDetailSaveYoutubeContent(
+        {
+          url: currentTab.url,
         },
+        {
+          onSuccess: (data) => {
+            queryClient.prefetchQuery({
+              queryKey: [TAG.GET_TAGS],
+              queryFn: getTags,
+              staleTime: 1000 * 60,
+            });
+            queryClient.prefetchQuery({
+              queryKey: [CATEGORY.GET_CATEGORIES],
+              queryFn: getCategories,
+              staleTime: 1000 * 60,
+            });
+            navigate("/create-content", {
+              state: {
+                ...data.result,
+                ...currentTab,
+                thumbnail: "",
+                transcript: "",
+              },
+            });
+          },
+        }
+      );
+
+      promisedToast(promise, {
+        loading: "유튜브 요약 중...",
+        success: "요약에 성공했어요.",
+        error: "요약에 실패했어요.",
       });
-    } else {
-      const payload = await getHtmlPayload();
-      if (!payload) return;
+      return;
+    }
 
-      const { htmlFile, thumbnail } = payload;
-      const formData = new FormData();
-      formData.append("htmlFile", htmlFile);
+    const payload = await getHtmlPayload();
+    if (!payload) return;
 
-      const res = await mutateDetailSaveContent({
+    const { htmlFile, thumbnail } = payload;
+    const formData = new FormData();
+    formData.append("htmlFile", htmlFile);
+
+    const promise = mutateDetailSaveContent(
+      {
         url: currentTab.url,
         formData,
-      });
-      navigate("/create-content", {
-        state: {
-          ...res.result,
-          ...currentTab,
-          thumbnail,
-          htmlFile,
+      },
+      {
+        onSuccess: (data) => {
+          queryClient.prefetchQuery({
+            queryKey: [TAG.GET_TAGS],
+            queryFn: getTags,
+            staleTime: 1000 * 60,
+          });
+          queryClient.prefetchQuery({
+            queryKey: [CATEGORY.GET_CATEGORIES],
+            queryFn: getCategories,
+            staleTime: 1000 * 60,
+          });
+          navigate("/create-content", {
+            state: {
+              ...data.result,
+              ...currentTab,
+              thumbnail,
+              htmlFile,
+            },
+          });
         },
-      });
-    }
+      }
+    );
+    promisedToast(promise, {
+      loading: "페이지 요약 중...",
+      success: "요약에 성공했어요.",
+      error: "요약에 실패했어요.",
+    });
   };
 
   return (
@@ -174,20 +229,31 @@ export default function SearchContent() {
       {/* 헤더 */}
       <header className="bg-background sticky top-0 z-10 flex items-center justify-between p-6 shadow">
         <h1 className="text-foreground text-xl font-bold">북마크 저장</h1>
-        <Dialog>
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
             className="text-muted-foreground hover:text-foreground"
-            aria-label="로그아웃"
-            asChild
+            aria-label="웹 페이지로 이동"
+            onClick={() => window.open("https://www.linkyboard.com", "_blank")}
           >
-            <DialogTrigger>
-              <LogOut className="h-4 w-4" />
-            </DialogTrigger>
+            <Globe className="h-4 w-4" />
           </Button>
-          <LogoutDialogContent />
-        </Dialog>
+          <Dialog>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground"
+              aria-label="로그아웃"
+              asChild
+            >
+              <DialogTrigger>
+                <LogOut className="h-4 w-4" />
+              </DialogTrigger>
+            </Button>
+            <LogoutDialogContent />
+          </Dialog>
+        </div>
       </header>
       <div className="bg-background p-6">
         {/* 현재 탭 정보 */}
@@ -247,7 +313,7 @@ export default function SearchContent() {
               <Sparkles className="size-5" />
               <div className="text-left">
                 <p className="font-medium">
-                  {isPendingDetailSaveContent ? "저장 중..." : "상세 저장"}
+                  {isPendingDetailSaveContent ? "페이지 요약 중..." : "상세 저장"}
                 </p>
                 <p className="text-primary-foreground/80 text-xs">메모와 함께 저장합니다</p>
               </div>

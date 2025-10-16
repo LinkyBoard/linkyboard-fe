@@ -1,4 +1,5 @@
 import { CUSTOM_STICKER } from "@/constants/custom-sticker";
+import { MINUTE } from "@/constants/time";
 import { getAiModels, getCustomStickerById } from "@/services/custom-sticker";
 import { useQuery } from "@tanstack/react-query";
 
@@ -16,6 +17,6 @@ export const useGetCustomStickerById = (id: string | null) => {
     queryFn: () => getCustomStickerById(id as string),
     enabled: !!id,
     select: (data) => data.result,
-    staleTime: 1000 * 60,
+    staleTime: MINUTE,
   });
 };

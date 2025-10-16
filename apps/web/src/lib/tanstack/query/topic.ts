@@ -1,4 +1,5 @@
 import { type ContentTypeOptions } from "@/constants/content";
+import { MINUTE } from "@/constants/time";
 import { TOPIC } from "@/constants/topic";
 import { getAllContents, getAllTopics, getTopicBoardById, getTopicById } from "@/services/topic";
 import { calculateNextPageParam } from "@linkyboard/utils";
@@ -10,6 +11,7 @@ export const useGetTopicBoardById = (id: string) => {
     queryFn: async () => await getTopicBoardById(id),
     enabled: !!id,
     select: (data) => data.result,
+    staleTime: MINUTE,
   });
 };
 
@@ -58,6 +60,6 @@ export const useGetTopicById = ({
     queryFn: async () => await getTopicById(id as string),
     enabled: !stickerId,
     select: (data) => data.result,
-    staleTime: 1000 * 60,
+    staleTime: MINUTE,
   });
 };

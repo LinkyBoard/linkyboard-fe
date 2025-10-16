@@ -3,10 +3,13 @@
 import { useRouter } from "next/navigation";
 
 import { CATEGORY } from "@/constants/category";
-import { invalidateQueries } from "@/lib/tanstack";
+import { CONTENT } from "@/constants/content";
+import { MINUTE } from "@/constants/time";
+import { invalidateQueries, queryClient } from "@/lib/tanstack";
 import { useDeleteCategory } from "@/lib/tanstack/mutation/category";
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import type { CategoryDTO } from "@/models/category";
+import { getCategoryContentById } from "@/services/content";
 import {
   Button,
   Dialog,
@@ -60,8 +63,19 @@ function CategoryItem(props: CategoryDTO) {
     router.push(`/library?category=${props.id},${props.name}`);
   };
 
+  const onMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: [CONTENT.GET_CATEGORY_CONTENT_BY_ID, props.id.toString()],
+      queryFn: async () => getCategoryContentById(props.id.toString()),
+      staleTime: MINUTE,
+    });
+  };
+
   return (
-    <div className="bg-card border-border hover:border-primary relative cursor-pointer rounded-lg border p-6 transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg">
+    <div
+      className="bg-card border-border hover:border-primary relative cursor-pointer rounded-lg border p-6 transition-all duration-300 hover:-translate-y-1 hover:transform hover:shadow-lg"
+      onMouseEnter={onMouseEnter}
+    >
       <Dialog>
         <DialogTrigger
           className="absolute right-2 top-2 rounded-md p-1 text-red-500 transition-colors hover:bg-red-100 hover:text-red-700 disabled:opacity-50"

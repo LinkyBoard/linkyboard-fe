@@ -32,8 +32,10 @@ export default function RecentTopicList() {
     close(); // 모바일에서 사이드바 닫기
   };
 
-  const isSelected = (topicId: number) =>
-    pathname.includes("topic") && pathname.includes(topicId.toString());
+  const isSelected = (topicId: number) => {
+    const topicPath = `/topic/${topicId}`;
+    return pathname === topicPath || pathname.startsWith(`${topicPath}/`);
+  };
 
   useEffect(() => {
     if (!isPending) {

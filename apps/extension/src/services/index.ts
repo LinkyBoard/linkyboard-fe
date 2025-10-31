@@ -1,4 +1,4 @@
-import { removeCookie } from "@/utils/cookie";
+import { getCookie, removeCookie } from "@/utils/cookie";
 import { infoToast } from "@linkyboard/components";
 
 import ky, { type KyRequest, type KyResponse } from "ky";
@@ -17,11 +17,12 @@ export const api = ky.create({
   hooks: {
     afterResponse: [
       async (request: KyRequest, _, response: KyResponse) => {
-        if (response.status === 401) {
+        const token = await getCookie("accessToken");
+
+        if (response.status === 401 && token) {
           infoToast("세션이 만료되었어요. 다시 로그인해주세요.");
           removeCookie("accessToken");
           removeCookie("refreshToken");
-          return window.location.replace("/");
         }
 
         return response;

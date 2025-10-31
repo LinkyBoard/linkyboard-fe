@@ -8,8 +8,10 @@ import {
   quickSaveYoutubeContent,
   updateContent,
 } from "@/services/content";
-import { successToast } from "@linkyboard/components";
+import { infoToast, successToast } from "@linkyboard/components";
 import { useMutation } from "@tanstack/react-query";
+
+import type { HTTPError } from "ky";
 
 import { invalidateQueries } from "..";
 
@@ -22,8 +24,10 @@ export const useQuickSaveContent = () => {
         invalidateQueries([CONTENT.GET_ALL_CONTENTS]);
       }
     },
-    onError: (error) => {
-      console.error(error);
+    onError: (error: HTTPError) => {
+      if (error.response.status === 401) {
+        infoToast("세션이 만료되었어요. 다시 로그인해주세요.");
+      }
     },
   });
 };
@@ -37,14 +41,21 @@ export const useQuickSaveYoutubeContent = () => {
         invalidateQueries([CONTENT.GET_ALL_CONTENTS]);
       }
     },
+    onError: (error: HTTPError) => {
+      if (error.response.status === 401) {
+        infoToast("세션이 만료되었어요. 다시 로그인해주세요.");
+      }
+    },
   });
 };
 
 export const useDetailSaveContent = () => {
   return useMutation({
     mutationFn: detailSaveWebContent,
-    onError: (error) => {
-      console.error(error);
+    onError: (error: HTTPError) => {
+      if (error.response.status === 401) {
+        infoToast("세션이 만료되었어요. 다시 로그인해주세요.");
+      }
     },
   });
 };
@@ -52,8 +63,10 @@ export const useDetailSaveContent = () => {
 export const useDetailSaveYoutubeContent = () => {
   return useMutation({
     mutationFn: detailSaveYoutubeContent,
-    onError: (error) => {
-      console.error(error);
+    onError: (error: HTTPError) => {
+      if (error.response.status === 401) {
+        infoToast("세션이 만료되었어요. 다시 로그인해주세요.");
+      }
     },
   });
 };

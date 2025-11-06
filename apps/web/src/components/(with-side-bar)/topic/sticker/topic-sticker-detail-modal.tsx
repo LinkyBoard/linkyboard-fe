@@ -43,7 +43,7 @@ export default function TopicStickerDetailModal() {
         }}
         onMouseDown={onMouseDown}
       >
-        <div className="bg-background size-4/5 space-y-4 rounded-2xl p-8">
+        <div className="bg-background size-4/5 space-y-4 rounded-2xl px-16 py-8">
           <div className="flex items-center justify-between">
             <button onClick={onRouteToDetail}>
               <MoveDiagonal2 size={20} />

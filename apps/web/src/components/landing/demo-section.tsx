@@ -16,7 +16,7 @@ const DEMO_VIDEOS = [
     type: "extension",
     icon: <NotebookPen size={12} />,
     title: "요약",
-    description: "웹 서칭 중 발견한 지식들을 요약하세요.",
+    description: "웹 서칭 중 발견한 지식들을 저장하세요.",
     video: extensionVideo,
     button: "Chrome 확장프로그램 다운로드",
   },
@@ -24,7 +24,7 @@ const DEMO_VIDEOS = [
     type: "dashboard",
     icon: <FolderArchive size={12} />,
     title: "정리",
-    description: "발견한 지식들을 한 곳에서 관리하세요.",
+    description: "저장한 지식들을 한 곳에서 관리하세요.",
     video: dashboardVideo,
     button: "정리하러 가기",
   },
@@ -32,10 +32,19 @@ const DEMO_VIDEOS = [
     type: "topic",
     icon: <Link size={12} />,
     title: "연결",
-    description: "지식들을 연결하여 하나의 토픽을 생성하세요.",
+    description: "한 곳에 모은 지식들을 자유롭게 연결하세요.",
     video: topicVideo,
     button: "연결하러 가기",
   },
+  // TODO: 서버 복구되면 영상 찍기
+  // {
+  //   type: "dashboard",
+  //   icon: <FolderArchive size={12} />,
+  //   title: "정리",
+  //   description: "연결된 지식들을 하나로 요약하세요.",
+  //   video: topicVideo,
+  //   button: "요약하러 가기",
+  // },
 ];
 
 export default function DemoSection() {
@@ -55,13 +64,13 @@ export default function DemoSection() {
   };
 
   return (
-    <section className="bg-card px-4 py-20">
-      <div className="mx-auto max-w-6xl space-y-8 sm:space-y-12 lg:space-y-24">
+    <section className="bg-card relative px-4 py-20">
+      <div className="relative z-10 mx-auto max-w-6xl space-y-8 sm:space-y-12 lg:space-y-24">
         {DEMO_VIDEOS.map((demo, idx) => (
           <div
-            key={demo.title}
+            key={`${demo.title}-${idx}`}
             className={cn(
-              "animate-fade-in-up flex flex-col items-center gap-6 rounded-2xl lg:flex-row lg:gap-10",
+              "animate-fade-in-up z-1 flex flex-col items-center gap-6 rounded-2xl lg:flex-row lg:gap-10",
               idx % 2 && "lg:flex-row-reverse"
             )}
           >
@@ -95,6 +104,10 @@ export default function DemoSection() {
           </div>
         ))}
       </div>
+      <div className="bg-radial-gradient-blue z-1 absolute left-32 top-0 size-[600px] -translate-y-1/2 rounded-full" />
+      <div className="bg-radial-gradient-purple absolute left-0 top-0 z-0 size-[600px] -translate-x-1/3 -translate-y-1/4 rounded-full" />
+      <div className="bg-radial-gradient-duo absolute right-0 top-1/2 z-0 size-[600px] translate-x-1/4 rounded-full" />
+      <div className="bg-radial-gradient-blue z-1 absolute bottom-0 left-0 size-[600px] -translate-x-1/3 translate-y-1/2 rounded-full" />
     </section>
   );
 }

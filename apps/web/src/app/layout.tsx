@@ -1,28 +1,16 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { JetBrains_Mono, Merriweather, Poppins } from "next/font/google";
+import localFont from "next/font/local";
 
 import RootProvider from "@/components/provider/root-provider";
 import ThirdPartyProvider from "@/components/provider/third-party-provider";
 import { cn } from "@linkyboard/utils";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins",
-});
-
-const merriweather = Merriweather({
-  subsets: ["latin"],
-  weight: ["300", "400", "700"],
-  variable: "--font-merriweather",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-jetbrains-mono",
+const pretendard = localFont({
+  src: "../assets/fonts/PretendardVariable.woff2",
+  variable: "--font-pretendard",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -74,16 +62,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={cn(poppins.variable, merriweather.variable, jetbrainsMono.variable)}>
-      <head>
-        <meta
-          name="google-site-verification"
-          content="QCEJjFcIzUi4_pR-QJw5g8OdYabndorX1YORsRauKnw"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-      </head>
-      <body className={cn(poppins.className, "antialiased")}>
+    <html lang="ko">
+      <body className={cn(pretendard.className, "antialiased")}>
         <ThirdPartyProvider />
         <RootProvider>{children}</RootProvider>
       </body>

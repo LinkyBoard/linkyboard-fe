@@ -39,7 +39,7 @@ const features = [
 export default function FeaturesSection() {
   return (
     <section id="features" className="bg-card py-20">
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="relative z-10 mx-auto max-w-6xl px-4">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-bold">강력한 기능들</h2>
           <p className="text-muted-foreground mx-auto max-w-2xl text-lg">

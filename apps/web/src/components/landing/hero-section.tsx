@@ -22,7 +22,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="aspect-9/5 relative flex items-center py-24 text-center">
+    <section className="aspect-9/5 relative z-10 flex items-center py-24 text-center">
       <Image src={landingBg} alt="landing-bg" fill className="-z-10 object-cover" />
       <div className="bg-glass z-10 mx-auto w-4/5 max-w-[1047px] space-y-7 px-4 py-20">
         <h1 className="animate-fade-in-up text-4xl font-semibold text-white md:text-6xl">

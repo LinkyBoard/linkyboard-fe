@@ -4,9 +4,9 @@ import BenefitsSection from "@/components/landing/benefits-section";
 import DemoSection from "@/components/landing/demo-section";
 import FeaturesSection from "@/components/landing/features-section";
 import Footer from "@/components/landing/footer";
+import FourStepsSection from "@/components/landing/four-steps-section";
 import Header from "@/components/landing/header";
 import HeroSection from "@/components/landing/hero-section";
-import HowItWorksSection from "@/components/landing/how-it-works-section";
 import { getCookie } from "@/utils/cookie";
 
 export default async function Home() {
@@ -17,13 +17,13 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen overflow-x-hidden">
       <Header />
       <HeroSection />
       <DemoSection />
       <FeaturesSection />
       <BenefitsSection />
-      <HowItWorksSection />
+      <FourStepsSection />
       <Footer />
     </main>
   );

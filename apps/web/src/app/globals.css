@@ -51,3 +51,11 @@ div.customHandle {
 .node-toggleListItem:has(+ .bn-block-group) svg {
   fill: var(--foreground);
 }
+
+@utility bg-glass {
+  background-color: transparent;
+  -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 60px;
+}

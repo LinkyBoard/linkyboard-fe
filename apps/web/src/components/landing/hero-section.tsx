@@ -6,6 +6,10 @@ import { Button } from "@linkyboard/components";
 
 import { Download } from "lucide-react";
 
+import Image from "../common/image";
+
+const landingBg = "/static/landing-bg.webp";
+
 export default function HeroSection() {
   const router = useRouter();
 
@@ -18,21 +22,22 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="from-background to-accent bg-gradient-to-br py-24 text-center">
-      <div className="mx-auto max-w-6xl px-4">
-        <h1 className="from-primary to-chart-2 animate-fade-in-up mb-6 bg-gradient-to-r bg-clip-text text-5xl font-bold text-transparent md:text-7xl">
-          지식 관리의
+    <section className="aspect-9/5 relative flex items-center py-24 text-center">
+      <Image src={landingBg} alt="landing-bg" fill className="-z-10 object-cover" />
+      <div className="bg-glass z-10 mx-auto w-4/5 max-w-[1047px] space-y-7 px-4 py-20">
+        <h1 className="animate-fade-in-up text-4xl font-semibold text-white md:text-6xl">
+          쌓기만 하던 자료
           <br />
-          <span className="text-primary">새로운 패러다임</span>
+          간편하게 정리·요약까지
         </h1>
 
-        <p className="text-muted-foreground animate-fade-in-up mx-auto mb-8 max-w-3xl text-xl md:text-2xl">
+        <p className="animate-fade-in-up mx-auto text-xl text-white md:text-2xl">
           흩어진 정보를 연결된 인사이트로 변환하는
           <br />
           브라우저 통합 지식 관리 서비스
         </p>
 
-        <div className="animate-fade-in-up mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <div className="animate-fade-in-up flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
             size="lg"
             className="flex items-center gap-2"
@@ -45,7 +50,7 @@ export default function HeroSection() {
             variant="outline"
             size="lg"
             onClick={onDownloadClick}
-            className="flex items-center gap-1"
+            className="flex flex-wrap items-center gap-1"
             aria-label="기능 살펴보기"
           >
             <Download size={20} />

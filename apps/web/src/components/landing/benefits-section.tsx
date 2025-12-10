@@ -1,4 +1,4 @@
-import { Database, Gem, Heart, Lightbulb, Rocket, Users } from "lucide-react";
+import { Database, Gem, Lightbulb, Rocket } from "lucide-react";
 
 const benefits = [
   {
@@ -17,28 +17,18 @@ const benefits = [
     description: "체계적인 지식 축적과 관리",
   },
   {
-    icon: Heart,
-    title: "스트레스 감소",
-    description: "정보 과부하로 인한 스트레스 해소",
-  },
-  {
     icon: Gem,
     title: "개인 지식 자산",
     description: "나만의 가치 있는 지식 자산 구축",
-  },
-  {
-    icon: Users,
-    title: "협업 가능",
-    description: "팀원과 지식 공유 및 협업",
   },
 ];
 
 export default function BenefitsSection() {
   return (
-    <section id="benefits" className="py-20">
-      <div className="mx-auto max-w-6xl px-4">
+    <section id="benefits" className="relative overflow-hidden py-20">
+      <div className="relative z-10 mx-auto max-w-6xl px-4">
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-4xl font-bold">LinkyBoard의 혜택</h2>
+          <h2 className="mb-4 text-4xl font-bold">LinkyBoard의 가치</h2>
           <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
             지식 관리의 새로운 패러다임을 경험하세요
           </p>
@@ -59,6 +49,7 @@ export default function BenefitsSection() {
           ))}
         </div>
       </div>
+      <div className="bg-radial-gradient-purple max-size-96 absolute bottom-0 left-1/2 z-0 size-[90vw] -translate-x-1/2 translate-y-1/2 rounded-full" />
     </section>
   );
 }

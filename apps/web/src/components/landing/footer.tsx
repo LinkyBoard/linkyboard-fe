@@ -1,6 +1,6 @@
 "use client";
 
-import { Facebook, Github, Linkedin, Twitter } from "lucide-react";
+import { Github } from "lucide-react";
 
 const footerSections = [
   {
@@ -21,22 +21,6 @@ const footerSections = [
       { name: "커뮤니티", href: "#community" },
     ],
   },
-  {
-    title: "회사",
-    links: [
-      { name: "소개", href: "#about" },
-      { name: "블로그", href: "#blog" },
-      { name: "채용", href: "#careers" },
-      { name: "연락처", href: "#contact" },
-    ],
-  },
-];
-
-const socialLinks = [
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Github, href: "#", label: "GitHub" },
 ];
 
 export default function Footer() {
@@ -60,16 +44,14 @@ export default function Footer() {
               지식을 연결하는 스마트 지식 관리 서비스
             </p>
             <div className="flex space-x-4">
-              {socialLinks.map((social, index) => (
-                <a
-                  key={index}
-                  href={social.href}
-                  className="text-background/80 hover:text-background text-xl transition-colors"
-                  aria-label={social.label}
-                >
-                  <social.icon size={20} />
-                </a>
-              ))}
+              <a
+                href="https://github.com/LinkyBoard"
+                className="text-background/80 hover:text-background text-xl transition-colors"
+                aria-label="GitHub"
+                target="_blank"
+              >
+                <Github size={20} />
+              </a>
             </div>
           </div>
 

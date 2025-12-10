@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LinkyBoard Web
 
-## Getting Started
+Next.js 기반 웹 플랫폼입니다.
 
-First, run the development server:
+## 기술 스택
+
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **State**: Zustand, TanStack Query
+
+## 설치 방법
+
+1. 프로젝트 루트에서 의존성 설치 (이미 설치되어 있다면 생략)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 개발 서버 실행
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# 루트에서 실행
+pnpm dev:web
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# 또는 web 디렉토리에서 직접 실행
+cd apps/web
+pnpm dev
+```
 
-## Learn More
+개발 서버는 [http://localhost:3000](http://localhost:3000)에서 실행됩니다.
 
-To learn more about Next.js, take a look at the following resources:
+## 프로젝트 구조
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```plaintext
+web/
+├── public/              # 정적 파일
+│   ├── example/         # 예제 비디오 파일
+│   └── static/          # 정적 이미지
+├── src/
+│   ├── app/             # Next.js App Router
+│   │   ├── (with-side-bar)/  # 사이드바가 있는 레이아웃 그룹
+│   │   │   ├── dashboard/    # 대시보드 페이지
+│   │   │   ├── library/      # 라이브러리 페이지
+│   │   │   └── topic/        # 토픽 페이지
+│   │   ├── login/            # 로그인 페이지
+│   │   ├── redirect/         # 로그인 리다이렉트 페이지
+│   │   ├── layout.tsx        # 루트 레이아웃
+│   │   └── page.tsx          # 랜딩 페이지
+│   ├── assets/          # 폰트, SVG 등
+│   ├── components/      # React 컴포넌트
+│   │   ├── (with-side-bar)/  # 사이드바 관련 컴포넌트
+│   │   ├── common/           # 공통 컴포넌트
+│   │   ├── landing/          # 랜딩 페이지 컴포넌트
+│   │   └── provider/         # Provider 컴포넌트
+│   ├── constants/       # 상수 정의
+│   ├── hooks/           # 커스텀 훅
+│   ├── lib/             # 라이브러리 설정
+│   │   ├── tanstack/        # TanStack Query 설정
+│   │   └── zustand/         # Zustand 스토어
+│   ├── models/          # 데이터 모델
+│   ├── page/            # 경로에 해당하는 페이지 컴포넌트
+│   ├── schemas/         # Zod 스키마
+│   ├── services/        # API 서비스
+│   ├── types/           # TypeScript 타입 정의
+│   └── utils/           # 유틸리티 함수
+├── next.config.ts       # Next.js 설정
+└── postcss.config.mjs   # PostCSS 설정
+```

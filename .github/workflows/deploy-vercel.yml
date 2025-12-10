@@ -1,4 +1,4 @@
-name: Deploy to Vercel with Redeploy-on-Failure
+name: Deploy to Vercel
 
 on:
   push:

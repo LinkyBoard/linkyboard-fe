@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
@@ -20,7 +20,7 @@ const AddContentList = dynamic(() => import("./add-content-list"), {
   ),
 });
 
-interface AddContentListProps {
+interface AddContentProps {
   type: ContentTypeOptions;
   id: string;
 }
@@ -28,7 +28,7 @@ interface AddContentListProps {
 const MIN_WIDTH = 300;
 const MAX_WIDTH = 600;
 
-export default function AddContent({ type, id }: AddContentListProps) {
+export default function AddContent({ type, id }: AddContentProps) {
   const [contentPanelWidth, setContentPanelWidth] = useState(300); // Content Panel 기본 너비
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -90,15 +90,7 @@ export default function AddContent({ type, id }: AddContentListProps) {
             <Link href={`/topic/${id}?type=${CONTENT_TYPE_OPTIONS.YOUTUBE}`}>유튜브</Link>
           </Button>
         </div>
-        <Suspense
-          fallback={
-            <div className="flex justify-center py-2">
-              <Spinner />
-            </div>
-          }
-        >
-          <AddContentList query={debouncedSearchQuery} id={id} type={type} />
-        </Suspense>
+        <AddContentList query={debouncedSearchQuery} id={id} type={type} />
       </div>
       <ResizeBar onMouseMove={onMouseMove} />
     </>

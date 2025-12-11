@@ -1,12 +1,7 @@
-"use client";
+import { lazy } from "react";
 
-import dynamic from "next/dynamic";
-
-const TopicStickerDetailModal = dynamic(
-  () => import("@/components/(with-side-bar)/topic/sticker/topic-sticker-detail-modal"),
-  {
-    ssr: false,
-  }
+const TopicStickerDetailModal = lazy(
+  () => import("@/components/(with-side-bar)/topic/sticker/topic-sticker-detail-modal")
 );
 
 interface TopicBoardLayoutProps {

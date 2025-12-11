@@ -76,12 +76,6 @@ div.customHandle {
     rgba(225, 217, 253, 0.8) 46.63%,
     rgba(225, 216, 255, 0) 100%
   );
-  /* background: radial-gradient(
-    50% 50% at 50% 50%,
-    #ccbeff 0%,
-    rgba(204, 190, 255, 0.8) 46.63%,
-    rgba(225, 216, 255, 0) 100%
-  ); */
 }
 
 @utility bg-radial-gradient-duo {

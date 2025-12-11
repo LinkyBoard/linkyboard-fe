@@ -15,7 +15,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
 
-  const sectionIds = ["introduction", "features", "benefits", "how-it-works"];
+  const sectionIds = ["demo", "features", "benefits", "how-it-works"];
   const activeSection = useScrollSpy(sectionIds);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function Header() {
   };
 
   const navLinks = [
-    { href: "#introduction", label: "소개" },
+    { href: "#demo", label: "소개" },
     { href: "#features", label: "기능" },
     { href: "#benefits", label: "혜택" },
     { href: "#how-it-works", label: "사용법" },

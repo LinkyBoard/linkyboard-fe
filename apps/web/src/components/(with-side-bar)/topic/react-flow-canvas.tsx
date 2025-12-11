@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
+import { Spinner } from "@linkyboard/components";
 import type { CategoryContentDTO } from "@linkyboard/types";
 import type { Connection, Edge, Node, NodeProps, NodeTypes } from "@xyflow/react";
 import {
@@ -10,25 +11,26 @@ import {
   type OnEdgesChange,
   type OnNodesChange,
   ReactFlow,
+  ReactFlowProvider,
   useReactFlow,
 } from "@xyflow/react";
 
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 import Sticker from "./sticker";
 
-interface FlowCanvasProps {
+interface ReactFlowCanvasProps {
   isLoading: boolean;
   isTopicError: boolean;
   isNotFoundError: boolean;
   id: string;
   nodes: Node[];
   edges: Edge[];
+  selectedNodeIds: string[];
   onNodesChange: OnNodesChange<Node>;
   onEdgesChange: OnEdgesChange<Edge>;
   onConnect: (params: Connection) => void;
   onEdgeClick: (e: React.MouseEvent, edge: Edge) => void;
-  selectedNodeIds: string[];
   onNodeSelect: (nodeId: string) => void;
 }
 
@@ -43,7 +45,15 @@ const defaultEdgeOptions = {
   },
 };
 
-const FlowCanvas = ({
+export default function ReactFlowCanvas(props: ReactFlowCanvasProps) {
+  return (
+    <ReactFlowProvider>
+      <FlowCanvas {...props} />
+    </ReactFlowProvider>
+  );
+}
+
+function FlowCanvas({
   isLoading,
   isTopicError,
   isNotFoundError,
@@ -56,7 +66,7 @@ const FlowCanvas = ({
   onEdgeClick,
   selectedNodeIds,
   onNodeSelect,
-}: FlowCanvasProps) => {
+}: ReactFlowCanvasProps) {
   const { screenToFlowPosition } = useReactFlow();
   const { mutateAsync: createContent } = useCreateContent(id);
 
@@ -72,7 +82,7 @@ const FlowCanvas = ({
         />
       ),
     }),
-    [selectedNodeIds, id]
+    [selectedNodeIds, id, onNodeSelect]
   );
 
   // 드래그 앤 드롭 핸들러
@@ -106,21 +116,16 @@ const FlowCanvas = ({
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      {isLoading || isTopicError ? (
+      {isLoading ? (
+        <div className="flex h-full w-full items-center justify-center">
+          <Spinner className="text-muted-foreground size-16" />
+        </div>
+      ) : isTopicError ? (
         <div className="flex h-full flex-col items-center justify-center gap-2">
-          {isLoading ? (
-            <>
-              <Loader2 className="text-muted-foreground size-16 animate-spin" />
-              <p className="text-muted-foreground text-xl font-semibold">토픽을 불러오고 있어요</p>
-            </>
-          ) : (
-            <>
-              <AlertTriangle className="text-destructive size-16" />
-              <p className="text-muted-foreground text-xl font-semibold">
-                {isNotFoundError ? "토픽을 찾을 수 없어요." : "토픽을 불러오는데 실패했어요."}
-              </p>
-            </>
-          )}
+          <AlertTriangle className="text-destructive size-16" />
+          <p className="text-muted-foreground text-xl font-semibold">
+            {isNotFoundError ? "토픽을 찾을 수 없어요." : "토픽을 불러오는데 실패했어요."}
+          </p>
         </div>
       ) : (
         <ReactFlow
@@ -139,6 +144,4 @@ const FlowCanvas = ({
       )}
     </div>
   );
-};
-
-export default FlowCanvas;
+}

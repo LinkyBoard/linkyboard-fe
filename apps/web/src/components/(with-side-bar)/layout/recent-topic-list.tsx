@@ -7,8 +7,6 @@ import { useGetAllTopics } from "@/lib/tanstack/query/topic";
 import { useDashboardStore } from "@/lib/zustand/dashboard";
 import type { TopicDTO } from "@/models/topic";
 
-import { Loader2 } from "lucide-react";
-
 import RecentTopicItem from "./recent-topic-item";
 
 export default function RecentTopicList() {
@@ -39,20 +37,16 @@ export default function RecentTopicList() {
 
   useEffect(() => {
     if (!isPending) {
-      setTotalTopics(recentTopics?.data?.length || 0);
+      setTotalTopics(recentTopics.data.length);
     }
-  }, [isPending]);
+  }, [isPending, recentTopics, setTotalTopics]);
 
   return (
     <>
-      {isLoading ? (
-        <div className="flex items-center justify-center">
-          <Loader2 className="animate-spin" />
-        </div>
-      ) : !recentTopics || recentTopics?.data?.length === 0 ? (
+      {recentTopics.data.length === 0 ? (
         <p className="text-muted-foreground text-center text-sm">토픽이 없어요.</p>
       ) : (
-        recentTopics?.data?.map((topic) => (
+        recentTopics.data.map((topic) => (
           <RecentTopicItem
             key={topic.id}
             isSelected={isSelected(topic.id)}

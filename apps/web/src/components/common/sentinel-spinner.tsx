@@ -2,9 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import { Spinner } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
-
-import { Loader2 } from "lucide-react";
 
 interface SentinelSpinnerProps {
   fetchNextPage: () => void;
@@ -43,9 +42,7 @@ export default function SentinelSpinner({
 
   return (
     <>
-      {!isLoading && isFetchingNextPage && (
-        <Loader2 className={cn("mx-auto animate-spin", className)} />
-      )}
+      {!isLoading && isFetchingNextPage && <Spinner className={cn("mx-auto", className)} />}
       <div ref={sentinelRef} />
     </>
   );

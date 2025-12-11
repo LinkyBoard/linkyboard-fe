@@ -61,8 +61,6 @@ export default function Sticker(props: StickerProps) {
   const isTarget = connection.inProgress && connection.fromNode.id !== props.id;
   const isSource = connection.inProgress && connection.fromNode.id === props.id;
 
-  const stickerClass = stickerStyle[nodeData.nodeContent];
-
   const debouncedProps = useDebounce(props, 300);
 
   // 위치 변경 시 updateContentPosition 호출
@@ -179,7 +177,7 @@ export default function Sticker(props: StickerProps) {
     <div
       className={cn(
         "group relative rounded-2xl p-6 shadow-lg transition-shadow duration-300 ease-in-out hover:shadow-xl",
-        stickerClass,
+        stickerStyle[nodeData.nodeContent],
         isTarget && "border-primary",
         isSource && "border-muted-foreground/50",
         props.isSelected && "ring-primary ring-2 ring-offset-2"

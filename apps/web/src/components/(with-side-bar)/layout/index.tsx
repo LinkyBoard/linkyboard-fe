@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -9,12 +11,16 @@ import { MINUTE } from "@/constants/time";
 import { queryClient } from "@/lib/tanstack";
 import { useMobileMenuStore } from "@/lib/zustand/mobile-menu";
 import { getCategories } from "@/services/category";
+import { Spinner } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
 
 import type { LucideIcon } from "lucide-react";
 import { Book, Grid3X3, Home } from "lucide-react";
 
-import RecentTopicList from "./recent-topic-list";
+const RecentTopicList = dynamic(() => import("./recent-topic-list"), {
+  ssr: false,
+  loading: () => <Spinner className="mx-auto" />,
+});
 
 interface NavItem {
   icon: LucideIcon;
@@ -89,7 +95,9 @@ export default function Sidebar() {
           <div className="text-muted-foreground mb-4 text-sm font-semibold uppercase tracking-wider">
             나의 토픽
           </div>
-          <RecentTopicList />
+          <Suspense fallback={<Spinner className="mx-auto" />}>
+            <RecentTopicList />
+          </Suspense>
         </div>
       </aside>
 

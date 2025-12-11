@@ -1,22 +1,34 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
-import AddContentList from "@/components/(with-side-bar)/topic/add-content-list";
+import AddContent from "@/components/(with-side-bar)/topic/add-content";
 import AddStickerDialog from "@/components/(with-side-bar)/topic/add-sticker-dialog";
 import AddTopicDialog from "@/components/(with-side-bar)/topic/add-topic-dialog";
-import FlowCanvas from "@/components/(with-side-bar)/topic/flow-canvas";
 import RemoveContentButton from "@/components/(with-side-bar)/topic/remove-content-button";
 import SummarizeDialog from "@/components/(with-side-bar)/topic/summarize-dialog";
 import SearchHeader from "@/components/common/search-header";
 import type { ContentTypeOptions } from "@/constants/content";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicBoardById } from "@/lib/tanstack/query/topic";
-import { infoToast } from "@linkyboard/components";
+import { infoToast, Spinner } from "@linkyboard/components";
 import type { Connection, Edge, Node } from "@xyflow/react";
-import { addEdge, ReactFlowProvider, useEdgesState, useNodesState } from "@xyflow/react";
+import { addEdge, useEdgesState, useNodesState } from "@xyflow/react";
 
 import { Plus } from "lucide-react";
+
+const ReactFlowCanvas = dynamic(
+  () => import("@/components/(with-side-bar)/topic/react-flow-canvas"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center">
+        <Spinner className="text-muted-foreground size-16" />
+      </div>
+    ),
+  }
+);
 
 interface TopicBoardPageProps {
   id: string;
@@ -36,13 +48,13 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
+  const isNotFoundError = (!isLoading && error?.message.includes("404")) || false;
+
   const onNodeSelect = (nodeId: string) => {
     setSelectedNodeIds((prev) =>
       prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]
     );
   };
-
-  const isNotFoundError = !isLoading && error?.message.includes("404");
 
   const onConnect = useCallback(
     async (params: Connection) => {
@@ -74,7 +86,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         setEdges((eds) => eds.filter((e) => e.id !== edgeId));
       }
     },
-    [edges]
+    [edges, createConnection, id, setEdges]
   );
 
   const onEdgeClick = async (e: React.MouseEvent, edge: Edge) => {
@@ -102,11 +114,11 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       setNodes(data.nodes);
       setEdges(data.edges);
     }
-  }, [id, isLoading, isRefetching]);
+  }, [id, isLoading, isRefetching, data, setNodes, setEdges]);
 
   return (
     <div className="flex flex-col">
-      <header className="bg-background mb-6 flex items-center justify-between">
+      <header className="mb-6 flex items-center justify-between">
         <SearchHeader placeholder="토픽 보드에서 검색하세요" />
         <div className="flex items-center gap-4">
           {selectedNodeIds.length > 0 && (
@@ -130,25 +142,23 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         </div>
       </header>
 
-      <div className="flex h-[calc(100vh-130px)] gap-0">
-        <AddContentList isTopicLoading={isLoading} nodes={data?.nodes || []} id={id} type={type} />
+      <div className="flex h-[calc(100vh-130px)]">
+        <AddContent id={id} type={type} />
 
-        <ReactFlowProvider>
-          <FlowCanvas
-            isLoading={isLoading}
-            isTopicError={isError}
-            isNotFoundError={isNotFoundError || false}
-            id={id}
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onEdgeClick={onEdgeClick}
-            selectedNodeIds={selectedNodeIds}
-            onNodeSelect={onNodeSelect}
-          />
-        </ReactFlowProvider>
+        <ReactFlowCanvas
+          isLoading={isLoading}
+          isTopicError={isError}
+          isNotFoundError={isNotFoundError}
+          id={id}
+          nodes={nodes}
+          edges={edges}
+          selectedNodeIds={selectedNodeIds}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onEdgeClick={onEdgeClick}
+          onNodeSelect={onNodeSelect}
+        />
       </div>
     </div>
   );

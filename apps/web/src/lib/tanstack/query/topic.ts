@@ -3,7 +3,7 @@ import { MINUTE } from "@/constants/time";
 import { TOPIC } from "@/constants/topic";
 import { getAllContents, getAllTopics, getTopicBoardById, getTopicById } from "@/services/topic";
 import { calculateNextPageParam } from "@linkyboard/utils";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
 export const useGetTopicBoardById = (id: string) => {
   return useQuery({
@@ -16,7 +16,7 @@ export const useGetTopicBoardById = (id: string) => {
 };
 
 export const useGetAllTopics = () => {
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: [TOPIC.GET_ALL_TOPICS],
     queryFn: async ({ pageParam = 0 }) => await getAllTopics(pageParam),
     getNextPageParam: (lastPage) =>
@@ -34,7 +34,7 @@ export const useGetAllTopics = () => {
 };
 
 export const useGetAllContents = (type: ContentTypeOptions) => {
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: [TOPIC.GET_ALL_CONTENTS, type],
     queryFn: async ({ pageParam = 0 }) => await getAllContents({ page: pageParam, type }),
     getNextPageParam: (lastPage) =>

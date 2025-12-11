@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import AddContentList from "@/components/(with-side-bar)/topic/add-content-list";
+import AddContent from "@/components/(with-side-bar)/topic/add-content";
 import AddStickerDialog from "@/components/(with-side-bar)/topic/add-sticker-dialog";
 import AddTopicDialog from "@/components/(with-side-bar)/topic/add-topic-dialog";
 import FlowCanvas from "@/components/(with-side-bar)/topic/flow-canvas";
@@ -131,7 +131,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       </header>
 
       <div className="flex h-[calc(100vh-130px)] gap-0">
-        <AddContentList isTopicLoading={isLoading} nodes={data?.nodes || []} id={id} type={type} />
+        <AddContent id={id} type={type} />
 
         <ReactFlowProvider>
           <FlowCanvas

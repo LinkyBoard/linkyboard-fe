@@ -48,13 +48,13 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
+  const isNotFoundError = (!isLoading && error?.message.includes("404")) || false;
+
   const onNodeSelect = (nodeId: string) => {
     setSelectedNodeIds((prev) =>
       prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]
     );
   };
-
-  const isNotFoundError = (!isLoading && error?.message.includes("404")) || false;
 
   const onConnect = useCallback(
     async (params: Connection) => {
@@ -86,7 +86,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
         setEdges((eds) => eds.filter((e) => e.id !== edgeId));
       }
     },
-    [edges]
+    [edges, createConnection, id, setEdges]
   );
 
   const onEdgeClick = async (e: React.MouseEvent, edge: Edge) => {

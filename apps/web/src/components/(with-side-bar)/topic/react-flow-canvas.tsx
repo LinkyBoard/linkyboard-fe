@@ -82,7 +82,7 @@ function FlowCanvas({
         />
       ),
     }),
-    [selectedNodeIds, id]
+    [selectedNodeIds, id, onNodeSelect]
   );
 
   // 드래그 앤 드롭 핸들러

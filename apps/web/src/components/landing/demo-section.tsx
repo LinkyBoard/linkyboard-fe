@@ -9,7 +9,8 @@ import { FolderArchive, Link, NotebookPen } from "lucide-react";
 
 const extensionVideo = "/example/extension.mp4";
 const dashboardVideo = "/example/dashboard.mp4";
-const topicVideo = "/example/topic.mp4";
+const connectionVideo = "/example/connection.mp4";
+const summaryTopicVideo = "/example/summary-topic.mp4";
 
 const DEMO_VIDEOS = [
   {
@@ -33,18 +34,17 @@ const DEMO_VIDEOS = [
     icon: <Link size={12} />,
     title: "연결",
     description: "한 곳에 모은 지식들을 자유롭게 연결하세요.",
-    video: topicVideo,
+    video: connectionVideo,
     button: "연결하러 가기",
   },
-  // TODO: 서버 복구되면 영상 찍기
-  // {
-  //   type: "dashboard",
-  //   icon: <FolderArchive size={12} />,
-  //   title: "정리",
-  //   description: "연결된 지식들을 하나로 요약하세요.",
-  //   video: topicVideo,
-  //   button: "요약하러 가기",
-  // },
+  {
+    type: "topic",
+    icon: <FolderArchive size={12} />,
+    title: "정리",
+    description: "연결된 지식들을 하나로 요약하세요.",
+    video: summaryTopicVideo,
+    button: "요약하러 가기",
+  },
 ];
 
 export default function DemoSection() {
@@ -64,7 +64,7 @@ export default function DemoSection() {
   };
 
   return (
-    <section className="bg-card relative px-4 py-20">
+    <section id="demo" className="bg-card relative px-4 py-20">
       <div className="relative z-10 mx-auto max-w-6xl space-y-8 sm:space-y-12 lg:space-y-24">
         {DEMO_VIDEOS.map((demo, idx) => (
           <div

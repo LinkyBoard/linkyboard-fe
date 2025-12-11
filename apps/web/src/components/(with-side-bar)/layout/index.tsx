@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -95,9 +94,7 @@ export default function Sidebar() {
           <div className="text-muted-foreground mb-4 text-sm font-semibold uppercase tracking-wider">
             나의 토픽
           </div>
-          <Suspense fallback={<Spinner className="mx-auto" />}>
-            <RecentTopicList />
-          </Suspense>
+          <RecentTopicList />
         </div>
       </aside>
 

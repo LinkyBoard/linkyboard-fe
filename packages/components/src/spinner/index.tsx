@@ -6,6 +6,8 @@ interface SpinnerProps {
   className?: string;
 }
 
-export default function Spinner({ className }: SpinnerProps) {
+function Spinner({ className }: SpinnerProps) {
   return <Loader2 className={cn("text-primary animate-spin", className)} />;
 }
+
+export { Spinner };

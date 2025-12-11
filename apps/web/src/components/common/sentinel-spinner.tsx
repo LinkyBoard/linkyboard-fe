@@ -2,9 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import { Spinner } from "@linkyboard/components";
 import { cn } from "@linkyboard/utils";
-
-import Spinner from "./spinner";
 
 interface SentinelSpinnerProps {
   fetchNextPage: () => void;

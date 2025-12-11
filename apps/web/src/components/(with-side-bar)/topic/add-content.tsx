@@ -5,10 +5,9 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import ResizeBar from "@/components/common/resize-bar";
-import Spinner from "@/components/common/spinner";
 import { CONTENT_TYPE_OPTIONS, type ContentTypeOptions } from "@/constants/content";
 import { useDebounce } from "@/hooks/use-debounce";
-import { Button, Input } from "@linkyboard/components";
+import { Button, Input, Spinner } from "@linkyboard/components";
 
 import { Search } from "lucide-react";
 

@@ -17,6 +17,7 @@ import {
 
 import { AlertTriangle } from "lucide-react";
 
+import ContextMenuProvider from "./context-menu-provider";
 import Sticker from "./sticker";
 
 interface ReactFlowCanvasProps {
@@ -111,37 +112,39 @@ function FlowCanvas({
   };
 
   return (
-    <div
-      className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0"
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-    >
-      {isLoading ? (
-        <div className="flex h-full w-full items-center justify-center">
-          <Spinner className="text-muted-foreground size-16" />
-        </div>
-      ) : isTopicError ? (
-        <div className="flex h-full flex-col items-center justify-center gap-2">
-          <AlertTriangle className="text-destructive size-16" />
-          <p className="text-muted-foreground text-xl font-semibold">
-            {isNotFoundError ? "토픽을 찾을 수 없어요." : "토픽을 불러오는데 실패했어요."}
-          </p>
-        </div>
-      ) : (
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onEdgeClick={onEdgeClick}
-          nodeTypes={nodeTypes}
-          connectionLineStyle={connectionLineStyle}
-          defaultEdgeOptions={defaultEdgeOptions}
-        >
-          <Background />
-        </ReactFlow>
-      )}
-    </div>
+    <ContextMenuProvider>
+      <div
+        className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0"
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+      >
+        {isLoading ? (
+          <div className="flex h-full w-full items-center justify-center">
+            <Spinner className="text-muted-foreground size-16" />
+          </div>
+        ) : isTopicError ? (
+          <div className="flex h-full flex-col items-center justify-center gap-2">
+            <AlertTriangle className="text-destructive size-16" />
+            <p className="text-muted-foreground text-xl font-semibold">
+              {isNotFoundError ? "토픽을 찾을 수 없어요." : "토픽을 불러오는데 실패했어요."}
+            </p>
+          </div>
+        ) : (
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onEdgeClick={onEdgeClick}
+            nodeTypes={nodeTypes}
+            connectionLineStyle={connectionLineStyle}
+            defaultEdgeOptions={defaultEdgeOptions}
+          >
+            <Background />
+          </ReactFlow>
+        )}
+      </div>
+    </ContextMenuProvider>
   );
 }

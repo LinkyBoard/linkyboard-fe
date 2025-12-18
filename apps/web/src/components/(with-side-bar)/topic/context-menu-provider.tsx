@@ -1,0 +1,145 @@
+import React, { useCallback, useEffect, useState } from "react";
+
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/common/context-menu";
+
+interface ContextMenuProviderProps {
+  children: React.ReactNode;
+}
+
+const isMac = typeof window !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
+
+const onEscapeContextMenu = () => {
+  const escEvent = new KeyboardEvent("keydown", { key: "Escape" });
+  document.dispatchEvent(escEvent);
+};
+
+export default function ContextMenuProvider({ children }: ContextMenuProviderProps) {
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+
+  const onDuplicate = () => {
+    console.log("Duplicate 실행");
+    // 여기에 Duplicate 로직 추가
+  };
+
+  const onLink = () => {
+    console.log("Link 실행");
+    // 여기에 Link 로직 추가
+  };
+
+  const onUnlink = () => {
+    console.log("Unlink 실행");
+    // 여기에 Unlink 로직 추가
+  };
+
+  const onSummary = () => {
+    console.log("Summary 실행");
+    // 여기에 Summary 로직 추가
+  };
+
+  const onDelete = () => {
+    console.log("Delete 실행");
+    // 여기에 Delete 로직 추가
+  };
+
+  const onCloseContextMenu = useCallback(() => {
+    setIsContextMenuOpen(false);
+    onEscapeContextMenu();
+  }, []);
+
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      const isModifierPressed = isMac ? e.metaKey : e.ctrlKey;
+
+      switch (key) {
+        case "d":
+          if (!isModifierPressed) return;
+          e.preventDefault();
+          onDuplicate();
+          onCloseContextMenu();
+          break;
+        case "l":
+          e.preventDefault();
+          onLink();
+          onCloseContextMenu();
+          break;
+        case "u":
+          e.preventDefault();
+          onUnlink();
+          onCloseContextMenu();
+          break;
+        case "s":
+          e.preventDefault();
+          onSummary();
+          onCloseContextMenu();
+          break;
+        case "x":
+          e.preventDefault();
+          onDelete();
+          onCloseContextMenu();
+          break;
+      }
+    },
+    [onCloseContextMenu]
+  );
+
+  useEffect(() => {
+    if (!open) return;
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isContextMenuOpen, onKeyDown]);
+
+  return (
+    <ContextMenu onOpenChange={setIsContextMenuOpen}>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuContent className="min-w-60 rounded-2xl bg-[#333] p-5 text-white">
+        <ContextMenuItem
+          className="flex items-center justify-between rounded-xl px-4 py-1 focus:bg-[#7E4ED7] focus:text-white"
+          onSelect={onDuplicate}
+        >
+          <p className="text-xl font-bold">Duplicate</p>
+          <p className="font-light">{isMac ? "⌘D" : "Ctrl+D"}</p>
+        </ContextMenuItem>
+        <ContextMenuSeparator className="my-5" />
+        <ContextMenuItem
+          className="focus:bg-primary flex items-center justify-between rounded-xl px-4 py-1 focus:text-white"
+          onSelect={onLink}
+        >
+          <p className="text-xl font-bold">Link</p>
+          <p className="font-light">L</p>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="focus:bg-primary flex items-center justify-between rounded-xl px-4 py-1 focus:text-white"
+          onSelect={onUnlink}
+        >
+          <p className="text-xl font-bold">Unlink</p>
+          <p className="font-light">U</p>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="focus:bg-primary flex items-center justify-between rounded-xl px-4 py-1 focus:text-white"
+          onSelect={onSummary}
+        >
+          <p className="text-xl font-bold">Summary</p>
+          <p className="font-light">S</p>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="focus:bg-primary flex items-center justify-between rounded-xl px-4 py-1 focus:text-white"
+          onSelect={onDelete}
+        >
+          <p className="text-xl font-bold">Delete</p>
+          <p className="font-light">X</p>
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}

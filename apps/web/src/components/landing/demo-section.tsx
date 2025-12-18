@@ -53,14 +53,15 @@ export default function DemoSection() {
   const onClick = (type: string) => {
     if (type === "extension") {
       return window.open(
-        "https://chromewebstore.google.com/detail/%EB%84%A4%EB%B7%B8%EB%9D%BC-%ED%81%AC%EB%A1%AC-%EC%9D%B5%EC%8A%A4%ED%85%90%EC%85%98/edkjbjnfoipbcbhjckkfmlccokffdgcn?authuser=0&hl=ko",
+        "https://chromewebstore.google.com/detail/linkyboard/bbldallbjgpapnnholammeccaieoaigd?authuser=0&hl=ko",
         "_blank"
       );
     }
-    if (type === "dashboard") {
-      return router.push("/dashboard");
-    }
-    return router.push("/topic");
+    // if (type === "dashboard") {
+    //   return router.push("/dashboard");
+    // }
+    // return router.push("/topic");
+    window.open("https://forms.gle/R1KR3mnbWg5Hnaen7", "_blank");
   };
 
   return (

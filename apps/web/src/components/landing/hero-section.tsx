@@ -16,7 +16,7 @@ export default function HeroSection() {
   const onDownloadClick = () => {
     // 실제 구현에서는 다운로드 링크로 이동
     window.open(
-      "https://chromewebstore.google.com/detail/%EB%84%A4%EB%B7%B8%EB%9D%BC-%ED%81%AC%EB%A1%AC-%EC%9D%B5%EC%8A%A4%ED%85%90%EC%85%98/edkjbjnfoipbcbhjckkfmlccokffdgcn?authuser=0&hl=ko",
+      "https://chromewebstore.google.com/detail/linkyboard/bbldallbjgpapnnholammeccaieoaigd?authuser=0&hl=ko",
       "_blank"
     );
   };
@@ -41,10 +41,13 @@ export default function HeroSection() {
           <Button
             size="lg"
             className="flex items-center gap-2"
-            onClick={() => router.push("/login")}
+            // onClick={() => router.push("/login")}
             aria-label="무료로 시작하기"
           >
-            무료로 시작하기
+            {/* 무료로 시작하기 */}
+            <a href="https://forms.gle/R1KR3mnbWg5Hnaen7" target="_blank" rel="noopener noreferrer">
+              사전 등록하기
+            </a>
           </Button>
           <Button
             variant="outline"

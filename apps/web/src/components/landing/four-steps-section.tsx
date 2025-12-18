@@ -64,9 +64,17 @@ export default function FourStepsSection() {
           onClick={() => router.push("/login")}
           aria-label="무료로 시작하기"
         >
-          <span className="bg-gradient-to-r from-[#751698] to-[#13B5E8] bg-clip-text text-transparent">
+          {/* <span className="bg-gradient-to-r from-[#751698] to-[#13B5E8] bg-clip-text text-transparent">
             무료로 시작하기
-          </span>
+          </span> */}
+          <a
+            className="bg-gradient-to-r from-[#751698] to-[#13B5E8] bg-clip-text text-transparent"
+            href="https://forms.gle/R1KR3mnbWg5Hnaen7"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            사전 등록하기
+          </a>
         </Button>
       </div>
       <RadialRing size={729} ringGap={25} className="opacity-7 absolute bottom-10 left-[380px]" />

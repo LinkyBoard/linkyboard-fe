@@ -93,7 +93,7 @@ export default function Header() {
             variant="outline"
             size="lg"
             className="hidden w-full flex-col md:flex"
-            aria-label="무료 시작하기"
+            aria-label="데모 보기"
             asChild
           >
             <a
@@ -108,10 +108,14 @@ export default function Header() {
             variant="default"
             size="lg"
             className="hidden md:block"
-            onClick={() => router.push("/login")}
-            aria-label="무료 시작하기"
+            // onClick={() => router.push("/login")}
+            // aria-label="무료 시작하기"
+            aria-label="사전 등록하기"
           >
-            무료 시작
+            {/* 무료 시작 */}
+            <a href="https://forms.gle/R1KR3mnbWg5Hnaen7" target="_blank" rel="noopener noreferrer">
+              사전 등록
+            </a>
           </Button>
         </div>
 
@@ -156,9 +160,11 @@ export default function Header() {
                 size="lg"
                 className="w-full"
                 onClick={() => router.push("/login")}
-                aria-label="무료 시작하기"
+                // aria-label="무료 시작하기"
+                aria-label="사전 등록하기"
               >
-                무료 시작
+                {/* 무료 시작 */}
+                사전 등록
               </Button>
             </li>
           </ul>

@@ -1,3 +1,5 @@
+import { redirect, RedirectType } from "next/navigation";
+
 import { removeCookie } from "@/utils/cookie";
 import { API_BASE_URL } from "@/utils/env";
 import type { BaseResponseDTO } from "@linkyboard/types";
@@ -43,8 +45,8 @@ export const clientApi = ky.create({
             return ky(request, options);
           } else {
             // 토큰 재발급 실패 시 로그인 페이지로 리다이렉트
-            await removeCookie("loggedIn");
-            window.location.href = "/login";
+            removeCookie("loggedIn");
+            redirect("/login", RedirectType.replace);
           }
         }
         return response;

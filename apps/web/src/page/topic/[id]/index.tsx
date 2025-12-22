@@ -50,11 +50,11 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
 
   const isNotFoundError = (!isLoading && error?.message.includes("404")) || false;
 
-  const onNodeSelect = (nodeId: string) => {
+  const onNodeSelect = useCallback((nodeId: string) => {
     setSelectedNodeIds((prev) =>
       prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]
     );
-  };
+  }, []);
 
   const onConnect = useCallback(
     async (params: Connection) => {

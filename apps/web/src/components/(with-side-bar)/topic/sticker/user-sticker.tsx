@@ -13,7 +13,12 @@ import { Edit, Sticker, Trash2 } from "lucide-react";
 
 import RemoveUserStickerDialog from "./remove-user-sticker-dialog";
 
-export default function UserSticker({ item, topicId }: { item: TopicDTO; topicId: string }) {
+interface UserStickerProps {
+  item: TopicDTO;
+  topicId: string;
+}
+
+export default function UserSticker({ item, topicId }: UserStickerProps) {
   const topicStore = useTopicStore();
 
   const onEditTopic = () => {

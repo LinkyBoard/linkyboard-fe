@@ -71,6 +71,8 @@ function FlowCanvas({
   const { screenToFlowPosition } = useReactFlow();
   const { mutateAsync: createContent } = useCreateContent(id);
 
+  const isTriggerDisabled = selectedNodeIds.length === 0;
+
   const nodeTypes: NodeTypes = useMemo(
     () => ({
       custom: (props: NodeProps) => (
@@ -112,7 +114,7 @@ function FlowCanvas({
   };
 
   return (
-    <ContextMenuProvider>
+    <ContextMenuProvider isTriggerDisabled={isTriggerDisabled}>
       <div
         className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0"
         onDragOver={onDragOver}

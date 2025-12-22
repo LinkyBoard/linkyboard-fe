@@ -10,6 +10,7 @@ import {
 
 interface ContextMenuProviderProps {
   children: React.ReactNode;
+  isTriggerDisabled: boolean;
 }
 
 const isMac = typeof window !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
@@ -19,7 +20,10 @@ const onEscapeContextMenu = () => {
   document.dispatchEvent(escEvent);
 };
 
-export default function ContextMenuProvider({ children }: ContextMenuProviderProps) {
+export default function ContextMenuProvider({
+  children,
+  isTriggerDisabled,
+}: ContextMenuProviderProps) {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
   const onDuplicate = () => {
@@ -101,7 +105,9 @@ export default function ContextMenuProvider({ children }: ContextMenuProviderPro
 
   return (
     <ContextMenu onOpenChange={setIsContextMenuOpen}>
-      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuTrigger asChild disabled={isTriggerDisabled}>
+        {children}
+      </ContextMenuTrigger>
       <ContextMenuContent className="min-w-60 rounded-2xl bg-[#333] p-5 text-white">
         <ContextMenuItem
           className="flex items-center justify-between rounded-xl px-4 py-1 focus:bg-[#7E4ED7] focus:text-white"

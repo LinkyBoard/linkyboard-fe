@@ -38,8 +38,16 @@ export async function uploadImage(file: File): Promise<string> {
       })
       .json();
 
-    const url = proxyUrl.split("?")[0] || "";
-    return url;
+    const urlObj = new URL(preSignedUrl);
+    const fileName = urlObj.pathname.split("/linkyboard-bucket/")[1];
+
+    const {
+      result: { preSignedUrl: imageUrl },
+    } = await clientApi
+      .get<BaseResponseDTO<{ preSignedUrl: string }>>("images", { searchParams: { fileName } })
+      .json();
+
+    return imageUrl;
   } catch (err) {
     console.error(err);
     errorToast("이미지 업로드에 실패했어요.");

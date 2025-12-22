@@ -27,18 +27,14 @@ export default function DashboardHeader() {
     infoToast("아직 준비 중 이에요.");
   };
 
-  const onLogout = async () => {
-    try {
-      // 쿠키 삭제
-      await removeCookie("accessToken");
-      await removeCookie("refreshToken");
-      await removeCookie("loggedIn");
+  const onLogout = () => {
+    // 쿠키 삭제
+    removeCookie("accessToken");
+    removeCookie("refreshToken");
+    removeCookie("loggedIn");
 
-      // 로그인 페이지로 리다이렉트
-      router.push("/login");
-    } catch (error) {
-      console.error("로그아웃 중 오류 발생:", error);
-    }
+    // 로그인 페이지로 리다이렉트
+    router.push("/login");
   };
 
   const onUserButtonClick = () => {

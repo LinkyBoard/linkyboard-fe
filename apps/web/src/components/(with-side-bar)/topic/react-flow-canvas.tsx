@@ -1,39 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 
+import { TopicContext } from "@/context/topic-context";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import { Spinner } from "@linkyboard/components";
 import type { CategoryContentDTO } from "@linkyboard/types";
-import type { Connection, Edge, Node, NodeProps, NodeTypes } from "@xyflow/react";
-import {
-  Background,
-  type OnEdgesChange,
-  type OnNodesChange,
-  ReactFlow,
-  ReactFlowProvider,
-  useReactFlow,
-} from "@xyflow/react";
+import type { NodeProps, NodeTypes } from "@xyflow/react";
+import { Background, ReactFlow, ReactFlowProvider, useReactFlow } from "@xyflow/react";
 
 import { AlertTriangle } from "lucide-react";
 
 import ContextMenuProvider from "./context-menu-provider";
 import Sticker from "./sticker";
-
-interface ReactFlowCanvasProps {
-  isLoading: boolean;
-  isTopicError: boolean;
-  isNotFoundError: boolean;
-  id: string;
-  nodes: Node[];
-  edges: Edge[];
-  selectedNodeIds: string[];
-  onNodesChange: OnNodesChange<Node>;
-  onEdgesChange: OnEdgesChange<Edge>;
-  onConnect: (params: Connection) => void;
-  onEdgeClick: (e: React.MouseEvent, edge: Edge) => void;
-  onNodeSelect: (nodeId: string) => void;
-}
 
 const connectionLineStyle = {
   stroke: "#b1b1b7",
@@ -46,28 +25,35 @@ const defaultEdgeOptions = {
   },
 };
 
-export default function ReactFlowCanvas(props: ReactFlowCanvasProps) {
+export default function ReactFlowCanvas() {
   return (
     <ReactFlowProvider>
-      <FlowCanvas {...props} />
+      <FlowCanvas />
     </ReactFlowProvider>
   );
 }
 
-function FlowCanvas({
-  isLoading,
-  isTopicError,
-  isNotFoundError,
-  id,
-  nodes,
-  edges,
-  selectedNodeIds,
-  onNodesChange,
-  onEdgesChange,
-  onConnect,
-  onEdgeClick,
-  onNodeSelect,
-}: ReactFlowCanvasProps) {
+function FlowCanvas() {
+  const topicContext = useContext(TopicContext);
+  if (!topicContext) {
+    throw new Error("TopicContext not found");
+  }
+
+  const {
+    isLoading,
+    isTopicError,
+    isNotFoundError,
+    id,
+    nodes,
+    edges,
+    selectedNodeIds,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    onEdgeClick,
+    onNodeSelect,
+  } = topicContext;
+
   const { screenToFlowPosition } = useReactFlow();
   const { mutateAsync: createContent } = useCreateContent(id);
 
@@ -114,12 +100,7 @@ function FlowCanvas({
   };
 
   return (
-    <ContextMenuProvider
-      id={id}
-      nodes={nodes}
-      isTriggerDisabled={isTriggerDisabled}
-      selectedNodeIds={selectedNodeIds}
-    >
+    <ContextMenuProvider isTriggerDisabled={isTriggerDisabled}>
       <div
         className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0"
         onDragOver={onDragOver}
@@ -140,13 +121,13 @@ function FlowCanvas({
           <ReactFlow
             nodes={nodes}
             edges={edges}
+            nodeTypes={nodeTypes}
+            connectionLineStyle={connectionLineStyle}
+            defaultEdgeOptions={defaultEdgeOptions}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onEdgeClick={onEdgeClick}
-            nodeTypes={nodeTypes}
-            connectionLineStyle={connectionLineStyle}
-            defaultEdgeOptions={defaultEdgeOptions}
           >
             <Background />
           </ReactFlow>

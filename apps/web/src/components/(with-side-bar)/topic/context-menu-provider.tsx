@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 
 import {
   ContextMenu,
@@ -7,16 +7,14 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/common/context-menu";
+import { TopicContext } from "@/context/topic-context";
 import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
 import type { CategoryContentDTO } from "@linkyboard/types";
 import type { Node } from "@xyflow/react";
 
 interface ContextMenuProviderProps {
   children: React.ReactNode;
-  id: string;
-  nodes: Node[];
   isTriggerDisabled: boolean;
-  selectedNodeIds: string[];
 }
 
 const isMac = typeof window !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
@@ -28,11 +26,15 @@ const onEscapeContextMenu = () => {
 
 export default function ContextMenuProvider({
   children,
-  nodes,
-  id,
   isTriggerDisabled,
-  selectedNodeIds,
 }: ContextMenuProviderProps) {
+  const topicContext = useContext(TopicContext);
+  if (!topicContext) {
+    throw new Error("TopicContext not found");
+  }
+
+  const { id, nodes, selectedNodeIds } = topicContext;
+
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
   const { mutateAsync: createContent } = useCreateContent(id);

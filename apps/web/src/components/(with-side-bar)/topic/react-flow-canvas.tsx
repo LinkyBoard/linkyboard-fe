@@ -61,11 +61,11 @@ function FlowCanvas({
   id,
   nodes,
   edges,
+  selectedNodeIds,
   onNodesChange,
   onEdgesChange,
   onConnect,
   onEdgeClick,
-  selectedNodeIds,
   onNodeSelect,
 }: ReactFlowCanvasProps) {
   const { screenToFlowPosition } = useReactFlow();
@@ -114,7 +114,12 @@ function FlowCanvas({
   };
 
   return (
-    <ContextMenuProvider isTriggerDisabled={isTriggerDisabled}>
+    <ContextMenuProvider
+      id={id}
+      nodes={nodes}
+      isTriggerDisabled={isTriggerDisabled}
+      selectedNodeIds={selectedNodeIds}
+    >
       <div
         className="relative flex-1 overflow-hidden rounded-r-lg border border-l-0"
         onDragOver={onDragOver}

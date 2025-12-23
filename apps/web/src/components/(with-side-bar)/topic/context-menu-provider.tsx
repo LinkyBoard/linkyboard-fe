@@ -7,10 +7,16 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/common/context-menu";
+import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
+import type { CategoryContentDTO } from "@linkyboard/types";
+import type { Node } from "@xyflow/react";
 
 interface ContextMenuProviderProps {
   children: React.ReactNode;
+  id: string;
+  nodes: Node[];
   isTriggerDisabled: boolean;
+  selectedNodeIds: string[];
 }
 
 const isMac = typeof window !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
@@ -22,34 +28,49 @@ const onEscapeContextMenu = () => {
 
 export default function ContextMenuProvider({
   children,
+  nodes,
+  id,
   isTriggerDisabled,
+  selectedNodeIds,
 }: ContextMenuProviderProps) {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
-  const onDuplicate = () => {
-    console.log("Duplicate 실행");
-    // 여기에 Duplicate 로직 추가
-  };
+  const { mutateAsync: createContent } = useCreateContent(id);
 
-  const onLink = () => {
+  const onDuplicate = useCallback(() => {
+    selectedNodeIds.forEach(async (nodeId) => {
+      const node: Node | undefined = nodes.find((node) => node.id === nodeId);
+      if (!node) return;
+      const { item } = node.data as { item: CategoryContentDTO };
+
+      await createContent({
+        topicId: id,
+        contentId: item.id,
+        posX: node.position.x + 100,
+        posY: node.position.y + 100,
+      });
+    });
+  }, [id, createContent, selectedNodeIds, nodes]);
+
+  const onLink = useCallback(() => {
     console.log("Link 실행");
     // 여기에 Link 로직 추가
-  };
+  }, []);
 
-  const onUnlink = () => {
+  const onUnlink = useCallback(() => {
     console.log("Unlink 실행");
     // 여기에 Unlink 로직 추가
-  };
+  }, []);
 
-  const onSummary = () => {
+  const onSummary = useCallback(() => {
     console.log("Summary 실행");
     // 여기에 Summary 로직 추가
-  };
+  }, []);
 
-  const onDelete = () => {
+  const onDelete = useCallback(() => {
     console.log("Delete 실행");
     // 여기에 Delete 로직 추가
-  };
+  }, []);
 
   const onCloseContextMenu = useCallback(() => {
     setIsContextMenuOpen(false);
@@ -90,7 +111,7 @@ export default function ContextMenuProvider({
           break;
       }
     },
-    [onCloseContextMenu]
+    [onCloseContextMenu, onDuplicate, onLink, onUnlink, onSummary, onDelete]
   );
 
   useEffect(() => {

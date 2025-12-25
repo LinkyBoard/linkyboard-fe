@@ -117,7 +117,7 @@ export default function ContextMenuProvider({
   );
 
   useEffect(() => {
-    if (!open) return;
+    if (!isContextMenuOpen) return;
 
     window.addEventListener("keydown", onKeyDown);
 

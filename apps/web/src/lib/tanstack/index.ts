@@ -13,7 +13,3 @@ export const queryClient = new QueryClient({
 export const invalidateQueries = (queryKey: QueryKey) => {
   queryClient.invalidateQueries({ queryKey });
 };
-
-export const invalidateMany = (queryKeys: QueryKey[]) => {
-  return Promise.all(queryKeys.map((queryKey) => queryClient.invalidateQueries({ queryKey })));
-};

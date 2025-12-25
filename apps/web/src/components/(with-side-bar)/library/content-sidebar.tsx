@@ -6,7 +6,8 @@ import { useSearchParams } from "next/navigation";
 import ResizeBar from "@/components/common/resize-bar";
 import { CATEGORY } from "@/constants/category";
 import { CONTENT } from "@/constants/content";
-import { invalidateMany } from "@/lib/tanstack";
+import { TOPIC } from "@/constants/topic";
+import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveContentById, useUpdateContent } from "@/lib/tanstack/mutation/content";
 import { useGetCategories } from "@/lib/tanstack/query/category";
 import { useGetContentById } from "@/lib/tanstack/query/content";
@@ -77,11 +78,11 @@ export default function ContentSidebar() {
       await updateContent(body, {
         onSuccess: () => {
           setIsEditing(false);
-          invalidateMany([
-            [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
-            [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
-            [CATEGORY.GET_CATEGORIES],
-          ]);
+          invalidateQueries([CONTENT.GET_CONTENT_BY_ID, selectedContentId]);
+          invalidateQueries([CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId]);
+          invalidateQueries([CATEGORY.GET_CATEGORIES]);
+          invalidateQueries([TOPIC.GET_ALL_CONTENTS]);
+          invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID]);
         },
       });
     }
@@ -104,11 +105,11 @@ export default function ContentSidebar() {
     await removeContent(selectedContentId, {
       onSuccess: () => {
         onClose();
-        invalidateMany([
-          [CONTENT.GET_CONTENT_BY_ID, selectedContentId],
-          [CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId],
-          [CATEGORY.GET_CATEGORIES],
-        ]);
+        invalidateQueries([CONTENT.GET_CONTENT_BY_ID, selectedContentId]);
+        invalidateQueries([CONTENT.GET_CATEGORY_CONTENT_BY_ID, categoryId]);
+        invalidateQueries([CATEGORY.GET_CATEGORIES]);
+        invalidateQueries([TOPIC.GET_ALL_CONTENTS]);
+        invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID]);
       },
     });
   };

@@ -10,4 +10,5 @@ export interface ContentDetailDTO {
   tags: string[];
   type: ContentType;
   category: string;
+  color: string;
 }

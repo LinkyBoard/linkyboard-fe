@@ -30,6 +30,7 @@ interface StickerProps extends NodeProps {
 interface NodeData {
   nodeContent: StickerType;
   item: TopicDTO | CategoryContentDTO;
+  color: string | null;
 }
 
 const stickerStyle = {
@@ -187,6 +188,7 @@ export default function Sticker(props: StickerProps) {
         minHeight: "13.75rem",
         width: props.width,
         height: props.height,
+        backgroundColor: nodeData.color ?? undefined,
       }}
     >
       <NodeResizer
@@ -270,6 +272,7 @@ export default function Sticker(props: StickerProps) {
           isSelected={props.isSelected}
           onSelect={props.onSelect}
           height={props.height}
+          topicId={props.topicId}
         />
       ) : (
         <UserSticker item={nodeData.item as TopicDTO} topicId={props.topicId} />

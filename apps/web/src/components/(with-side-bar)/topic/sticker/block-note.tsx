@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 import { CUSTOM_STICKER } from "@/constants/custom-sticker";
 import { TOPIC } from "@/constants/topic";
-import { invalidateMany, invalidateQueries } from "@/lib/tanstack";
+import { invalidateQueries } from "@/lib/tanstack";
 import {
   useRemoveCustomSticker,
   useUpdateCustomSticker,
@@ -161,10 +161,8 @@ export default function BlockNote({ topicId, stickerId }: BlockNoteProps) {
     await removeCustomSticker(stickerId, {
       onSuccess: () => {
         successToast("스티커가 성공적으로 삭제되었어요.");
-        invalidateMany([
-          [TOPIC.GET_TOPIC_BOARD_BY_ID, topicId],
-          [CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, stickerId],
-        ]);
+        invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
+        invalidateQueries([CUSTOM_STICKER.GET_CUSTOM_STICKER_BY_ID, stickerId]);
         if (!topicStore.isOpen) {
           router.back();
         }

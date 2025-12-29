@@ -1,41 +1,28 @@
-import { TOPIC } from "@/constants/topic";
-import { invalidateQueries } from "@/lib/tanstack";
 import { useRemoveTopicContentById } from "@/lib/tanstack/mutation/topic-content";
-import { Button, errorToast } from "@linkyboard/components";
+import { Button } from "@linkyboard/components";
 
 import { Trash2 } from "lucide-react";
 
 interface RemoveContentButtonProps {
   topicId: string;
   selectedNodeIds: string[];
-  setSelectedNodeIds: React.Dispatch<React.SetStateAction<string[]>>;
+  onResetSelectedNodeIds: () => void;
 }
 
 export default function RemoveContentButton({
   topicId,
   selectedNodeIds,
-  setSelectedNodeIds,
+  onResetSelectedNodeIds,
 }: RemoveContentButtonProps) {
   const contentIds = selectedNodeIds.map((id) => Number(id.split("-")[1]));
 
-  const { mutateAsync, isPending } = useRemoveTopicContentById();
+  const { mutateAsync, isPending } = useRemoveTopicContentById(topicId, onResetSelectedNodeIds);
 
   const onRemoveContent = async () => {
-    await mutateAsync(
-      {
-        topicId,
-        contentIds,
-      },
-      {
-        onSuccess: () => {
-          invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
-          setSelectedNodeIds([]);
-        },
-        onError: () => {
-          errorToast("토픽에서 콘텐츠를 제거하지 못했어요.");
-        },
-      }
-    );
+    await mutateAsync({
+      topicId,
+      contentIds,
+    });
   };
 
   return (

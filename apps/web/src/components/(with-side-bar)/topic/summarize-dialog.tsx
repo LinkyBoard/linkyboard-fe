@@ -26,7 +26,7 @@ import { summarizeSchema, type SummarizeSchemaType } from "../../../schemas/summ
 interface SummarizeDialogProps {
   topicId: string;
   selectedNodeIds: string[];
-  setSelectedNodeIds: React.Dispatch<React.SetStateAction<string[]>>;
+  onResetSelectedNodeIds: () => void;
 }
 
 const DEFAULT_VALUES = {
@@ -38,7 +38,7 @@ const DEFAULT_VALUES = {
 function SummarizeDialogContent({
   topicId,
   selectedNodeIds,
-  setSelectedNodeIds,
+  onResetSelectedNodeIds,
 }: SummarizeDialogProps) {
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
 
@@ -91,7 +91,7 @@ function SummarizeDialogContent({
           invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
           router.push(`/topic/${topicId}/sticker?stickerId=${data.result.id}`);
           reset();
-          setSelectedNodeIds([]);
+          onResetSelectedNodeIds();
         },
         onError: (error) => {
           console.error(error);

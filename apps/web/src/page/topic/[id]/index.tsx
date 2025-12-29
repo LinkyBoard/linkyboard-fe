@@ -131,12 +131,12 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
               <RemoveContentButton
                 topicId={id}
                 selectedNodeIds={selectedNodeIds}
-                setSelectedNodeIds={setSelectedNodeIds}
+                onResetSelectedNodeIds={onResetSelectedNodeIds}
               />
               <SummarizeDialog
                 topicId={id}
                 selectedNodeIds={selectedNodeIds}
-                setSelectedNodeIds={setSelectedNodeIds}
+                onResetSelectedNodeIds={onResetSelectedNodeIds}
               />
             </>
           )}

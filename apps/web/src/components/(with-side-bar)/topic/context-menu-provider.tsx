@@ -8,7 +8,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/common/context-menu";
 import { TopicContext } from "@/context/topic-context";
-import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
+import { useCreateContent, useRemoveTopicContentById } from "@/lib/tanstack/mutation/topic-content";
 import type { CategoryContentDTO } from "@linkyboard/types";
 import type { Node } from "@xyflow/react";
 
@@ -33,11 +33,12 @@ export default function ContextMenuProvider({
     throw new Error("TopicContext not found");
   }
 
-  const { id, nodes, selectedNodeIds } = topicContext;
+  const { id, nodes, selectedNodeIds, onResetSelectedNodeIds } = topicContext;
 
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
   const { mutateAsync: createContent } = useCreateContent(id);
+  const { mutateAsync: removeContent } = useRemoveTopicContentById(id, onResetSelectedNodeIds);
 
   const onDuplicate = useCallback(() => {
     selectedNodeIds.forEach(async (nodeId) => {
@@ -69,10 +70,13 @@ export default function ContextMenuProvider({
     // 여기에 Summary 로직 추가
   }, []);
 
-  const onDelete = useCallback(() => {
-    console.log("Delete 실행");
-    // 여기에 Delete 로직 추가
-  }, []);
+  const onDelete = useCallback(async () => {
+    const contentIds = selectedNodeIds.map((id) => Number(id.split("-")[1]));
+    await removeContent({
+      topicId: id,
+      contentIds,
+    });
+  }, [id, removeContent, selectedNodeIds]);
 
   const onCloseContextMenu = useCallback(() => {
     setIsContextMenuOpen(false);

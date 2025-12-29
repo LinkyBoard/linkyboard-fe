@@ -15,6 +15,7 @@ interface TopicContextProps {
   onConnect: (params: Connection) => void;
   onEdgeClick: (e: React.MouseEvent, edge: Edge) => void;
   onNodeSelect: (nodeId: string) => void;
+  onResetSelectedNodeIds: () => void;
 }
 
 export const TopicContext = createContext<TopicContextProps | null>(null);

@@ -5,7 +5,7 @@ import {
   updateContentPosition,
   updateContentSize,
 } from "@/services/topic-content";
-import { infoToast } from "@linkyboard/components";
+import { errorToast, infoToast } from "@linkyboard/components";
 import { useMutation } from "@tanstack/react-query";
 
 import { invalidateQueries } from "..";
@@ -43,8 +43,15 @@ export const useCreateContent = (id: string) => {
   });
 };
 
-export const useRemoveTopicContentById = () => {
+export const useRemoveTopicContentById = (topicId: string, onResetSelectedNodeIds: () => void) => {
   return useMutation({
     mutationFn: removeTopicContentById,
+    onSuccess: () => {
+      invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, topicId]);
+      onResetSelectedNodeIds();
+    },
+    onError: () => {
+      errorToast("토픽에서 콘텐츠를 제거하지 못했어요.");
+    },
   });
 };

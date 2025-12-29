@@ -57,6 +57,10 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
     );
   }, []);
 
+  const onResetSelectedNodeIds = useCallback(() => {
+    setSelectedNodeIds([]);
+  }, []);
+
   const onConnect = useCallback(
     async (params: Connection) => {
       // 연결 유효성 검사: 같은 노드 간에는 하나의 연결만 허용
@@ -160,6 +164,7 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
             onConnect,
             onEdgeClick,
             onNodeSelect,
+            onResetSelectedNodeIds,
           }}
         >
           <ReactFlowCanvas />

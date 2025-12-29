@@ -7,8 +7,11 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/common/context-menu";
+import { TOPIC } from "@/constants/topic";
 import { TopicContext } from "@/context/topic-context";
-import { useCreateContent } from "@/lib/tanstack/mutation/topic-content";
+import { invalidateQueries } from "@/lib/tanstack";
+import { useCreateContent, useRemoveTopicContentById } from "@/lib/tanstack/mutation/topic-content";
+import { errorToast } from "@linkyboard/components";
 import type { CategoryContentDTO } from "@linkyboard/types";
 import type { Node } from "@xyflow/react";
 
@@ -33,11 +36,12 @@ export default function ContextMenuProvider({
     throw new Error("TopicContext not found");
   }
 
-  const { id, nodes, selectedNodeIds } = topicContext;
+  const { id, nodes, selectedNodeIds, onResetSelectedNodeIds } = topicContext;
 
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
   const { mutateAsync: createContent } = useCreateContent(id);
+  const { mutateAsync: removeContent } = useRemoveTopicContentById();
 
   const onDuplicate = useCallback(() => {
     selectedNodeIds.forEach(async (nodeId) => {
@@ -69,10 +73,24 @@ export default function ContextMenuProvider({
     // 여기에 Summary 로직 추가
   }, []);
 
-  const onDelete = useCallback(() => {
-    console.log("Delete 실행");
-    // 여기에 Delete 로직 추가
-  }, []);
+  const onDelete = useCallback(async () => {
+    const contentIds = selectedNodeIds.map((id) => Number(id.split("-")[1]));
+    await removeContent(
+      {
+        topicId: id,
+        contentIds,
+      },
+      {
+        onSuccess: () => {
+          invalidateQueries([TOPIC.GET_TOPIC_BOARD_BY_ID, id]);
+          onResetSelectedNodeIds();
+        },
+        onError: () => {
+          errorToast("토픽에서 콘텐츠를 제거하지 못했어요.");
+        },
+      }
+    );
+  }, [id, removeContent, onResetSelectedNodeIds, selectedNodeIds]);
 
   const onCloseContextMenu = useCallback(() => {
     setIsContextMenuOpen(false);

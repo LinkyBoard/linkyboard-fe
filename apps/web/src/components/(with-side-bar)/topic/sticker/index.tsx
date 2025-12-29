@@ -30,6 +30,8 @@ interface StickerProps extends NodeProps {
 interface NodeData {
   nodeContent: StickerType;
   item: TopicDTO | CategoryContentDTO;
+  color: string | null;
+  topicContentId: number | null;
 }
 
 const stickerStyle = {
@@ -97,9 +99,10 @@ export default function Sticker(props: StickerProps) {
           await updateTopicPosition(body);
           break;
         case "content":
+          if (!nodeData.topicContentId) return;
           await updateContentPosition({
             ...body,
-            contentId: nodeData.item.id,
+            topicContentId: nodeData.topicContentId,
           });
           break;
         case "custom_sticker":
@@ -152,9 +155,10 @@ export default function Sticker(props: StickerProps) {
           await updateTopicSize(body);
           break;
         case "content":
+          if (!nodeData.topicContentId) return;
           await updateContentSize({
             ...body,
-            contentId: nodeData.item.id,
+            topicContentId: nodeData.topicContentId,
           });
           break;
         case "custom_sticker":
@@ -187,6 +191,7 @@ export default function Sticker(props: StickerProps) {
         minHeight: "13.75rem",
         width: props.width,
         height: props.height,
+        backgroundColor: nodeData.color ?? undefined,
       }}
     >
       <NodeResizer
@@ -264,12 +269,14 @@ export default function Sticker(props: StickerProps) {
 
       {nodeData.nodeContent === "topic" ? (
         <TopicSticker item={nodeData.item as TopicDTO} />
-      ) : nodeData.nodeContent === "content" ? (
+      ) : nodeData.nodeContent === "content" && nodeData.topicContentId !== null ? (
         <ContentSticker
           item={nodeData.item as CategoryContentDTO}
           isSelected={props.isSelected}
           onSelect={props.onSelect}
           height={props.height}
+          topicId={props.topicId}
+          topicContentId={nodeData.topicContentId}
         />
       ) : (
         <UserSticker item={nodeData.item as TopicDTO} topicId={props.topicId} />

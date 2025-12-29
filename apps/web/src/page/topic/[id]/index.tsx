@@ -10,6 +10,7 @@ import RemoveContentButton from "@/components/(with-side-bar)/topic/remove-conte
 import SummarizeDialog from "@/components/(with-side-bar)/topic/summarize-dialog";
 import SearchHeader from "@/components/common/search-header";
 import type { ContentTypeOptions } from "@/constants/content";
+import { TopicContext } from "@/context/topic-context";
 import { useCreateConnection, useRemoveConnection } from "@/lib/tanstack/mutation/connection";
 import { useGetTopicBoardById } from "@/lib/tanstack/query/topic";
 import { infoToast, Spinner } from "@linkyboard/components";
@@ -50,11 +51,11 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
 
   const isNotFoundError = (!isLoading && error?.message.includes("404")) || false;
 
-  const onNodeSelect = (nodeId: string) => {
+  const onNodeSelect = useCallback((nodeId: string) => {
     setSelectedNodeIds((prev) =>
       prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]
     );
-  };
+  }, []);
 
   const onConnect = useCallback(
     async (params: Connection) => {
@@ -145,20 +146,24 @@ export default function TopicBoardPage({ id, type }: TopicBoardPageProps) {
       <div className="flex h-[calc(100vh-130px)]">
         <AddContent id={id} type={type} />
 
-        <ReactFlowCanvas
-          isLoading={isLoading}
-          isTopicError={isError}
-          isNotFoundError={isNotFoundError}
-          id={id}
-          nodes={nodes}
-          edges={edges}
-          selectedNodeIds={selectedNodeIds}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onEdgeClick={onEdgeClick}
-          onNodeSelect={onNodeSelect}
-        />
+        <TopicContext.Provider
+          value={{
+            isLoading,
+            isTopicError: isError,
+            isNotFoundError,
+            id,
+            nodes,
+            edges,
+            selectedNodeIds,
+            onNodesChange,
+            onEdgesChange,
+            onConnect,
+            onEdgeClick,
+            onNodeSelect,
+          }}
+        >
+          <ReactFlowCanvas />
+        </TopicContext.Provider>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { clientApi } from ".";
 
 export const updateContentPosition = async (props: {
   topicId: string;
-  contentId: number;
+  topicContentId: number;
   posX: number;
   posY: number;
 }): Promise<BaseResponseDTO<unknown>> => {
@@ -14,7 +14,7 @@ export const updateContentPosition = async (props: {
 
 export const updateContentSize = async (props: {
   topicId: string;
-  contentId: number;
+  topicContentId: number;
   width: number;
   height: number;
 }): Promise<BaseResponseDTO<unknown>> => {
@@ -43,7 +43,7 @@ export const removeTopicContentById = async (props: {
   return clientApi
     .delete(`topic-contents/topics/${props.topicId}/contents`, {
       json: {
-        contentIds: props.contentIds,
+        topicContentIds: props.contentIds,
       },
     })
     .json();

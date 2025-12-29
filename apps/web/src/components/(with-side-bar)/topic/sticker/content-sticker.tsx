@@ -18,6 +18,7 @@ interface ContentStickerProps {
   onSelect: (nodeId: string) => void;
   height?: number;
   topicId: string;
+  topicContentId: number;
 }
 
 const contentType = {
@@ -49,6 +50,7 @@ export default function ContentSticker({
   onSelect,
   height,
   topicId,
+  topicContentId,
 }: ContentStickerProps) {
   const { mutateAsync: updateContent } = useUpdateContent({
     onSuccess: () => {
@@ -113,7 +115,7 @@ export default function ContentSticker({
                 ? "bg-primary text-white"
                 : "bg-muted text-muted-foreground hover:bg-primary hover:text-white"
             )}
-            onClick={() => onSelect(`content-${item.id}`)}
+            onClick={() => onSelect(`content-${topicContentId}`)}
             aria-label={isSelected ? "선택 해제" : "선택"}
           >
             <Check size={16} />
